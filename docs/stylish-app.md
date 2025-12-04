@@ -981,13 +981,13 @@ Google's Gemini 2.5 Flash Image model (codenamed "Nano Banana") provides state-o
 
 #### Model Details
 
-| Property | Value |
-| --- | --- |
-| **Model ID** | `gemini-2.5-flash-image-preview` |
-| **Provider** | Google Generative AI |
-| **Capabilities** | Image generation, multi-image fusion, virtual try-on |
-| **Cost** | ~$0.039/image ($30/1M output tokens, 1290 tokens/image) |
-| **Watermarking** | Built-in SynthID invisible watermark |
+| Property         | Value                                                   |
+| ---------------- | ------------------------------------------------------- |
+| **Model ID**     | `gemini-2.5-flash-image-preview`                        |
+| **Provider**     | Google Generative AI                                    |
+| **Capabilities** | Image generation, multi-image fusion, virtual try-on    |
+| **Cost**         | ~$0.039/image ($30/1M output tokens, 1290 tokens/image) |
+| **Watermarking** | Built-in SynthID invisible watermark                    |
 
 #### Vercel AI Gateway Benefits
 
@@ -1037,7 +1037,8 @@ export const handler = async (event: { Records: Array<{ body: string }> }) => {
       const garmentImageBuffer = await garmentImageRes.arrayBuffer();
 
       const bodyImageBase64 = Buffer.from(bodyImageBuffer).toString("base64");
-      const garmentImageBase64 = Buffer.from(garmentImageBuffer).toString("base64");
+      const garmentImageBase64 =
+        Buffer.from(garmentImageBuffer).toString("base64");
 
       // Call Google Nano Banana (Gemini 2.5 Flash Image) via Vercel AI SDK
       const result = await generateImage({
@@ -1140,12 +1141,12 @@ export const streamTryOnAnalysis = async (tryOnResultUrl: string) => {
 
 #### Latency Targets
 
-| Stage | Target | Stretch |
-| --- | --- | --- |
-| Queue to start | < 2s | < 500ms |
-| Nano Banana inference | < 5s | < 3s |
-| Post-processing | < 1s | < 500ms |
-| **Total** | **< 8s** | **< 4s** |
+| Stage                 | Target   | Stretch  |
+| --------------------- | -------- | -------- |
+| Queue to start        | < 2s     | < 500ms  |
+| Nano Banana inference | < 5s     | < 3s     |
+| Post-processing       | < 1s     | < 500ms  |
+| **Total**             | **< 8s** | **< 4s** |
 
 ---
 
@@ -1181,13 +1182,13 @@ bunx prisma generate
 
 #### Day 2: Core Try-On Flow
 
-| Task                | Details                          |
-| ------------------- | -------------------------------- |
-| Body profile upload | S3 presigned URLs, photo capture |
-| Garment catalog     | Seed data, list/filter UI        |
-| Nano Banana + Vercel AI | Worker + queue + streaming    |
-| Try-on UI           | Request flow, progress streaming |
-| Results display     | Gallery, favorites               |
+| Task                    | Details                          |
+| ----------------------- | -------------------------------- |
+| Body profile upload     | S3 presigned URLs, photo capture |
+| Garment catalog         | Seed data, list/filter UI        |
+| Nano Banana + Vercel AI | Worker + queue + streaming       |
+| Try-on UI               | Request flow, progress streaming |
+| Results display         | Gallery, favorites               |
 
 ### Phase 2: Polish & Features (Days 3-4)
 
@@ -1333,27 +1334,27 @@ if (process.env.NODE_ENV !== "production") {
 
 ### Google Nano Banana (Gemini 2.5 Flash Image) Pricing
 
-| Tier | Cost | Volume |
-| --- | --- | --- |
-| Free tier | $0 | Limited API credits |
-| Per-image cost | ~$0.039/image | 1,290 tokens/image @ $30/1M tokens |
-| Hackathon estimate | ~$40 | 1,000 demo renders |
+| Tier               | Cost          | Volume                             |
+| ------------------ | ------------- | ---------------------------------- |
+| Free tier          | $0            | Limited API credits                |
+| Per-image cost     | ~$0.039/image | 1,290 tokens/image @ $30/1M tokens |
+| Hackathon estimate | ~$40          | 1,000 demo renders                 |
 
 ### Vercel AI Gateway
 
-| Tier | Cost | Notes |
-| --- | --- | --- |
-| Hobby | $0 | Included with Vercel account |
-| Pro | $20/month | Enhanced observability |
-| **Hackathon** | Free | Hobby tier sufficient |
+| Tier          | Cost      | Notes                        |
+| ------------- | --------- | ---------------------------- |
+| Hobby         | $0        | Included with Vercel account |
+| Pro           | $20/month | Enhanced observability       |
+| **Hackathon** | Free      | Hobby tier sufficient        |
 
 ### AWS (via SST)
 
-| Resource | Estimate |
-| --- | --- |
-| Lambda | Free tier covers demo |
-| S3 | < $5/month |
-| SQS | Free tier covers demo |
+| Resource | Estimate              |
+| -------- | --------------------- |
+| Lambda   | Free tier covers demo |
+| S3       | < $5/month            |
+| SQS      | Free tier covers demo |
 
 ### Total Hackathon Budget: ~$50-75
 

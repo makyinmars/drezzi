@@ -60,7 +60,7 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
                 {APP_NAME}
               </h1>
               <p className="hidden text-muted-foreground text-sm sm:block sm:text-base">
-                Manage your tasks with TanStack Start, tRPC, PostgreSQL & React
+                AI-powered virtual try-on for the perfect look
               </p>
             </div>
           </div>

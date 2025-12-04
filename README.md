@@ -1,19 +1,25 @@
-# F7 - Full-Stack Todo Application
+# Drezzi - AI Virtual Try-On Application
 
-A modern, type-safe Todo application built with TanStack Start, featuring end-to-end type safety and a polished user experience.
+A mobile-first web application that lets users virtually try on clothing using AI-powered generative try-on technology. Users upload a reference photo, browse garments, and receive realistic composite images showing how clothes would look on their body.
+
+**Hackathon:** Prisma Hackathon 2025
 
 ## Tech Stack
 
 - **Runtime**: Bun
-- **Framework**: TanStack Start v1.121.16 (file-based routing)
+- **Framework**: TanStack Start (file-based routing)
 - **Frontend**: React 19, TanStack Query, React Hook Form
 - **Styling**: Tailwind CSS v4 + Shadcn/ui components
 - **Backend**: tRPC for type-safe APIs
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: PostgreSQL with Prisma ORM
+- **AI/ML**: Google Gemini 2.5 Flash Image via Vercel AI SDK
+- **Storage**: AWS S3 (via SST Bucket)
+- **Queue**: AWS SQS for async job processing
+- **Authentication**: Better Auth
 - **Validation**: Zod schemas
 - **Internationalization**: Lingui.js for i18n support
 - **Environment**: T3 OSS env-core for type-safe environment variables
-- **Deployment**: AWS Lambda (configurable)
+- **Deployment**: SST v3 (AWS Lambda)
 - **Code Quality**: Ultracite for code formatting and linting
 
 ## Quick Start
@@ -47,16 +53,17 @@ A modern, type-safe Todo application built with TanStack Start, featuring end-to
    VITE_PUBLIC_URL="http://localhost:3000"
    ```
 
-4. **Run database migrations**
+4. **Generate Prisma client and run migrations**
 
    ```bash
-   bun db:migrate
+   bunx prisma generate
+   bunx prisma migrate dev
    ```
 
 5. **Seed the database (optional)**
 
    ```bash
-   bun db:seed
+   bunx prisma db seed
    ```
 
 6. **Start development server**
@@ -76,12 +83,12 @@ bun build            # Build for production
 bun start            # Start production server
 bun typecheck        # Type check the codebase
 
-# Database
-bun db:migrate       # Run database migrations
-bun db:push          # Push schema changes to database
-bun db:studio        # Open Drizzle Studio GUI
-bun db:seed          # Seed the database with sample data
-bun db:generate      # Generate new migration files
+# Database (Prisma)
+bunx prisma generate    # Generate Prisma client
+bunx prisma migrate dev # Run database migrations
+bunx prisma db push     # Push schema changes (dev only)
+bunx prisma studio      # Open Prisma Studio GUI
+bunx prisma db seed     # Seed the database
 
 # Code Quality
 bun lint             # Lint/check code with Ultracite
@@ -92,6 +99,11 @@ bun check            # Run Ultracite lint checks
 # Internationalization
 bun lingui:extract   # Extract translatable strings
 bun lingui:compile   # Compile translation catalogs
+
+# Deployment (SST)
+sst dev              # SST development mode
+sst deploy           # Deploy to AWS
+sst deploy --stage production  # Deploy to production
 ```
 
 ## Project Structure
@@ -100,33 +112,46 @@ bun lingui:compile   # Compile translation catalogs
 src/
 ├── routes/              # File-based routing pages
 │   ├── api/trpc/       # tRPC API endpoints
-│   └── index.tsx       # Home page
-├── trpc/               # tRPC configuration and routers
-│   └── routers/        # API route handlers
-├── db/                 # Database configuration
-│   ├── schema/         # Drizzle ORM schemas
-│   └── seed/           # Database seeding scripts
+│   ├── catalog/        # Garment browsing
+│   ├── profile/        # Body profile management
+│   ├── try-on/         # Virtual try-on interface
+│   ├── lookbooks/      # Lookbook collections
+│   └── share/          # Public sharing
+├── trpc/               # tRPC configuration
+│   └── routers/        # API route handlers (profile, garment, tryOn, lookbook)
 ├── components/         # React components
 │   ├── ui/             # Shadcn/ui components
-│   └── todo/           # Todo-specific components
+│   ├── catalog/        # Garment components
+│   ├── profile/        # Profile components
+│   ├── try-on/         # Try-on components
+│   └── lookbook/       # Lookbook components
 ├── services/           # Business logic services
+│   ├── s3.ts           # S3 upload/download
+│   ├── queue.ts        # SQS job queue
+│   └── nano-banana.ts  # AI integration
+├── workers/            # Lambda workers
+│   └── try-on.ts       # AI try-on processor
 ├── lib/                # Utility functions
+│   └── prisma.ts       # Prisma client
 ├── locales/            # Translation catalogs
-│   ├── en/             # English translations
-│   └── fr/             # French translations
 └── modules/            # Feature modules
-    └── lingui/         # i18n configuration
+prisma/
+├── schema.prisma       # Database schema
+└── migrations/         # Migration files
 ```
 
 ## Key Features
 
+- **AI Virtual Try-On**: Google Gemini 2.5 Flash Image for realistic clothing visualization
+- **Body Profile Management**: Upload photos and save measurements for instant try-ons
+- **Garment Catalog**: Browse, filter, and search curated clothing items
+- **Lookbooks**: Create collections of try-on results and share publicly
+- **Streaming UX**: Real-time progress updates via Vercel AI SDK
 - **Type Safety**: End-to-end type safety with tRPC and Zod validation
 - **Modern UI**: Responsive design with Tailwind CSS v4 and Shadcn/ui
-- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
-- **Form Handling**: React Hook Form with Zod validation
+- **Database**: PostgreSQL with Prisma ORM for type-safe database operations
 - **Dark Mode**: Built-in theme switching
-- **Real-time**: Optimistic updates with TanStack Query
-- **Internationalization**: Full-stack multi-language support with client and server-side translations
+- **Internationalization**: Multi-language support with Lingui.js
 
 ## Deployment
 
@@ -410,18 +435,22 @@ throw errors.todoNotFound(); // "Todo not found" or "Tâche introuvable"
 
 1. **File-based Routing**: Pages are automatically routed based on file structure in `src/routes/`
 2. **Type-safe APIs**: All API communication uses tRPC for end-to-end type safety
-3. **Database First**: Schema-driven development with Drizzle ORM
+3. **Database First**: Schema-driven development with Prisma ORM
 4. **Component Library**: Consistent UI with Shadcn/ui components
 5. **Path Aliases**: Use `@/*` imports for clean relative imports
+6. **Async Processing**: SQS queues for AI try-on jobs with Lambda workers
+7. **Serverless Storage**: S3 for images with presigned URLs
 
 ## Development Notes
 
 - Always run `bun typecheck` after making changes
 - Database migrations must be run manually after schema changes
-- Use Drizzle Studio (`bun db:studio`) for database exploration
+- Use Prisma Studio (`bunx prisma studio`) for database exploration
 - Follow the existing code conventions and patterns
 - Prefer composition over inheritance for component design
 - Code formatting and linting handled by Ultracite
+- See `docs/drezzi-implementation.md` for implementation guide
+- See `docs/stylish-app.md` for detailed specifications
 
 ## Ultracite Integration
 
@@ -437,6 +466,7 @@ bun check            # Run Ultracite lint checks
 ```
 
 Ultracite provides:
+
 - Consistent code formatting across the project
 - Advanced linting capabilities
 - Integration with existing development workflows
@@ -448,4 +478,3 @@ Ultracite provides:
 2. Format code: `bun format`
 3. Lint code: `bun lint`
 4. Test database changes with `bun db:studio`
-# drezzi
