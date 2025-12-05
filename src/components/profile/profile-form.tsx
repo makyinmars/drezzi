@@ -48,8 +48,27 @@ type ProfileFormProps = {
 const ProfileForm = ({ profile, children }: ProfileFormProps) => {
   const { t } = useLingui();
   const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+  const getUploadUrlMutation = useMutation(
+    trpc.profile.getUploadUrl.mutationOptions({})
+  );
+
+  const uploadToS3 = async (file: File) => {
+    const { url, key, photoUrl } = await getUploadUrlMutation.mutateAsync({
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    const response = await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    if (!response.ok) throw new Error("Failed to upload photo");
+    return { photoUrl, photoKey: key };
+  };
 
   const form = useForm<BodyProfileCreateAndUpdate>({
     resolver: zodResolver(apiBodyProfileCreateAndUpdate),
@@ -181,13 +200,21 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
     })
   );
 
-  const handlePhotoUpload = (photoUrl: string, photoKey: string) => {
-    form.setValue("photoUrl", photoUrl);
-    form.setValue("photoKey", photoKey);
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
   };
 
-  const onSubmit = (data: BodyProfileCreateAndUpdate) => {
-    if (!(data.photoUrl && data.photoKey)) {
+  const onSubmit = async (data: BodyProfileCreateAndUpdate) => {
+    let photoUrl = profile?.photoUrl;
+    let photoKey = profile?.photoKey;
+
+    if (selectedFile) {
+      const uploaded = await uploadToS3(selectedFile);
+      photoUrl = uploaded.photoUrl;
+      photoKey = uploaded.photoKey;
+    }
+
+    if (!(photoUrl && photoKey)) {
       toast.error(t`Please upload a photo first`);
       return;
     }
@@ -197,8 +224,8 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
         updateMutation.mutateAsync({
           id: data.id,
           name: data.name,
-          photoUrl: data.photoUrl,
-          photoKey: data.photoKey,
+          photoUrl,
+          photoKey,
           height: data.height,
           waist: data.waist,
           hip: data.hip,
@@ -217,8 +244,8 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
       toast.promise(
         createMutation.mutateAsync({
           name: data.name,
-          photoUrl: data.photoUrl,
-          photoKey: data.photoKey,
+          photoUrl,
+          photoKey,
           height: data.height ?? undefined,
           waist: data.waist ?? undefined,
           hip: data.hip ?? undefined,
@@ -260,7 +287,7 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <PhotoUpload
               currentPhotoUrl={profile?.photoUrl}
-              onUploadComplete={handlePhotoUpload}
+              onFileSelect={handleFileSelect}
             />
 
             <FormField
@@ -476,7 +503,8 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
             <Button
               className="w-full"
               disabled={
-                profile ? updateMutation.isPending : createMutation.isPending
+                getUploadUrlMutation.isPending ||
+                (profile ? updateMutation.isPending : createMutation.isPending)
               }
               type="submit"
             >

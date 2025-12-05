@@ -3,6 +3,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Info, Shirt } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -47,6 +48,25 @@ const GarmentNewScreen = () => {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const getUploadUrlMutation = useMutation(
+    trpc.garment.getUploadUrl.mutationOptions({})
+  );
+
+  const uploadToS3 = async (file: File) => {
+    const { url, key, imageUrl } = await getUploadUrlMutation.mutateAsync({
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    const response = await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    if (!response.ok) throw new Error("Failed to upload image");
+    return { imageUrl, imageKey: key };
+  };
 
   const form = useForm<GarmentCreateAndUpdate>({
     resolver: zodResolver(apiGarmentCreateAndUpdate),
@@ -82,16 +102,17 @@ const GarmentNewScreen = () => {
     })
   );
 
-  const handleImageUpload = (imageUrl: string, imageKey: string) => {
-    form.setValue("imageUrl", imageUrl);
-    form.setValue("imageKey", imageKey);
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
   };
 
-  const onSubmit = (data: GarmentCreateAndUpdate) => {
-    if (!(data.imageUrl && data.imageKey)) {
+  const onSubmit = async (data: GarmentCreateAndUpdate) => {
+    if (!selectedFile) {
       toast.error(t`Please upload an image first`);
       return;
     }
+
+    const uploaded = await uploadToS3(selectedFile);
 
     toast.promise(
       createMutation.mutateAsync({
@@ -102,8 +123,8 @@ const GarmentNewScreen = () => {
         brand: data.brand ?? undefined,
         price: data.price ?? undefined,
         currency: data.currency,
-        imageUrl: data.imageUrl,
-        imageKey: data.imageKey,
+        imageUrl: uploaded.imageUrl,
+        imageKey: uploaded.imageKey,
         maskUrl: data.maskUrl ?? undefined,
         retailUrl: data.retailUrl ?? undefined,
         colors: data.colors,
@@ -149,7 +170,7 @@ const GarmentNewScreen = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <GarmentImageUpload onUploadComplete={handleImageUpload} />
+                  <GarmentImageUpload onFileSelect={handleFileSelect} />
                 </CardContent>
               </Card>
 
@@ -378,7 +399,9 @@ const GarmentNewScreen = () => {
 
               <Button
                 className="w-full"
-                disabled={createMutation.isPending}
+                disabled={
+                  getUploadUrlMutation.isPending || createMutation.isPending
+                }
                 size="lg"
                 type="submit"
               >

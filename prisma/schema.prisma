@@ -187,6 +187,7 @@ model Lookbook {
   name        String
   description String?
   coverUrl    String?  @map("cover_url")
+  coverKey    String?  @map("cover_key")
   isPublic    Boolean  @default(false) @map("is_public")
   shareSlug   String?  @unique @map("share_slug")
   createdAt   DateTime @default(now()) @map("created_at")

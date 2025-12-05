@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   LifeBuoy,
   Settings2,
-  Shirt,
   User,
   Wand2,
 } from "lucide-react";
@@ -18,11 +17,6 @@ export const navigationConfig: NavConfig = {
       url: "/dashboard",
       icon: LayoutDashboard,
       isActive: true,
-    },
-    {
-      title: <Trans>Catalog</Trans>,
-      url: "/catalog",
-      icon: Shirt,
     },
     {
       title: <Trans>Try-On</Trans>,
@@ -63,6 +57,12 @@ export const navigationConfig: NavConfig = {
       title: <Trans>Lookbooks</Trans>,
       url: "/lookbooks",
       icon: BookImage,
+      items: [
+        {
+          title: <Trans>All Lookbooks</Trans>,
+          url: "/lookbooks",
+        },
+      ],
     },
   ],
   secondary: [

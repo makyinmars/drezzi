@@ -157,4 +157,93 @@ export const createErrors = (i18n: I18n | undefined) => ({
 
   tryOnStatusInvalid: () =>
     createTranslatedError(i18n, "BAD_REQUEST", "Invalid try-on status"),
+
+  lookbookNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Lookbook not found"),
+
+  lookbookForbidden: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "You don't have permission to access this lookbook"
+    ),
+
+  lookbookCreateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to create lookbook"
+    ),
+
+  lookbookUpdateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to update lookbook"
+    ),
+
+  lookbookDeleteFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to delete lookbook"
+    ),
+
+  lookbookNotPublic: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "This lookbook is not publicly accessible"
+    ),
+
+  lookbookItemDuplicate: () =>
+    createTranslatedError(
+      i18n,
+      "BAD_REQUEST",
+      "This try-on is already in the lookbook"
+    ),
+
+  lookbookItemNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Lookbook item not found"),
+
+  invalidLookbookCover: () =>
+    createTranslatedError(i18n, "BAD_REQUEST", "Invalid lookbook cover image"),
+
+  styleTipNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Style tip not found"),
+
+  styleTipForbidden: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "You don't have permission to access this style tip"
+    ),
+
+  styleTipCreateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to create style tip"
+    ),
+
+  styleTipUpdateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to update style tip"
+    ),
+
+  styleTipDeleteFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to delete style tip"
+    ),
+
+  styleTipRegenerateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to regenerate style tips"
+    ),
 });

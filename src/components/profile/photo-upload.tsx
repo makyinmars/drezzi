@@ -1,36 +1,25 @@
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMutation } from "@tanstack/react-query";
 import { Upload, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { useTRPC } from "@/trpc/react";
 
 const IMAGE_TYPE_REGEX = /^image\/(jpeg|png|webp)$/;
 
 type PhotoUploadProps = {
-  onUploadComplete: (photoUrl: string, photoKey: string) => void;
+  onFileSelect: (file: File | null, previewUrl: string | null) => void;
   currentPhotoUrl?: string;
 };
 
-const PhotoUpload = ({
-  onUploadComplete,
-  currentPhotoUrl,
-}: PhotoUploadProps) => {
+const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
   const { t } = useLingui();
-  const trpc = useTRPC();
   const [preview, setPreview] = useState<string | null>(
-    currentPhotoUrl || null
-  );
-  const [uploading, setUploading] = useState(false);
-
-  const getUploadUrlMutation = useMutation(
-    trpc.profile.getUploadUrl.mutationOptions({})
+    currentPhotoUrl ?? null
   );
 
   const handleFileSelect = useCallback(
-    async (file: File) => {
+    (file: File) => {
       if (!file.type.match(IMAGE_TYPE_REGEX)) {
         toast.error(t`Please select a valid image file (JPEG, PNG, or WebP)`);
         return;
@@ -41,50 +30,15 @@ const PhotoUpload = ({
         return;
       }
 
-      setUploading(true);
-
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPreview(e.target?.result as string);
+        const previewUrl = e.target?.result as string;
+        setPreview(previewUrl);
+        onFileSelect(file, previewUrl);
       };
       reader.readAsDataURL(file);
-
-      const uploadPromise = async () => {
-        const { url, key, photoUrl } = await getUploadUrlMutation.mutateAsync({
-          contentType: file.type,
-          contentLength: file.size,
-        });
-
-        const response = await fetch(url, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": file.type,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload photo");
-        }
-
-        onUploadComplete(photoUrl, key);
-        return photoUrl;
-      };
-
-      toast.promise(uploadPromise(), {
-        loading: t`Uploading photo...`,
-        success: () => {
-          setUploading(false);
-          return t`Photo uploaded successfully`;
-        },
-        error: (err) => {
-          setUploading(false);
-          setPreview(currentPhotoUrl || null);
-          return t`Error uploading photo: ${err.message}`;
-        },
-      });
     },
-    [getUploadUrlMutation, onUploadComplete, currentPhotoUrl, t]
+    [onFileSelect, t]
   );
 
   const handleDrop = useCallback(
@@ -110,6 +64,7 @@ const PhotoUpload = ({
 
   const clearPreview = () => {
     setPreview(null);
+    onFileSelect(null, null);
   };
 
   return (
@@ -147,7 +102,6 @@ const PhotoUpload = ({
           <input
             accept="image/jpeg,image/png,image/webp"
             className="hidden"
-            disabled={uploading}
             onChange={handleInputChange}
             type="file"
           />

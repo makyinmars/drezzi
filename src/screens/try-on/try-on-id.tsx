@@ -18,6 +18,7 @@ import { Suspense } from "react";
 import { toast } from "sonner";
 
 import PageHeader from "@/components/common/page-header";
+import StyleTipCard from "@/components/style-tip/style-tip-card";
 import TryOnDelete from "@/components/try-on/try-on-delete";
 import TryOnForm from "@/components/try-on/try-on-form";
 import TryOnProgress from "@/components/try-on/try-on-progress";
@@ -277,25 +278,11 @@ const TryOnDetailScreen = () => {
           </Card>
 
           {/* Style Tips */}
-          {tryOn.styleTips && tryOn.styleTips.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  <Trans>Style Tips</Trans>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {tryOn.styleTips.map((tip) => (
-                  <div className="rounded-lg bg-muted p-3" key={tip.id}>
-                    <Badge className="mb-2" variant="secondary">
-                      {tip.category}
-                    </Badge>
-                    <p className="text-sm">{tip.content}</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
+          <StyleTipCard
+            isCompleted={tryOn.status === "completed"}
+            tips={tryOn.styleTips ?? []}
+            tryOnId={tryOn.id}
+          />
 
           {/* Try Another */}
           <Card>

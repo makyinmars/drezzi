@@ -24,8 +24,7 @@ import { Route as authedProfileIndexRouteImport } from './routes/(authed)/profil
 import { Route as authedLookbooksIndexRouteImport } from './routes/(authed)/lookbooks/index'
 import { Route as authedGarmentIndexRouteImport } from './routes/(authed)/garment/index'
 import { Route as authedDashboardIndexRouteImport } from './routes/(authed)/dashboard/index'
-import { Route as authedCatalogIndexRouteImport } from './routes/(authed)/catalog/index'
-import { Route as SharedLookbookLookbookIdRouteImport } from './routes/shared/lookbook/$lookbookId'
+import { Route as SharedLookbookSlugRouteImport } from './routes/shared/lookbook/$slug'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as authedTryOnTryOnIdRouteImport } from './routes/(authed)/try-on/$tryOnId'
@@ -34,7 +33,6 @@ import { Route as authedProfileProfileIdRouteImport } from './routes/(authed)/pr
 import { Route as authedLookbooksLookbookIdRouteImport } from './routes/(authed)/lookbooks/$lookbookId'
 import { Route as authedGarmentNewRouteImport } from './routes/(authed)/garment/new'
 import { Route as authedGarmentGarmentIdRouteImport } from './routes/(authed)/garment/$garmentId'
-import { Route as authedCatalogGarmentGarmentIdRouteImport } from './routes/(authed)/catalog/garment/$garmentId'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
@@ -110,17 +108,11 @@ const authedDashboardIndexRoute = authedDashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => authedDashboardRouteRoute,
 } as any)
-const authedCatalogIndexRoute = authedCatalogIndexRouteImport.update({
-  id: '/catalog/',
-  path: '/catalog/',
-  getParentRoute: () => authedRouteRoute,
+const SharedLookbookSlugRoute = SharedLookbookSlugRouteImport.update({
+  id: '/shared/lookbook/$slug',
+  path: '/shared/lookbook/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const SharedLookbookLookbookIdRoute =
-  SharedLookbookLookbookIdRouteImport.update({
-    id: '/shared/lookbook/$lookbookId',
-    path: '/shared/lookbook/$lookbookId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -162,12 +154,6 @@ const authedGarmentGarmentIdRoute = authedGarmentGarmentIdRouteImport.update({
   path: '/garment/$garmentId',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedCatalogGarmentGarmentIdRoute =
-  authedCatalogGarmentGarmentIdRouteImport.update({
-    id: '/catalog/garment/$garmentId',
-    path: '/catalog/garment/$garmentId',
-    getParentRoute: () => authedRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -186,15 +172,13 @@ export interface FileRoutesByFullPath {
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
-  '/catalog': typeof authedCatalogIndexRoute
+  '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/dashboard/': typeof authedDashboardIndexRoute
   '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
   '/profile': typeof authedProfileIndexRoute
   '/settings': typeof authedSettingsIndexRoute
   '/try-on': typeof authedTryOnIndexRoute
-  '/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -212,15 +196,13 @@ export interface FileRoutesByTo {
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
-  '/catalog': typeof authedCatalogIndexRoute
+  '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/dashboard': typeof authedDashboardIndexRoute
   '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
   '/profile': typeof authedProfileIndexRoute
   '/settings': typeof authedSettingsIndexRoute
   '/try-on': typeof authedTryOnIndexRoute
-  '/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -241,15 +223,13 @@ export interface FileRoutesById {
   '/(authed)/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
-  '/(authed)/catalog/': typeof authedCatalogIndexRoute
+  '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/(authed)/dashboard/': typeof authedDashboardIndexRoute
   '/(authed)/garment/': typeof authedGarmentIndexRoute
   '/(authed)/lookbooks/': typeof authedLookbooksIndexRoute
   '/(authed)/profile/': typeof authedProfileIndexRoute
   '/(authed)/settings/': typeof authedSettingsIndexRoute
   '/(authed)/try-on/': typeof authedTryOnIndexRoute
-  '/(authed)/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -270,15 +250,13 @@ export interface FileRouteTypes {
     | '/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
-    | '/shared/lookbook/$lookbookId'
-    | '/catalog'
+    | '/shared/lookbook/$slug'
     | '/dashboard/'
     | '/garment'
     | '/lookbooks'
     | '/profile'
     | '/settings'
     | '/try-on'
-    | '/catalog/garment/$garmentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,15 +274,13 @@ export interface FileRouteTypes {
     | '/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
-    | '/shared/lookbook/$lookbookId'
-    | '/catalog'
+    | '/shared/lookbook/$slug'
     | '/dashboard'
     | '/garment'
     | '/lookbooks'
     | '/profile'
     | '/settings'
     | '/try-on'
-    | '/catalog/garment/$garmentId'
   id:
     | '__root__'
     | '/'
@@ -324,15 +300,13 @@ export interface FileRouteTypes {
     | '/(authed)/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
-    | '/shared/lookbook/$lookbookId'
-    | '/(authed)/catalog/'
+    | '/shared/lookbook/$slug'
     | '/(authed)/dashboard/'
     | '/(authed)/garment/'
     | '/(authed)/lookbooks/'
     | '/(authed)/profile/'
     | '/(authed)/settings/'
     | '/(authed)/try-on/'
-    | '/(authed)/catalog/garment/$garmentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -345,7 +319,7 @@ export interface RootRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
-  SharedLookbookLookbookIdRoute: typeof SharedLookbookLookbookIdRoute
+  SharedLookbookSlugRoute: typeof SharedLookbookSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -455,18 +429,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedDashboardIndexRouteImport
       parentRoute: typeof authedDashboardRouteRoute
     }
-    '/(authed)/catalog/': {
-      id: '/(authed)/catalog/'
-      path: '/catalog'
-      fullPath: '/catalog'
-      preLoaderRoute: typeof authedCatalogIndexRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
-    '/shared/lookbook/$lookbookId': {
-      id: '/shared/lookbook/$lookbookId'
-      path: '/shared/lookbook/$lookbookId'
-      fullPath: '/shared/lookbook/$lookbookId'
-      preLoaderRoute: typeof SharedLookbookLookbookIdRouteImport
+    '/shared/lookbook/$slug': {
+      id: '/shared/lookbook/$slug'
+      path: '/shared/lookbook/$slug'
+      fullPath: '/shared/lookbook/$slug'
+      preLoaderRoute: typeof SharedLookbookSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
@@ -525,13 +492,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedGarmentGarmentIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/catalog/garment/$garmentId': {
-      id: '/(authed)/catalog/garment/$garmentId'
-      path: '/catalog/garment/$garmentId'
-      fullPath: '/catalog/garment/$garmentId'
-      preLoaderRoute: typeof authedCatalogGarmentGarmentIdRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
   }
 }
 
@@ -555,13 +515,11 @@ interface authedRouteRouteChildren {
   authedProfileProfileIdRoute: typeof authedProfileProfileIdRoute
   authedProfileNewRoute: typeof authedProfileNewRoute
   authedTryOnTryOnIdRoute: typeof authedTryOnTryOnIdRoute
-  authedCatalogIndexRoute: typeof authedCatalogIndexRoute
   authedGarmentIndexRoute: typeof authedGarmentIndexRoute
   authedLookbooksIndexRoute: typeof authedLookbooksIndexRoute
   authedProfileIndexRoute: typeof authedProfileIndexRoute
   authedSettingsIndexRoute: typeof authedSettingsIndexRoute
   authedTryOnIndexRoute: typeof authedTryOnIndexRoute
-  authedCatalogGarmentGarmentIdRoute: typeof authedCatalogGarmentGarmentIdRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
@@ -573,13 +531,11 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedProfileProfileIdRoute: authedProfileProfileIdRoute,
   authedProfileNewRoute: authedProfileNewRoute,
   authedTryOnTryOnIdRoute: authedTryOnTryOnIdRoute,
-  authedCatalogIndexRoute: authedCatalogIndexRoute,
   authedGarmentIndexRoute: authedGarmentIndexRoute,
   authedLookbooksIndexRoute: authedLookbooksIndexRoute,
   authedProfileIndexRoute: authedProfileIndexRoute,
   authedSettingsIndexRoute: authedSettingsIndexRoute,
   authedTryOnIndexRoute: authedTryOnIndexRoute,
-  authedCatalogGarmentGarmentIdRoute: authedCatalogGarmentGarmentIdRoute,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
@@ -596,7 +552,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
-  SharedLookbookLookbookIdRoute: SharedLookbookLookbookIdRoute,
+  SharedLookbookSlugRoute: SharedLookbookSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

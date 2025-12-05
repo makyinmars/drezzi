@@ -2,7 +2,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Resource } from "sst";
 
 import { prisma } from "@/lib/prisma";
-import { getPresignedUrl, s3 } from "@/lib/s3";
+import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 import type { TryOnStatus } from "@/validators/try-on";
 
@@ -37,7 +37,7 @@ export async function updateTryOnResult(
 }
 
 export async function getTryOnResultUrl(resultKey: string) {
-  return await getPresignedUrl(resultKey);
+  return await getCachedPresignedUrl(resultKey);
 }
 
 export async function deleteTryOnAssets(resultKey: string | null) {

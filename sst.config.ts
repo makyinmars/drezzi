@@ -83,10 +83,13 @@ export default $config({
 
     queue.subscribe(tryOnWorker.arn);
 
-    new sst.aws.TanStackStart("MyWeb", {
+    const publicUrl = process.env.PUBLIC_URL ?? "http://localhost:3000";
+
+    const web = new sst.aws.TanStackStart("MyWeb", {
       link: [bucket, queue],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
+        REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
         VITE_PUBLIC_URL: process.env.VITE_PUBLIC_URL as string,
         PUBLIC_URL: process.env.PUBLIC_URL as string,
         BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
@@ -96,5 +99,11 @@ export default $config({
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
       },
     });
+
+    return {
+      app: $app.stage === "production" ? web.url : publicUrl,
+      bucket: bucket.name,
+      queue: queue.url,
+    };
   },
 });

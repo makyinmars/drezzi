@@ -6,9 +6,9 @@
 |------|------|--------|
 | 1 | Prisma schema (User relations + 6 models) | ✅ Complete |
 | 2 | Infrastructure (SST bucket, queue, worker) | ✅ Complete |
-| 3 | Validators & tRPC routers | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
-| 4 | Services (S3, queue, style-tip, lookbook) | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
-| 5 | Components & Routes | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
+| 3 | Validators & tRPC routers | ✅ Complete (BodyProfile ✅, Garment ✅, TryOn ✅, Lookbook ✅, StyleTip ✅) |
+| 4 | Services (S3, queue, style-tip, lookbook) | ✅ Complete (BodyProfile ✅, Garment ✅, TryOn ✅, Lookbook ✅, StyleTip ✅) |
+| 5 | Components & Routes | ✅ Complete (BodyProfile ✅, Garment ✅, TryOn ✅, Lookbook ✅, StyleTip ✅) |
 | 6 | Remove Todo references | ⬜ Pending |
 
 ### Step 2 Completed Items
@@ -44,8 +44,20 @@
 - [x] `src/screens/garment/*` - index, new, garment-id ✅
 - [x] `src/routes/(authed)/garment/*` - All 3 routes ✅
 - [x] `src/config/navigation.tsx` - "My Wardrobe" nav item with sub-items ✅
-- [ ] `src/services/lookbook.ts` - share slug, reorder helpers
-- [ ] `src/services/style-tip.ts` - AI style tip generation
+- [x] `src/services/lookbook.ts` - share slug, S3 cover upload, reorder helpers ✅
+- [x] `src/validators/lookbook.ts` - All validators complete ✅
+- [x] `src/trpc/routers/lookbook.ts` - All 14 endpoints (list, byId, bySlug, create, update, delete, addItem, removeItem, updateItemNote, reorderItems, generateShareLink, togglePublic, getCoverUploadUrl, availableTryOns) ✅
+- [x] `src/components/lookbook/*` - form, card, delete, item, share-dialog, add-tryon-dialog ✅
+- [x] `src/screens/lookbooks/*` - index, lookbook-id ✅
+- [x] `src/screens/share/share-slug.tsx` - public lookbook view ✅
+- [x] `src/routes/(authed)/lookbooks/*` - All 2 routes ✅
+- [x] `src/routes/shared/lookbook/$slug.tsx` - Public share route ✅
+- [x] `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` - Drag-and-drop dependencies ✅
+- [x] `src/services/style-tip.ts` - AI style tip generation with Gemini 2.5 Flash ✅
+- [x] `src/validators/style-tip.ts` - All validators complete ✅
+- [x] `src/trpc/routers/style-tip.ts` - All 5 endpoints (byTryOnId, create, update, delete, regenerate) ✅
+- [x] `src/components/style-tip/*` - card, form, delete ✅
+- [x] `src/workers/try-on.ts` - Auto-generates style tips after try-on completion ✅
 
 ---
 
@@ -538,31 +550,32 @@ model StyleTip {
 1. ✅ **Prisma Schema** - All 6 models complete (BodyProfile, Garment, TryOn, Lookbook, LookbookItem, StyleTip) + User relations.
 2. ✅ **Infrastructure** - Add infrastructure to `sst.config.ts` (bucket, queue, worker) and implement `src/workers/try-on.ts`.
    - Completed: `TryOnQueue`, `TryOnWorker` with Gemini 3 Pro, `src/lib/sqs.ts`, env vars
-3. 🟡 **Validators & Routers** - Build validators and tRPC routers; wire into `src/trpc/router.ts`.
-   - ✅ Complete: BodyProfile (validators, router, registered)
-   - ⬜ Remaining: Garment, TryOn, Lookbook, LookbookItem, StyleTip
-4. 🟡 **Services** - Add services for S3 uploads, queue enqueue, style-tip generation, and lookbook slug/order helpers.
-   - ✅ Done: `src/lib/sqs.ts` (enqueueTryOnJob), `src/services/profile.ts` (complete)
-   - ⬜ Remaining: `try-on.ts` (updateTryOnResult), `garment.ts`, `lookbook.ts`, `style-tip.ts`
-5. 🟡 **Components & Routes** - Implement components/routes in the same order, reusing Todo patterns.
-   - ✅ Complete: BodyProfile (4 components, 3 screens, 3 routes)
-   - ⬜ Remaining: Garment, TryOn, Lookbook, StyleTip
+3. ✅ **Validators & Routers** - Build validators and tRPC routers; wire into `src/trpc/router.ts`.
+   - ✅ Complete: BodyProfile, Garment, TryOn, Lookbook, StyleTip
+4. ✅ **Services** - Add services for S3 uploads, queue enqueue, style-tip generation, and lookbook slug/order helpers.
+   - ✅ Complete: `src/lib/sqs.ts`, `src/services/profile.ts`, `src/services/garment.ts`, `src/services/try-on.ts`, `src/services/lookbook.ts`, `src/services/style-tip.ts`
+5. ✅ **Components & Routes** - Implement components/routes in the same order, reusing Todo patterns.
+   - ✅ Complete: BodyProfile (4 components, 3 screens, 3 routes), Garment (4 components, 3 screens, 3 routes), TryOn (4 components, 2 screens, 2 routes), Lookbook (6 components, 3 screens, 3 routes), StyleTip (3 components, embedded in TryOn detail)
 6. ⬜ **Cleanup** - Remove Todo UI/route references and verify with `bun typecheck`.
 
 ## Next Steps
 
-1. **Garment** - Implement validators, tRPC router, services, components, screens, and routes
-   - This is the next foundational model that TryOn depends on (garments to try on)
+1. ~~**Garment**~~ ✅ Complete
+   - Validators, tRPC router, services, components, screens, and routes
 
-2. **TryOn** - Implement validators, tRPC router, services (including `updateTryOnResult()`), components, screens, and routes
-   - Depends on BodyProfile ✅ and Garment
-   - Worker callback service needed for `src/workers/try-on.ts`
+2. ~~**TryOn**~~ ✅ Complete
+   - Validators, tRPC router, services (including `updateTryOnResult()`), components, screens, and routes
+   - Worker callback service for `src/workers/try-on.ts`
 
-3. **Lookbook + LookbookItem** - Implement validators, tRPC router, services, components, screens, and routes
-   - Depends on TryOn (saves try-on results to lookbooks)
+3. ~~**Lookbook + LookbookItem**~~ ✅ Complete
+   - Validators, tRPC router, services, components, screens, and routes
+   - Drag-and-drop reordering with @dnd-kit
+   - Public share functionality via unique slugs
 
-4. **StyleTip** - Implement validators, tRPC router, services, components
-   - Depends on TryOn (generates tips for completed try-ons)
-   - Displayed within try-on detail screens
+4. ~~**StyleTip**~~ ✅ Complete
+   - Validators, tRPC router, services (Gemini 2.5 Flash), components (card, form, delete)
+   - Auto-generates tips in Lambda worker after try-on completion
+   - Full CRUD operations (view, edit, delete, add, regenerate)
+   - Embedded in TryOn detail screen
 
 5. **Cleanup** - Remove Todo references and verify with `bun typecheck`

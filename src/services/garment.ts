@@ -2,7 +2,7 @@ import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Resource } from "sst";
 
-import { getPresignedUrl, s3 } from "@/lib/s3";
+import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function getGarmentUploadUrl(userId: string, contentType: string) {
   const extension = contentType.split("/").at(1) ?? "jpg";
@@ -30,5 +30,5 @@ export async function deleteGarmentAssets(imageKey: string) {
 }
 
 export async function getGarmentImageUrl(imageKey: string) {
-  return await getPresignedUrl(imageKey);
+  return await getCachedPresignedUrl(imageKey);
 }

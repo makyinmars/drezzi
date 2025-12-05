@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Resource } from "sst";
 
 import { prisma } from "@/lib/prisma";
-import { getPresignedUrl, s3 } from "@/lib/s3";
+import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function getProfileUploadUrl(userId: string, contentType: string) {
   const extension = contentType.split("/")[1] || "jpg";
@@ -44,5 +44,5 @@ export async function deleteProfileAssets(photoKey: string) {
 }
 
 export async function getProfilePhotoUrl(photoKey: string) {
-  return await getPresignedUrl(photoKey);
+  return await getCachedPresignedUrl(photoKey);
 }

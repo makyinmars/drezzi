@@ -8,6 +8,12 @@ import { experimental_generateImage as generateImage } from "ai";
 import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { Resource } from "sst";
 
+import {
+  generateStyleTips,
+  getTryOnForTipGeneration,
+} from "@/services/style-tip";
+import { updateTryOnResult } from "@/services/try-on";
+
 const s3 = new S3Client({});
 
 type TryOnJobPayload = {
@@ -68,8 +74,34 @@ The result should look like a professional fashion photo.`,
   const processingMs = Date.now() - startTime;
   console.log(`Try-on ${payload.tryOnId} completed in ${processingMs}ms`);
 
-  // 4. TODO: Update database with result
-  // await updateTryOnResult(payload.tryOnId, resultKey, processingMs);
+  // 4. Update database with result
+  await updateTryOnResult(payload.tryOnId, {
+    status: "completed",
+    resultKey,
+    processingMs,
+  });
+
+  // 5. Generate style tips
+  try {
+    const tryOnData = await getTryOnForTipGeneration(payload.tryOnId);
+
+    if (tryOnData) {
+      await generateStyleTips({
+        tryOnId: payload.tryOnId,
+        garmentName: tryOnData.garment.name,
+        garmentCategory: tryOnData.garment.category,
+        garmentDescription: tryOnData.garment.description,
+        garmentColors: tryOnData.garment.colors,
+        bodyProfileFitPreference: tryOnData.bodyProfile.fitPreference,
+      });
+      console.log(`Style tips generated for try-on ${payload.tryOnId}`);
+    }
+  } catch (error) {
+    console.error(
+      `Failed to generate style tips for ${payload.tryOnId}:`,
+      error
+    );
+  }
 }
 
 async function fetchImageAsBase64(url: string): Promise<string> {

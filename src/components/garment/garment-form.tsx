@@ -50,8 +50,27 @@ type GarmentFormProps = {
 const GarmentForm = ({ garment, children }: GarmentFormProps) => {
   const { t } = useLingui();
   const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+  const getUploadUrlMutation = useMutation(
+    trpc.garment.getUploadUrl.mutationOptions({})
+  );
+
+  const uploadToS3 = async (file: File) => {
+    const { url, key, imageUrl } = await getUploadUrlMutation.mutateAsync({
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    const response = await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    if (!response.ok) throw new Error("Failed to upload image");
+    return { imageUrl, imageKey: key };
+  };
 
   const form = useForm<GarmentCreateAndUpdate>({
     resolver: zodResolver(apiGarmentCreateAndUpdate),
@@ -213,13 +232,21 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
     })
   );
 
-  const handleImageUpload = (imageUrl: string, imageKey: string) => {
-    form.setValue("imageUrl", imageUrl);
-    form.setValue("imageKey", imageKey);
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
   };
 
-  const onSubmit = (data: GarmentCreateAndUpdate) => {
-    if (!(data.imageUrl && data.imageKey)) {
+  const onSubmit = async (data: GarmentCreateAndUpdate) => {
+    let imageUrl = garment?.imageUrl;
+    let imageKey = garment?.imageKey;
+
+    if (selectedFile) {
+      const uploaded = await uploadToS3(selectedFile);
+      imageUrl = uploaded.imageUrl;
+      imageKey = uploaded.imageKey;
+    }
+
+    if (!(imageUrl && imageKey)) {
       toast.error(t`Please upload an image first`);
       return;
     }
@@ -235,8 +262,8 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
           brand: data.brand,
           price: data.price,
           currency: data.currency,
-          imageUrl: data.imageUrl,
-          imageKey: data.imageKey,
+          imageUrl,
+          imageKey,
           maskUrl: data.maskUrl,
           retailUrl: data.retailUrl,
           colors: data.colors,
@@ -261,8 +288,8 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
           brand: data.brand ?? undefined,
           price: data.price ?? undefined,
           currency: data.currency,
-          imageUrl: data.imageUrl,
-          imageKey: data.imageKey,
+          imageUrl,
+          imageKey,
           maskUrl: data.maskUrl ?? undefined,
           retailUrl: data.retailUrl ?? undefined,
           colors: data.colors,
@@ -300,7 +327,7 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <GarmentImageUpload
               currentImageUrl={garment?.imageUrl}
-              onUploadComplete={handleImageUpload}
+              onFileSelect={handleFileSelect}
             />
 
             <FormField
@@ -494,7 +521,8 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
             <Button
               className="w-full"
               disabled={
-                garment ? updateMutation.isPending : createMutation.isPending
+                getUploadUrlMutation.isPending ||
+                (garment ? updateMutation.isPending : createMutation.isPending)
               }
               type="submit"
             >

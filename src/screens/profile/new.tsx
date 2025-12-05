@@ -3,6 +3,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Camera, Info } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -45,6 +46,25 @@ const ProfileNewScreen = () => {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const getUploadUrlMutation = useMutation(
+    trpc.profile.getUploadUrl.mutationOptions({})
+  );
+
+  const uploadToS3 = async (file: File) => {
+    const { url, key, photoUrl } = await getUploadUrlMutation.mutateAsync({
+      contentType: file.type,
+      contentLength: file.size,
+    });
+    const response = await fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    if (!response.ok) throw new Error("Failed to upload photo");
+    return { photoUrl, photoKey: key };
+  };
 
   const form = useForm<BodyProfileCreateAndUpdate>({
     resolver: zodResolver(apiBodyProfileCreateAndUpdate),
@@ -74,22 +94,23 @@ const ProfileNewScreen = () => {
     })
   );
 
-  const handlePhotoUpload = (photoUrl: string, photoKey: string) => {
-    form.setValue("photoUrl", photoUrl);
-    form.setValue("photoKey", photoKey);
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
   };
 
-  const onSubmit = (data: BodyProfileCreateAndUpdate) => {
-    if (!(data.photoUrl && data.photoKey)) {
+  const onSubmit = async (data: BodyProfileCreateAndUpdate) => {
+    if (!selectedFile) {
       toast.error(t`Please upload a photo first`);
       return;
     }
 
+    const uploaded = await uploadToS3(selectedFile);
+
     toast.promise(
       createMutation.mutateAsync({
         name: data.name,
-        photoUrl: data.photoUrl,
-        photoKey: data.photoKey,
+        photoUrl: uploaded.photoUrl,
+        photoKey: uploaded.photoKey,
         height: data.height ?? undefined,
         waist: data.waist ?? undefined,
         hip: data.hip ?? undefined,
@@ -137,7 +158,7 @@ const ProfileNewScreen = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <PhotoUpload onUploadComplete={handlePhotoUpload} />
+                  <PhotoUpload onFileSelect={handleFileSelect} />
                 </CardContent>
               </Card>
 
@@ -381,7 +402,9 @@ const ProfileNewScreen = () => {
 
               <Button
                 className="w-full"
-                disabled={createMutation.isPending}
+                disabled={
+                  getUploadUrlMutation.isPending || createMutation.isPending
+                }
                 size="lg"
                 type="submit"
               >
