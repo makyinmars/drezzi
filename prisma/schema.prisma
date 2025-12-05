@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -24,16 +23,17 @@ enum TodoStatus {
 }
 
 model User {
-  id            String    @id
+  id            String        @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false) @map("email_verified")
-  role          UserRole  @default(GUEST)
+  email         String        @unique
+  emailVerified Boolean       @default(false) @map("email_verified")
+  role          UserRole      @default(GUEST)
   image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @map("updated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @default(now()) @map("updated_at")
   sessions      Session[]
   accounts      Account[]
+  bodyProfiles  BodyProfile[]
 
   @@map("user")
 }
@@ -92,4 +92,26 @@ model Todo {
   updatedAt   DateTime   @default(now()) @map("updated_at")
 
   @@map("todo")
+}
+
+model BodyProfile {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  name          String   @default("Default")
+  photoUrl      String   @map("photo_url")
+  photoKey      String   @map("photo_key")
+  height        Float?
+  waist         Float?
+  hip           Float?
+  inseam        Float?
+  chest         Float?
+  fitPreference String   @default("regular") @map("fit_preference")
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("body_profile")
 }

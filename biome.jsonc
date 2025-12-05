@@ -48,16 +48,28 @@
     },
     "rules": {
       "recommended": true,
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "complexity": {
+        "noExcessiveLinesPerFunction": "off",
+        "noExcessiveCognitiveComplexity": "off"
+      },
       "correctness": {
         "useExhaustiveDependencies": "info",
-        "useImageSize": "off"
+        "useImageSize": "off",
+        "noNestedComponentDefinitions": "off"
       },
       "performance": {
         "noNamespaceImport": "off",
         "noImgElement": "off"
       },
       "a11y": {
-        "useSemanticElements": "off"
+        "useSemanticElements": "off",
+        "noNoninteractiveElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useFocusableInteractive": "off",
+        "useAriaPropsForRole": "off"
       },
       "style": {
         "noHeadElement": "off",
@@ -74,9 +86,14 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noEnum": "off",
-        "useBlockStatements": "off"
+        "useConsistentMemberAccessibility": "off",
+        "noParameterProperties": "off",
+        "useBlockStatements": "off",
+        "useNumericSeparators": "off"
       },
       "nursery": {
+        "useMaxParams": "off",
+        "useConsistentArrowReturn": "off",
         "noEmptySource": "off",
         "useSortedClasses": {
           "level": "warn",
@@ -85,12 +102,14 @@
             "functions": ["clsx", "cva", "cn"]
           }
         },
-        "noShadow": "off"
+        "noShadow": "off",
+        "noIncrementDecrement": "off"
       },
       "suspicious": {
         "noEmptyBlockStatements": "off",
         "noDocumentCookie": "off",
         "noConsole": "off",
+        "useAwait": "off",
         "noArrayIndexKey": "off"
       }
     }

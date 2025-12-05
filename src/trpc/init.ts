@@ -10,9 +10,14 @@ export const createTRPCContext = async (opts: {
   headers: Headers;
   req: Request;
 }) => {
-  const session = await auth.api.getSession({
+  const authResult = await auth.api.getSession({
     headers: opts.headers,
   });
+
+  const session = authResult
+    ? { ...authResult.session, user: authResult.user }
+    : null;
+
   return {
     prisma,
     i18n: opts?.i18n,
@@ -38,12 +43,17 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session) {
+  if (!ctx.session?.user) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "Authentication required",
       cause: "No session",
     });
   }
-  return next();
+  return next({
+    ctx: {
+      ...ctx,
+      session: ctx.session,
+    },
+  });
 });

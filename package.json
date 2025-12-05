@@ -29,6 +29,8 @@
     "lingui:compile": "lingui compile"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.943.0",
+    "@aws-sdk/s3-request-presigner": "^3.943.0",
     "@hookform/resolvers": "^5.1.1",
     "@lingui/core": "^5.3.2",
     "@lingui/react": "^5.3.2",

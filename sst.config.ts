@@ -19,8 +19,38 @@ export default $config({
     };
   },
   async run() {
+    const bucket = new sst.aws.Bucket("MediaBucket", {
+      versioning: true,
+      cors: {
+        allowOrigins: ["http://localhost:3000", "https://localhost:3000"],
+        allowMethods: ["GET", "PUT", "POST", "DELETE"],
+        allowHeaders: ["*"],
+        exposeHeaders: ["ETag"],
+      },
+      transform: {
+        bucket: {
+          lifecycleRules: [
+            {
+              id: "archive-old-files",
+              enabled: true,
+              transitions: [
+                {
+                  days: 30,
+                  storageClass: "STANDARD_IA",
+                },
+                {
+                  days: 90,
+                  storageClass: "GLACIER",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
 
     new sst.aws.TanStackStart("MyWeb", {
+      link: [bucket],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
         VITE_PUBLIC_URL: process.env.VITE_PUBLIC_URL as string,

@@ -29,6 +29,7 @@ import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as authedTryOnTryOnIdRouteImport } from './routes/(authed)/try-on/$tryOnId'
 import { Route as authedProfileNewRouteImport } from './routes/(authed)/profile/new'
+import { Route as authedProfileProfileIdRouteImport } from './routes/(authed)/profile/$profileId'
 import { Route as authedLookbooksLookbookIdRouteImport } from './routes/(authed)/lookbooks/$lookbookId'
 import { Route as authedCatalogGarmentGarmentIdRouteImport } from './routes/(authed)/catalog/garment/$garmentId'
 
@@ -132,6 +133,11 @@ const authedProfileNewRoute = authedProfileNewRouteImport.update({
   path: '/profile/new',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedProfileProfileIdRoute = authedProfileProfileIdRouteImport.update({
+  id: '/profile/$profileId',
+  path: '/profile/$profileId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 const authedLookbooksLookbookIdRoute =
   authedLookbooksLookbookIdRouteImport.update({
     id: '/lookbooks/$lookbookId',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
   '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/profile/$profileId': typeof authedProfileProfileIdRoute
   '/profile/new': typeof authedProfileNewRoute
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
   '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/profile/$profileId': typeof authedProfileProfileIdRoute
   '/profile/new': typeof authedProfileNewRoute
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth/': typeof AuthIndexRoute
   '/(authed)/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/(authed)/profile/$profileId': typeof authedProfileProfileIdRoute
   '/(authed)/profile/new': typeof authedProfileNewRoute
   '/(authed)/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/todo/$todoId'
     | '/auth'
     | '/lookbooks/$lookbookId'
+    | '/profile/$profileId'
     | '/profile/new'
     | '/try-on/$tryOnId'
     | '/api/auth/$'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/todo/$todoId'
     | '/auth'
     | '/lookbooks/$lookbookId'
+    | '/profile/$profileId'
     | '/profile/new'
     | '/try-on/$tryOnId'
     | '/api/auth/$'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/todo/$todoId'
     | '/auth/'
     | '/(authed)/lookbooks/$lookbookId'
+    | '/(authed)/profile/$profileId'
     | '/(authed)/profile/new'
     | '/(authed)/try-on/$tryOnId'
     | '/api/auth/$'
@@ -442,6 +454,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedProfileNewRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/profile/$profileId': {
+      id: '/(authed)/profile/$profileId'
+      path: '/profile/$profileId'
+      fullPath: '/profile/$profileId'
+      preLoaderRoute: typeof authedProfileProfileIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/lookbooks/$lookbookId': {
       id: '/(authed)/lookbooks/$lookbookId'
       path: '/lookbooks/$lookbookId'
@@ -474,6 +493,7 @@ interface authedRouteRouteChildren {
   authedDashboardRouteRoute: typeof authedDashboardRouteRouteWithChildren
   authedSupportRoute: typeof authedSupportRoute
   authedLookbooksLookbookIdRoute: typeof authedLookbooksLookbookIdRoute
+  authedProfileProfileIdRoute: typeof authedProfileProfileIdRoute
   authedProfileNewRoute: typeof authedProfileNewRoute
   authedTryOnTryOnIdRoute: typeof authedTryOnTryOnIdRoute
   authedCatalogIndexRoute: typeof authedCatalogIndexRoute
@@ -488,6 +508,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedDashboardRouteRoute: authedDashboardRouteRouteWithChildren,
   authedSupportRoute: authedSupportRoute,
   authedLookbooksLookbookIdRoute: authedLookbooksLookbookIdRoute,
+  authedProfileProfileIdRoute: authedProfileProfileIdRoute,
   authedProfileNewRoute: authedProfileNewRoute,
   authedTryOnTryOnIdRoute: authedTryOnTryOnIdRoute,
   authedCatalogIndexRoute: authedCatalogIndexRoute,

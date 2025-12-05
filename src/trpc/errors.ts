@@ -48,4 +48,45 @@ export const createErrors = (i18n: I18n | undefined) => ({
       "INTERNAL_SERVER_ERROR",
       "Failed to create todo"
     ),
+
+  profileNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Profile not found"),
+
+  profileForbidden: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "You don't have permission to access this profile"
+    ),
+
+  profileCreateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to create profile"
+    ),
+
+  profileUpdateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to update profile"
+    ),
+
+  profileDeleteFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to delete profile"
+    ),
+
+  profileUploadFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to upload profile photo"
+    ),
+
+  invalidProfileImage: () =>
+    createTranslatedError(i18n, "BAD_REQUEST", "Invalid profile image"),
 });
