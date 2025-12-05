@@ -1,18 +1,10 @@
 import { Trans } from "@lingui/react/macro";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -41,8 +33,6 @@ export function NavUser({
   const handleLogout = () => {
     logout.mutate();
   };
-
-  console.log("USER AVATAR", user.avatar);
 
   return (
     <SidebarMenu>
@@ -86,28 +76,6 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                <Trans>Upgrade to Pro</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                <Trans>Account</Trans>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                <Trans>Billing</Trans>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                <Trans>Notifications</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={logout.isPending}

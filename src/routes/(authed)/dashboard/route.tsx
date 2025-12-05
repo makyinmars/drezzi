@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(admin)/dashboard")({
+export const Route = createFileRoute("/(authed)/dashboard")({
   beforeLoad: async ({ context }) => {
     const auth = await context.queryClient.ensureQueryData(
       context.trpc.auth.getSession.queryOptions()

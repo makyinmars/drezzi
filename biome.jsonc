@@ -73,7 +73,8 @@
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
         "noUselessElse": "error",
-        "noEnum": "off"
+        "noEnum": "off",
+        "useBlockStatements": "off"
       },
       "nursery": {
         "noEmptySource": "off",
@@ -89,7 +90,8 @@
       "suspicious": {
         "noEmptyBlockStatements": "off",
         "noDocumentCookie": "off",
-        "noConsole": "off"
+        "noConsole": "off",
+        "noArrayIndexKey": "off"
       }
     }
   },

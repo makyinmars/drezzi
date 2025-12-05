@@ -115,128 +115,130 @@ function Home() {
 
   return (
     <ContentLayout>
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-2xl">
-          <Trans>My Todos</Trans>
-        </h2>
-        <div className="flex items-center gap-3">
-          <TodoForm>
-            <Button className="gap-2" variant="default">
-              <Plus className="h-4 w-4" />
-              <Trans>Add Todo</Trans>
-            </Button>
-          </TodoForm>
+      <div className="flex flex-col gap-4 px-4 py-24">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-2xl">
+            <Trans>My Todos</Trans>
+          </h2>
+          <div className="flex items-center gap-3">
+            <TodoForm>
+              <Button className="gap-2" variant="default">
+                <Plus className="h-4 w-4" />
+                <Trans>Add Todo</Trans>
+              </Button>
+            </TodoForm>
+          </div>
         </div>
-      </div>
 
-      {todos.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <p className="mb-4 text-lg text-muted-foreground">
-            <Trans>No todos yet</Trans>
-          </p>
-          <TodoForm>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              <Trans>Create your first todo</Trans>
-            </Button>
-          </TodoForm>
-        </div>
-      ) : (
-        <div className="rounded-lg border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[200px]">
-                  <Trans>Task</Trans>
-                </TableHead>
-                <TableHead>
-                  <Trans>Description</Trans>
-                </TableHead>
-                <TableHead className="w-[120px]">
-                  <Trans>Status</Trans>
-                </TableHead>
-                <TableHead className="w-[100px]">
-                  <Trans>Active</Trans>
-                </TableHead>
-                <TableHead className="w-[150px] text-right">
-                  <Trans>Actions</Trans>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {todos.map((todo) => (
-                <TableRow key={todo.id}>
-                  <TableCell className="font-medium">
-                    <Link
-                      className="hover:text-primary hover:underline"
-                      params={{ todoId: todo.id }}
-                      to="/todo/$todoId"
-                    >
-                      {todo.text}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-xs truncate text-muted-foreground text-sm">
-                      {todo.description || "-"}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-md px-2 py-1 font-medium text-xs ring-1 ring-gray-500/10 ring-inset ${getStatusColor(
-                        todo.status
-                      )}`}
-                    >
-                      {getStatusLabel(todo.status)}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-md px-2 py-1 font-medium text-xs ${
-                        todo.active
-                          ? "bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset"
-                          : "bg-gray-50 text-gray-600 ring-1 ring-gray-500/10 ring-inset"
-                      }`}
-                    >
-                      {todo.active ? t`Active` : t`Inactive`}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        asChild
-                        className="gap-2"
-                        size="sm"
-                        variant="ghost"
+        {todos.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="mb-4 text-lg text-muted-foreground">
+              <Trans>No todos yet</Trans>
+            </p>
+            <TodoForm>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                <Trans>Create your first todo</Trans>
+              </Button>
+            </TodoForm>
+          </div>
+        ) : (
+          <div className="rounded-lg border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">
+                    <Trans>Task</Trans>
+                  </TableHead>
+                  <TableHead>
+                    <Trans>Description</Trans>
+                  </TableHead>
+                  <TableHead className="w-[120px]">
+                    <Trans>Status</Trans>
+                  </TableHead>
+                  <TableHead className="w-[100px]">
+                    <Trans>Active</Trans>
+                  </TableHead>
+                  <TableHead className="w-[150px] text-right">
+                    <Trans>Actions</Trans>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {todos.map((todo) => (
+                  <TableRow key={todo.id}>
+                    <TableCell className="font-medium">
+                      <Link
+                        className="hover:text-primary hover:underline"
+                        params={{ todoId: todo.id }}
+                        to="/todo/$todoId"
                       >
-                        <Link params={{ todoId: todo.id }} to="/todo/$todoId">
-                          <Eye className="h-3 w-3" />
-                          <Trans>View</Trans>
-                        </Link>
-                      </Button>
-                      <TodoForm todo={todo}>
-                        <Button className="gap-2" size="sm" variant="outline">
-                          <Pencil className="h-3 w-3" />
-                          <Trans>Edit</Trans>
-                        </Button>
-                      </TodoForm>
-                      <TodoDelete todo={todo}>
+                        {todo.text}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <div className="max-w-xs truncate text-muted-foreground text-sm">
+                        {todo.description || "-"}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center rounded-md px-2 py-1 font-medium text-xs ring-1 ring-gray-500/10 ring-inset ${getStatusColor(
+                          todo.status
+                        )}`}
+                      >
+                        {getStatusLabel(todo.status)}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center rounded-md px-2 py-1 font-medium text-xs ${
+                          todo.active
+                            ? "bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset"
+                            : "bg-gray-50 text-gray-600 ring-1 ring-gray-500/10 ring-inset"
+                        }`}
+                      >
+                        {todo.active ? t`Active` : t`Inactive`}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
                         <Button
+                          asChild
                           className="gap-2"
                           size="sm"
-                          variant="destructive"
+                          variant="ghost"
                         >
-                          <Trash2 className="h-3 w-3" />
-                          <Trans>Delete</Trans>
+                          <Link params={{ todoId: todo.id }} to="/todo/$todoId">
+                            <Eye className="h-3 w-3" />
+                            <Trans>View</Trans>
+                          </Link>
                         </Button>
-                      </TodoDelete>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+                        <TodoForm todo={todo}>
+                          <Button className="gap-2" size="sm" variant="outline">
+                            <Pencil className="h-3 w-3" />
+                            <Trans>Edit</Trans>
+                          </Button>
+                        </TodoForm>
+                        <TodoDelete todo={todo}>
+                          <Button
+                            className="gap-2"
+                            size="sm"
+                            variant="destructive"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <Trans>Delete</Trans>
+                          </Button>
+                        </TodoDelete>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
     </ContentLayout>
   );
 }

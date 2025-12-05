@@ -9,15 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as TodoTodoIdRouteImport } from './routes/todo/$todoId'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
-import { Route as adminDashboardRouteRouteImport } from './routes/(admin)/dashboard/route'
-import { Route as adminDashboardIndexRouteImport } from './routes/(admin)/dashboard/index'
+import { Route as authedSupportRouteImport } from './routes/(authed)/support'
+import { Route as authedDashboardRouteRouteImport } from './routes/(authed)/dashboard/route'
+import { Route as authedTryOnIndexRouteImport } from './routes/(authed)/try-on/index'
+import { Route as authedSettingsIndexRouteImport } from './routes/(authed)/settings/index'
+import { Route as authedProfileIndexRouteImport } from './routes/(authed)/profile/index'
+import { Route as authedLookbooksIndexRouteImport } from './routes/(authed)/lookbooks/index'
+import { Route as authedDashboardIndexRouteImport } from './routes/(authed)/dashboard/index'
+import { Route as authedCatalogIndexRouteImport } from './routes/(authed)/catalog/index'
+import { Route as SharedLookbookLookbookIdRouteImport } from './routes/shared/lookbook/$lookbookId'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authedTryOnTryOnIdRouteImport } from './routes/(authed)/try-on/$tryOnId'
+import { Route as authedProfileNewRouteImport } from './routes/(authed)/profile/new'
+import { Route as authedLookbooksLookbookIdRouteImport } from './routes/(authed)/lookbooks/$lookbookId'
+import { Route as authedCatalogGarmentGarmentIdRouteImport } from './routes/(authed)/catalog/garment/$garmentId'
 
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authedRouteRoute = authedRouteRouteImport.update({
+  id: '/(authed)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -38,16 +66,52 @@ const AuthSignupRoute = AuthSignupRouteImport.update({
   path: '/auth/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const adminDashboardRouteRoute = adminDashboardRouteRouteImport.update({
-  id: '/(admin)/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
+const authedSupportRoute = authedSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => authedRouteRoute,
 } as any)
-const adminDashboardIndexRoute = adminDashboardIndexRouteImport.update({
+const authedDashboardRouteRoute = authedDashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedTryOnIndexRoute = authedTryOnIndexRouteImport.update({
+  id: '/try-on/',
+  path: '/try-on/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedSettingsIndexRoute = authedSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedProfileIndexRoute = authedProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedLookbooksIndexRoute = authedLookbooksIndexRouteImport.update({
+  id: '/lookbooks/',
+  path: '/lookbooks/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedDashboardIndexRoute = authedDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => adminDashboardRouteRoute,
+  getParentRoute: () => authedDashboardRouteRoute,
 } as any)
+const authedCatalogIndexRoute = authedCatalogIndexRouteImport.update({
+  id: '/catalog/',
+  path: '/catalog/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const SharedLookbookLookbookIdRoute =
+  SharedLookbookLookbookIdRouteImport.update({
+    id: '/shared/lookbook/$lookbookId',
+    path: '/shared/lookbook/$lookbookId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -58,81 +122,207 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authedTryOnTryOnIdRoute = authedTryOnTryOnIdRouteImport.update({
+  id: '/try-on/$tryOnId',
+  path: '/try-on/$tryOnId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedProfileNewRoute = authedProfileNewRouteImport.update({
+  id: '/profile/new',
+  path: '/profile/new',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedLookbooksLookbookIdRoute =
+  authedLookbooksLookbookIdRouteImport.update({
+    id: '/lookbooks/$lookbookId',
+    path: '/lookbooks/$lookbookId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
+const authedCatalogGarmentGarmentIdRoute =
+  authedCatalogGarmentGarmentIdRouteImport.update({
+    id: '/catalog/garment/$garmentId',
+    path: '/catalog/garment/$garmentId',
+    getParentRoute: () => authedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof adminDashboardRouteRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/dashboard': typeof authedDashboardRouteRouteWithChildren
+  '/support': typeof authedSupportRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
+  '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/profile/new': typeof authedProfileNewRoute
+  '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/dashboard/': typeof adminDashboardIndexRoute
+  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
+  '/catalog': typeof authedCatalogIndexRoute
+  '/dashboard/': typeof authedDashboardIndexRoute
+  '/lookbooks': typeof authedLookbooksIndexRoute
+  '/profile': typeof authedProfileIndexRoute
+  '/settings': typeof authedSettingsIndexRoute
+  '/try-on': typeof authedTryOnIndexRoute
+  '/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/support': typeof authedSupportRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
+  '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/profile/new': typeof authedProfileNewRoute
+  '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/dashboard': typeof adminDashboardIndexRoute
+  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
+  '/catalog': typeof authedCatalogIndexRoute
+  '/dashboard': typeof authedDashboardIndexRoute
+  '/lookbooks': typeof authedLookbooksIndexRoute
+  '/profile': typeof authedProfileIndexRoute
+  '/settings': typeof authedSettingsIndexRoute
+  '/try-on': typeof authedTryOnIndexRoute
+  '/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/(admin)/dashboard': typeof adminDashboardRouteRouteWithChildren
+  '/(authed)': typeof authedRouteRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/(authed)/dashboard': typeof authedDashboardRouteRouteWithChildren
+  '/(authed)/support': typeof authedSupportRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth/': typeof AuthIndexRoute
+  '/(authed)/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
+  '/(authed)/profile/new': typeof authedProfileNewRoute
+  '/(authed)/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/(admin)/dashboard/': typeof adminDashboardIndexRoute
+  '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
+  '/(authed)/catalog/': typeof authedCatalogIndexRoute
+  '/(authed)/dashboard/': typeof authedDashboardIndexRoute
+  '/(authed)/lookbooks/': typeof authedLookbooksIndexRoute
+  '/(authed)/profile/': typeof authedProfileIndexRoute
+  '/(authed)/settings/': typeof authedSettingsIndexRoute
+  '/(authed)/try-on/': typeof authedTryOnIndexRoute
+  '/(authed)/catalog/garment/$garmentId': typeof authedCatalogGarmentGarmentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/dashboard'
+    | '/support'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
+    | '/lookbooks/$lookbookId'
+    | '/profile/new'
+    | '/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/shared/lookbook/$lookbookId'
+    | '/catalog'
     | '/dashboard/'
+    | '/lookbooks'
+    | '/profile'
+    | '/settings'
+    | '/try-on'
+    | '/catalog/garment/$garmentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/privacy-policy'
+    | '/terms-of-service'
+    | '/support'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
+    | '/lookbooks/$lookbookId'
+    | '/profile/new'
+    | '/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/shared/lookbook/$lookbookId'
+    | '/catalog'
     | '/dashboard'
+    | '/lookbooks'
+    | '/profile'
+    | '/settings'
+    | '/try-on'
+    | '/catalog/garment/$garmentId'
   id:
     | '__root__'
     | '/'
-    | '/(admin)/dashboard'
+    | '/(authed)'
+    | '/privacy-policy'
+    | '/terms-of-service'
+    | '/(authed)/dashboard'
+    | '/(authed)/support'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth/'
+    | '/(authed)/lookbooks/$lookbookId'
+    | '/(authed)/profile/new'
+    | '/(authed)/try-on/$tryOnId'
     | '/api/auth/$'
     | '/api/trpc/$'
-    | '/(admin)/dashboard/'
+    | '/shared/lookbook/$lookbookId'
+    | '/(authed)/catalog/'
+    | '/(authed)/dashboard/'
+    | '/(authed)/lookbooks/'
+    | '/(authed)/profile/'
+    | '/(authed)/settings/'
+    | '/(authed)/try-on/'
+    | '/(authed)/catalog/garment/$garmentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  adminDashboardRouteRoute: typeof adminDashboardRouteRouteWithChildren
+  authedRouteRoute: typeof authedRouteRouteWithChildren
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
   AuthSignupRoute: typeof AuthSignupRoute
   TodoTodoIdRoute: typeof TodoTodoIdRoute
   AuthIndexRoute: typeof AuthIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
+  SharedLookbookLookbookIdRoute: typeof SharedLookbookLookbookIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(authed)': {
+      id: '/(authed)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -161,19 +351,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(admin)/dashboard': {
-      id: '/(admin)/dashboard'
+    '/(authed)/support': {
+      id: '/(authed)/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof authedSupportRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/dashboard': {
+      id: '/(authed)/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof adminDashboardRouteRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof authedDashboardRouteRouteImport
+      parentRoute: typeof authedRouteRoute
     }
-    '/(admin)/dashboard/': {
-      id: '/(admin)/dashboard/'
+    '/(authed)/try-on/': {
+      id: '/(authed)/try-on/'
+      path: '/try-on'
+      fullPath: '/try-on'
+      preLoaderRoute: typeof authedTryOnIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/settings/': {
+      id: '/(authed)/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof authedSettingsIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/profile/': {
+      id: '/(authed)/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof authedProfileIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/lookbooks/': {
+      id: '/(authed)/lookbooks/'
+      path: '/lookbooks'
+      fullPath: '/lookbooks'
+      preLoaderRoute: typeof authedLookbooksIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/dashboard/': {
+      id: '/(authed)/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
-      preLoaderRoute: typeof adminDashboardIndexRouteImport
-      parentRoute: typeof adminDashboardRouteRoute
+      preLoaderRoute: typeof authedDashboardIndexRouteImport
+      parentRoute: typeof authedDashboardRouteRoute
+    }
+    '/(authed)/catalog/': {
+      id: '/(authed)/catalog/'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof authedCatalogIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/shared/lookbook/$lookbookId': {
+      id: '/shared/lookbook/$lookbookId'
+      path: '/shared/lookbook/$lookbookId'
+      fullPath: '/shared/lookbook/$lookbookId'
+      preLoaderRoute: typeof SharedLookbookLookbookIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
       id: '/api/trpc/$'
@@ -189,28 +428,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authed)/try-on/$tryOnId': {
+      id: '/(authed)/try-on/$tryOnId'
+      path: '/try-on/$tryOnId'
+      fullPath: '/try-on/$tryOnId'
+      preLoaderRoute: typeof authedTryOnTryOnIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/profile/new': {
+      id: '/(authed)/profile/new'
+      path: '/profile/new'
+      fullPath: '/profile/new'
+      preLoaderRoute: typeof authedProfileNewRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/lookbooks/$lookbookId': {
+      id: '/(authed)/lookbooks/$lookbookId'
+      path: '/lookbooks/$lookbookId'
+      fullPath: '/lookbooks/$lookbookId'
+      preLoaderRoute: typeof authedLookbooksLookbookIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/catalog/garment/$garmentId': {
+      id: '/(authed)/catalog/garment/$garmentId'
+      path: '/catalog/garment/$garmentId'
+      fullPath: '/catalog/garment/$garmentId'
+      preLoaderRoute: typeof authedCatalogGarmentGarmentIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
   }
 }
 
-interface adminDashboardRouteRouteChildren {
-  adminDashboardIndexRoute: typeof adminDashboardIndexRoute
+interface authedDashboardRouteRouteChildren {
+  authedDashboardIndexRoute: typeof authedDashboardIndexRoute
 }
 
-const adminDashboardRouteRouteChildren: adminDashboardRouteRouteChildren = {
-  adminDashboardIndexRoute: adminDashboardIndexRoute,
+const authedDashboardRouteRouteChildren: authedDashboardRouteRouteChildren = {
+  authedDashboardIndexRoute: authedDashboardIndexRoute,
 }
 
-const adminDashboardRouteRouteWithChildren =
-  adminDashboardRouteRoute._addFileChildren(adminDashboardRouteRouteChildren)
+const authedDashboardRouteRouteWithChildren =
+  authedDashboardRouteRoute._addFileChildren(authedDashboardRouteRouteChildren)
+
+interface authedRouteRouteChildren {
+  authedDashboardRouteRoute: typeof authedDashboardRouteRouteWithChildren
+  authedSupportRoute: typeof authedSupportRoute
+  authedLookbooksLookbookIdRoute: typeof authedLookbooksLookbookIdRoute
+  authedProfileNewRoute: typeof authedProfileNewRoute
+  authedTryOnTryOnIdRoute: typeof authedTryOnTryOnIdRoute
+  authedCatalogIndexRoute: typeof authedCatalogIndexRoute
+  authedLookbooksIndexRoute: typeof authedLookbooksIndexRoute
+  authedProfileIndexRoute: typeof authedProfileIndexRoute
+  authedSettingsIndexRoute: typeof authedSettingsIndexRoute
+  authedTryOnIndexRoute: typeof authedTryOnIndexRoute
+  authedCatalogGarmentGarmentIdRoute: typeof authedCatalogGarmentGarmentIdRoute
+}
+
+const authedRouteRouteChildren: authedRouteRouteChildren = {
+  authedDashboardRouteRoute: authedDashboardRouteRouteWithChildren,
+  authedSupportRoute: authedSupportRoute,
+  authedLookbooksLookbookIdRoute: authedLookbooksLookbookIdRoute,
+  authedProfileNewRoute: authedProfileNewRoute,
+  authedTryOnTryOnIdRoute: authedTryOnTryOnIdRoute,
+  authedCatalogIndexRoute: authedCatalogIndexRoute,
+  authedLookbooksIndexRoute: authedLookbooksIndexRoute,
+  authedProfileIndexRoute: authedProfileIndexRoute,
+  authedSettingsIndexRoute: authedSettingsIndexRoute,
+  authedTryOnIndexRoute: authedTryOnIndexRoute,
+  authedCatalogGarmentGarmentIdRoute: authedCatalogGarmentGarmentIdRoute,
+}
+
+const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
+  authedRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  adminDashboardRouteRoute: adminDashboardRouteRouteWithChildren,
+  authedRouteRoute: authedRouteRouteWithChildren,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
   AuthSignupRoute: AuthSignupRoute,
   TodoTodoIdRoute: TodoTodoIdRoute,
   AuthIndexRoute: AuthIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
+  SharedLookbookLookbookIdRoute: SharedLookbookLookbookIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
