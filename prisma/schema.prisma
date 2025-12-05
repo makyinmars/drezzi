@@ -26,6 +26,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   bodyProfiles  BodyProfile[]
+  garments      Garment[]
   tryOns        TryOn[]
   lookbooks     Lookbook[]
 
@@ -121,6 +122,7 @@ model BodyProfile {
 
 model Garment {
   id          String   @id @default(cuid())
+  userId      String   @map("user_id")
   name        String
   description String?
   category    String
@@ -137,13 +139,17 @@ model Garment {
   tags        String[] @default([])
   metadata    Json?
   isActive    Boolean  @default(true) @map("is_active")
+  isPublic    Boolean  @default(false) @map("is_public")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   tryOns TryOn[]
 
+  @@index([userId])
   @@index([category])
   @@index([brand])
+  @@index([isPublic])
   @@map("garment")
 }
 

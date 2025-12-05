@@ -109,16 +109,17 @@ const ProfileNewScreen = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        actions={
+          <Button asChild size="sm" variant="ghost">
+            <a href="/profile">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              <Trans>Back</Trans>
+            </a>
+          </Button>
+        }
         description={t`Add a new body profile for virtual try-ons`}
         title={t`Create Body Profile`}
-      >
-        <Button asChild size="sm" variant="ghost">
-          <a href="/profile">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            <Trans>Back</Trans>
-          </a>
-        </Button>
-      </PageHeader>
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

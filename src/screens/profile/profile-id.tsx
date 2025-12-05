@@ -68,39 +68,40 @@ const ProfileDetailScreen = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        actions={
+          <div className="flex gap-2">
+            <Button asChild size="sm" variant="ghost">
+              <a href="/profile">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                <Trans>Back</Trans>
+              </a>
+            </Button>
+            <ProfileForm profile={profile}>
+              <Button size="sm" variant="outline">
+                <Edit className="mr-2 h-4 w-4" />
+                <Trans>Edit</Trans>
+              </Button>
+            </ProfileForm>
+            <Button
+              disabled={profile.isDefault || setDefaultMutation.isPending}
+              onClick={handleSetDefault}
+              size="sm"
+              variant="outline"
+            >
+              <Star className="mr-2 h-4 w-4" />
+              <Trans>Set Default</Trans>
+            </Button>
+            <ProfileDelete profile={profile}>
+              <Button size="sm" variant="destructive">
+                <Trash className="mr-2 h-4 w-4" />
+                <Trans>Delete</Trans>
+              </Button>
+            </ProfileDelete>
+          </div>
+        }
         description={t`View and manage your body profile`}
         title={profile.name}
-      >
-        <div className="flex gap-2">
-          <Button asChild size="sm" variant="ghost">
-            <a href="/profile">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              <Trans>Back</Trans>
-            </a>
-          </Button>
-          <ProfileForm profile={profile}>
-            <Button size="sm" variant="outline">
-              <Edit className="mr-2 h-4 w-4" />
-              <Trans>Edit</Trans>
-            </Button>
-          </ProfileForm>
-          <Button
-            disabled={profile.isDefault || setDefaultMutation.isPending}
-            onClick={handleSetDefault}
-            size="sm"
-            variant="outline"
-          >
-            <Star className="mr-2 h-4 w-4" />
-            <Trans>Set Default</Trans>
-          </Button>
-          <ProfileDelete profile={profile}>
-            <Button size="sm" variant="destructive">
-              <Trash className="mr-2 h-4 w-4" />
-              <Trans>Delete</Trans>
-            </Button>
-          </ProfileDelete>
-        </div>
-      </PageHeader>
+      />
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="overflow-hidden">

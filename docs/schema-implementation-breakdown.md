@@ -1,5 +1,54 @@
 # Drezzi Schema Implementation Breakdown
 
+## Progress Tracker
+
+| Step | Task | Status |
+|------|------|--------|
+| 1 | Prisma schema (User relations + 6 models) | ✅ Complete |
+| 2 | Infrastructure (SST bucket, queue, worker) | ✅ Complete |
+| 3 | Validators & tRPC routers | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
+| 4 | Services (S3, queue, style-tip, lookbook) | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
+| 5 | Components & Routes | 🟡 Partial (BodyProfile ✅, Garment ✅, TryOn ✅) |
+| 6 | Remove Todo references | ⬜ Pending |
+
+### Step 2 Completed Items
+
+- [x] `TryOnQueue` SQS queue in `sst.config.ts`
+- [x] `TryOnWorker` Lambda with explicit `sst.aws.Function` pattern
+- [x] IAM permissions for S3 (`GetObject`, `PutObject`) and SQS
+- [x] Worker implementation with Gemini 3 Pro (`gemini-3-pro-image-preview`)
+- [x] SQS utility at `src/lib/sqs.ts` with `enqueueTryOnJob()`
+- [x] Environment variables in `src/env/server.ts` (`GOOGLE_GENERATIVE_AI_API_KEY`, `AI_GATEWAY_API_KEY`)
+- [x] Dependencies: `ai@5.0.106`, `@ai-sdk/google@2.0.44`, `@aws-sdk/client-sqs@3.943.0`
+- [x] TanStackStart app linked to bucket + queue
+
+### Step 4 Partial Progress
+
+- [x] `src/lib/sqs.ts` - SQS client and `enqueueTryOnJob()` utility
+- [x] `src/services/profile.ts` - S3 upload utilities, setDefault, deleteAssets, getPhotoUrl ✅
+- [x] `src/validators/profile.ts` - All validators complete ✅
+- [x] `src/trpc/routers/profile.ts` - All 7 endpoints (list, byId, create, update, delete, setDefault, getUploadUrl) ✅
+- [x] `src/components/profile/*` - form, card, delete, photo-upload ✅
+- [x] `src/screens/profile/*` - index, new, profile-id ✅
+- [x] `src/routes/(authed)/profile/*` - All 3 routes ✅
+- [x] `src/services/try-on.ts` - updateTryOnResult(), getTryOnResultUrl(), deleteTryOnAssets() ✅
+- [x] `src/validators/try-on.ts` - All validators complete ✅
+- [x] `src/trpc/routers/tryOn.ts` - All 8 endpoints (list, byId, create, toggleFavorite, delete, retry, favorites, recent) ✅
+- [x] `src/components/try-on/*` - form, card, delete, progress ✅
+- [x] `src/screens/try-on/*` - index, try-on-id ✅
+- [x] `src/routes/(authed)/try-on/*` - All 2 routes ✅
+- [x] `src/services/garment.ts` - garment upload/delete/getUrl helpers ✅
+- [x] `src/validators/garment.ts` - All validators complete ✅
+- [x] `src/trpc/routers/garment.ts` - All 9 endpoints (list, publicList, byId, create, update, delete, togglePublic, getUploadUrl, categories) ✅
+- [x] `src/components/garment/*` - form, card, delete, image-upload ✅
+- [x] `src/screens/garment/*` - index, new, garment-id ✅
+- [x] `src/routes/(authed)/garment/*` - All 3 routes ✅
+- [x] `src/config/navigation.tsx` - "My Wardrobe" nav item with sub-items ✅
+- [ ] `src/services/lookbook.ts` - share slug, reorder helpers
+- [ ] `src/services/style-tip.ts` - AI style tip generation
+
+---
+
 ## Overview
 
 Replacing the template Todo stack with the Stylish AI virtual try-on domain introduces six new Prisma models plus updated `User` relations. This document maps each model to its Prisma definition, tRPC router shape, validation, services, UI components, TanStack Router pages, and i18n-aware error handlers so implementation can follow the established Todo patterns (`src/trpc/routers/todo.ts`, `src/validators/todo.ts`, `src/components/todo/*`).
@@ -10,14 +59,50 @@ Replacing the template Todo stack with the Stylish AI virtual try-on domain intr
 - Name detail screens with `*-id.tsx` under a folder matching the domain. Example: garment detail at `src/screens/garment/garment-id.tsx` imported by `src/routes/(authed)/catalog/garment/$garmentId.tsx`.
 - Keep list/create/detail screens colocated per domain to simplify lazy loading and testing.
 
-## Infrastructure Requirements
+## Infrastructure Requirements ✅ COMPLETE
 
-- Add S3 bucket, SQS queue, and AI worker to `sst.config.ts` (see `docs/stylish-app.md`):
-  - `MediaBucket` with public CORS for uploads/results.
-  - `TryOnQueue` for async try-on jobs.
-  - `TryOnWorker` Lambda (`src/workers/try-on.handler`) linked to bucket + queue with `DATABASE_URL`, `GOOGLE_GENERATIVE_AI_API_KEY`, `AI_GATEWAY_API_KEY`.
-- Ensure `TanStackStart` app links to bucket/queue and forwards `DATABASE_URL`.
-- New env vars: `AI_GATEWAY_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, any S3/SQS config as needed.
+All infrastructure has been implemented in `sst.config.ts`:
+
+| Resource | Type | Status |
+|----------|------|--------|
+| `MediaBucket` | `sst.aws.Bucket` | ✅ Pre-existing (CORS, versioning, lifecycle) |
+| `TryOnQueue` | `sst.aws.Queue` | ✅ Added (5min visibility timeout) |
+| `TryOnWorker` | `sst.aws.Function` | ✅ Added (nodejs20.x, 5min timeout, 1024MB) |
+
+### Worker Configuration
+
+```typescript
+// sst.config.ts - TryOnWorker
+new sst.aws.Function("TryOnWorker", {
+  handler: "src/workers/try-on.handler",
+  runtime: "nodejs20.x",
+  timeout: "5 minutes",
+  memory: "1024 MB",
+  link: [bucket],
+  environment: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+  },
+  permissions: [
+    { actions: ["s3:GetObject", "s3:PutObject"], resources: [bucket.arn, ...] },
+    { actions: ["sqs:ReceiveMessage", "sqs:DeleteMessage", ...], resources: [queue.arn] },
+  ],
+});
+queue.subscribe(tryOnWorker.arn);
+```
+
+### Worker Implementation (`src/workers/try-on.ts`)
+
+- Processes SQS messages with `{ tryOnId, bodyImageUrl, garmentImageUrl }`
+- Fetches images from S3 or URLs, converts to base64
+- Calls `gemini-3-pro-image-preview` via Vercel AI SDK
+- Uploads result to `try-ons/{tryOnId}/result.png`
+- TODO: Database update after completion
+
+### Environment Variables Added
+
+- `GOOGLE_GENERATIVE_AI_API_KEY` (optional) - for Gemini API
+- `AI_GATEWAY_API_KEY` (optional) - for AI Gateway routing
 
 ## Model 1: BodyProfile
 
@@ -450,9 +535,34 @@ model StyleTip {
 
 ## Implementation Order
 
-1. Update Prisma schema (`User` relations + six models), run `bunx prisma generate` and create migration.
-2. Add infrastructure to `sst.config.ts` (bucket, queue, worker) and stub `src/workers/try-on.ts`.
-3. Build validators and tRPC routers (profile → garment → tryOn → lookbook/lookbookItem → styleTip); wire into `src/trpc/router.ts`.
-4. Add services for S3 uploads, queue enqueue, style-tip generation, and lookbook slug/order helpers.
-5. Implement components/routes in the same order, reusing Todo patterns for forms/delete/optimistic updates.
-6. Remove Todo UI/route references and verify with `bun typecheck`.
+1. ✅ **Prisma Schema** - All 6 models complete (BodyProfile, Garment, TryOn, Lookbook, LookbookItem, StyleTip) + User relations.
+2. ✅ **Infrastructure** - Add infrastructure to `sst.config.ts` (bucket, queue, worker) and implement `src/workers/try-on.ts`.
+   - Completed: `TryOnQueue`, `TryOnWorker` with Gemini 3 Pro, `src/lib/sqs.ts`, env vars
+3. 🟡 **Validators & Routers** - Build validators and tRPC routers; wire into `src/trpc/router.ts`.
+   - ✅ Complete: BodyProfile (validators, router, registered)
+   - ⬜ Remaining: Garment, TryOn, Lookbook, LookbookItem, StyleTip
+4. 🟡 **Services** - Add services for S3 uploads, queue enqueue, style-tip generation, and lookbook slug/order helpers.
+   - ✅ Done: `src/lib/sqs.ts` (enqueueTryOnJob), `src/services/profile.ts` (complete)
+   - ⬜ Remaining: `try-on.ts` (updateTryOnResult), `garment.ts`, `lookbook.ts`, `style-tip.ts`
+5. 🟡 **Components & Routes** - Implement components/routes in the same order, reusing Todo patterns.
+   - ✅ Complete: BodyProfile (4 components, 3 screens, 3 routes)
+   - ⬜ Remaining: Garment, TryOn, Lookbook, StyleTip
+6. ⬜ **Cleanup** - Remove Todo UI/route references and verify with `bun typecheck`.
+
+## Next Steps
+
+1. **Garment** - Implement validators, tRPC router, services, components, screens, and routes
+   - This is the next foundational model that TryOn depends on (garments to try on)
+
+2. **TryOn** - Implement validators, tRPC router, services (including `updateTryOnResult()`), components, screens, and routes
+   - Depends on BodyProfile ✅ and Garment
+   - Worker callback service needed for `src/workers/try-on.ts`
+
+3. **Lookbook + LookbookItem** - Implement validators, tRPC router, services, components, screens, and routes
+   - Depends on TryOn (saves try-on results to lookbooks)
+
+4. **StyleTip** - Implement validators, tRPC router, services, components
+   - Depends on TryOn (generates tips for completed try-ons)
+   - Displayed within try-on detail screens
+
+5. **Cleanup** - Remove Todo references and verify with `bun typecheck`

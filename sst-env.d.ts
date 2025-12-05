@@ -13,6 +13,14 @@ declare module "sst" {
       "type": "sst.aws.TanstackStart"
       "url": string
     }
+    "TryOnQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "TryOnWorker": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />

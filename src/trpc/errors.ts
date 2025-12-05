@@ -89,4 +89,72 @@ export const createErrors = (i18n: I18n | undefined) => ({
 
   invalidProfileImage: () =>
     createTranslatedError(i18n, "BAD_REQUEST", "Invalid profile image"),
+
+  garmentNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Garment not found"),
+
+  garmentForbidden: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "You don't have permission to access this garment"
+    ),
+
+  garmentCreateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to create garment"
+    ),
+
+  garmentUpdateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to update garment"
+    ),
+
+  garmentDeleteFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to delete garment"
+    ),
+
+  invalidGarmentImage: () =>
+    createTranslatedError(i18n, "BAD_REQUEST", "Invalid garment image"),
+
+  tryOnNotFound: () =>
+    createTranslatedError(i18n, "NOT_FOUND", "Try-on not found"),
+
+  tryOnForbidden: () =>
+    createTranslatedError(
+      i18n,
+      "UNAUTHORIZED",
+      "You don't have permission to access this try-on"
+    ),
+
+  tryOnCreateFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to create try-on"
+    ),
+
+  tryOnDeleteFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to delete try-on"
+    ),
+
+  tryOnEnqueueFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to enqueue try-on job"
+    ),
+
+  tryOnStatusInvalid: () =>
+    createTranslatedError(i18n, "BAD_REQUEST", "Invalid try-on status"),
 });

@@ -44,11 +44,10 @@ bun db:seed         # Seed the database
 bun db:generate     # Generate migration files
 
 # Development mode database commands (using custom env file)
-bun --env-file=.env.franklin db:migrate
-bun --env-file=.env.franklin db:push
-bun --env-file=.env.franklin db:studio
-bun --env-file=.env.franklin db:seed
-bun --env-file=.env.franklin db:generate
+bun --env-file=.env.franklin prisma db push    # Push schema changes to database
+bun --env-file=.env.franklin prisma generate   # Generate Prisma client types
+bun --env-file=.env.franklin prisma migrate dev # Run migrations
+bun --env-file=.env.franklin prisma studio     # Open Prisma Studio GUI
 
 # Code Quality (Ultracite)
 bun format           # Format code with Ultracite

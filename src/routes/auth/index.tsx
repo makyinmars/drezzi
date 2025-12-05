@@ -31,7 +31,7 @@ export const Route = createFileRoute("/auth/")({
       context.trpc.auth.getSession.queryOptions()
     );
 
-    if (auth?.session) {
+    if (auth) {
       throw redirect({
         to: "/dashboard",
       });

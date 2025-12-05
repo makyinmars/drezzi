@@ -49,8 +49,42 @@ export default $config({
       },
     });
 
-    new sst.aws.TanStackStart("MyWeb", {
+    const queue = new sst.aws.Queue("TryOnQueue", {
+      visibilityTimeout: "5 minutes",
+    });
+
+    const tryOnWorker = new sst.aws.Function("TryOnWorker", {
+      handler: "src/workers/try-on.handler",
+      runtime: "nodejs20.x",
+      timeout: "5 minutes",
+      memory: "1024 MB",
       link: [bucket],
+      environment: {
+        DATABASE_URL: process.env.DATABASE_URL as string,
+        GOOGLE_GENERATIVE_AI_API_KEY:
+          process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
+      },
+      permissions: [
+        {
+          actions: ["s3:GetObject", "s3:PutObject"],
+          resources: [bucket.arn, $interpolate`${bucket.arn}/*`],
+        },
+        {
+          actions: [
+            "sqs:ReceiveMessage",
+            "sqs:DeleteMessage",
+            "sqs:ChangeMessageVisibility",
+            "sqs:GetQueueAttributes",
+          ],
+          resources: [queue.arn],
+        },
+      ],
+    });
+
+    queue.subscribe(tryOnWorker.arn);
+
+    new sst.aws.TanStackStart("MyWeb", {
+      link: [bucket, queue],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
         VITE_PUBLIC_URL: process.env.VITE_PUBLIC_URL as string,
@@ -58,6 +92,8 @@ export default $config({
         BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
         GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
         GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+        GOOGLE_GENERATIVE_AI_API_KEY:
+          process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
       },
     });
   },

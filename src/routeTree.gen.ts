@@ -22,6 +22,7 @@ import { Route as authedTryOnIndexRouteImport } from './routes/(authed)/try-on/i
 import { Route as authedSettingsIndexRouteImport } from './routes/(authed)/settings/index'
 import { Route as authedProfileIndexRouteImport } from './routes/(authed)/profile/index'
 import { Route as authedLookbooksIndexRouteImport } from './routes/(authed)/lookbooks/index'
+import { Route as authedGarmentIndexRouteImport } from './routes/(authed)/garment/index'
 import { Route as authedDashboardIndexRouteImport } from './routes/(authed)/dashboard/index'
 import { Route as authedCatalogIndexRouteImport } from './routes/(authed)/catalog/index'
 import { Route as SharedLookbookLookbookIdRouteImport } from './routes/shared/lookbook/$lookbookId'
@@ -31,6 +32,8 @@ import { Route as authedTryOnTryOnIdRouteImport } from './routes/(authed)/try-on
 import { Route as authedProfileNewRouteImport } from './routes/(authed)/profile/new'
 import { Route as authedProfileProfileIdRouteImport } from './routes/(authed)/profile/$profileId'
 import { Route as authedLookbooksLookbookIdRouteImport } from './routes/(authed)/lookbooks/$lookbookId'
+import { Route as authedGarmentNewRouteImport } from './routes/(authed)/garment/new'
+import { Route as authedGarmentGarmentIdRouteImport } from './routes/(authed)/garment/$garmentId'
 import { Route as authedCatalogGarmentGarmentIdRouteImport } from './routes/(authed)/catalog/garment/$garmentId'
 
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
@@ -97,6 +100,11 @@ const authedLookbooksIndexRoute = authedLookbooksIndexRouteImport.update({
   path: '/lookbooks/',
   getParentRoute: () => authedRouteRoute,
 } as any)
+const authedGarmentIndexRoute = authedGarmentIndexRouteImport.update({
+  id: '/garment/',
+  path: '/garment/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 const authedDashboardIndexRoute = authedDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -144,6 +152,16 @@ const authedLookbooksLookbookIdRoute =
     path: '/lookbooks/$lookbookId',
     getParentRoute: () => authedRouteRoute,
   } as any)
+const authedGarmentNewRoute = authedGarmentNewRouteImport.update({
+  id: '/garment/new',
+  path: '/garment/new',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedGarmentGarmentIdRoute = authedGarmentGarmentIdRouteImport.update({
+  id: '/garment/$garmentId',
+  path: '/garment/$garmentId',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 const authedCatalogGarmentGarmentIdRoute =
   authedCatalogGarmentGarmentIdRouteImport.update({
     id: '/catalog/garment/$garmentId',
@@ -160,6 +178,8 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
+  '/garment/$garmentId': typeof authedGarmentGarmentIdRoute
+  '/garment/new': typeof authedGarmentNewRoute
   '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
   '/profile/$profileId': typeof authedProfileProfileIdRoute
   '/profile/new': typeof authedProfileNewRoute
@@ -169,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
   '/catalog': typeof authedCatalogIndexRoute
   '/dashboard/': typeof authedDashboardIndexRoute
+  '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
   '/profile': typeof authedProfileIndexRoute
   '/settings': typeof authedSettingsIndexRoute
@@ -183,6 +204,8 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
+  '/garment/$garmentId': typeof authedGarmentGarmentIdRoute
+  '/garment/new': typeof authedGarmentNewRoute
   '/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
   '/profile/$profileId': typeof authedProfileProfileIdRoute
   '/profile/new': typeof authedProfileNewRoute
@@ -192,6 +215,7 @@ export interface FileRoutesByTo {
   '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
   '/catalog': typeof authedCatalogIndexRoute
   '/dashboard': typeof authedDashboardIndexRoute
+  '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
   '/profile': typeof authedProfileIndexRoute
   '/settings': typeof authedSettingsIndexRoute
@@ -209,6 +233,8 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth/': typeof AuthIndexRoute
+  '/(authed)/garment/$garmentId': typeof authedGarmentGarmentIdRoute
+  '/(authed)/garment/new': typeof authedGarmentNewRoute
   '/(authed)/lookbooks/$lookbookId': typeof authedLookbooksLookbookIdRoute
   '/(authed)/profile/$profileId': typeof authedProfileProfileIdRoute
   '/(authed)/profile/new': typeof authedProfileNewRoute
@@ -218,6 +244,7 @@ export interface FileRoutesById {
   '/shared/lookbook/$lookbookId': typeof SharedLookbookLookbookIdRoute
   '/(authed)/catalog/': typeof authedCatalogIndexRoute
   '/(authed)/dashboard/': typeof authedDashboardIndexRoute
+  '/(authed)/garment/': typeof authedGarmentIndexRoute
   '/(authed)/lookbooks/': typeof authedLookbooksIndexRoute
   '/(authed)/profile/': typeof authedProfileIndexRoute
   '/(authed)/settings/': typeof authedSettingsIndexRoute
@@ -235,6 +262,8 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
+    | '/garment/$garmentId'
+    | '/garment/new'
     | '/lookbooks/$lookbookId'
     | '/profile/$profileId'
     | '/profile/new'
@@ -244,6 +273,7 @@ export interface FileRouteTypes {
     | '/shared/lookbook/$lookbookId'
     | '/catalog'
     | '/dashboard/'
+    | '/garment'
     | '/lookbooks'
     | '/profile'
     | '/settings'
@@ -258,6 +288,8 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
+    | '/garment/$garmentId'
+    | '/garment/new'
     | '/lookbooks/$lookbookId'
     | '/profile/$profileId'
     | '/profile/new'
@@ -267,6 +299,7 @@ export interface FileRouteTypes {
     | '/shared/lookbook/$lookbookId'
     | '/catalog'
     | '/dashboard'
+    | '/garment'
     | '/lookbooks'
     | '/profile'
     | '/settings'
@@ -283,6 +316,8 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth/'
+    | '/(authed)/garment/$garmentId'
+    | '/(authed)/garment/new'
     | '/(authed)/lookbooks/$lookbookId'
     | '/(authed)/profile/$profileId'
     | '/(authed)/profile/new'
@@ -292,6 +327,7 @@ export interface FileRouteTypes {
     | '/shared/lookbook/$lookbookId'
     | '/(authed)/catalog/'
     | '/(authed)/dashboard/'
+    | '/(authed)/garment/'
     | '/(authed)/lookbooks/'
     | '/(authed)/profile/'
     | '/(authed)/settings/'
@@ -405,6 +441,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedLookbooksIndexRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/garment/': {
+      id: '/(authed)/garment/'
+      path: '/garment'
+      fullPath: '/garment'
+      preLoaderRoute: typeof authedGarmentIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/dashboard/': {
       id: '/(authed)/dashboard/'
       path: '/'
@@ -468,6 +511,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedLookbooksLookbookIdRouteImport
       parentRoute: typeof authedRouteRoute
     }
+    '/(authed)/garment/new': {
+      id: '/(authed)/garment/new'
+      path: '/garment/new'
+      fullPath: '/garment/new'
+      preLoaderRoute: typeof authedGarmentNewRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/garment/$garmentId': {
+      id: '/(authed)/garment/$garmentId'
+      path: '/garment/$garmentId'
+      fullPath: '/garment/$garmentId'
+      preLoaderRoute: typeof authedGarmentGarmentIdRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/(authed)/catalog/garment/$garmentId': {
       id: '/(authed)/catalog/garment/$garmentId'
       path: '/catalog/garment/$garmentId'
@@ -492,11 +549,14 @@ const authedDashboardRouteRouteWithChildren =
 interface authedRouteRouteChildren {
   authedDashboardRouteRoute: typeof authedDashboardRouteRouteWithChildren
   authedSupportRoute: typeof authedSupportRoute
+  authedGarmentGarmentIdRoute: typeof authedGarmentGarmentIdRoute
+  authedGarmentNewRoute: typeof authedGarmentNewRoute
   authedLookbooksLookbookIdRoute: typeof authedLookbooksLookbookIdRoute
   authedProfileProfileIdRoute: typeof authedProfileProfileIdRoute
   authedProfileNewRoute: typeof authedProfileNewRoute
   authedTryOnTryOnIdRoute: typeof authedTryOnTryOnIdRoute
   authedCatalogIndexRoute: typeof authedCatalogIndexRoute
+  authedGarmentIndexRoute: typeof authedGarmentIndexRoute
   authedLookbooksIndexRoute: typeof authedLookbooksIndexRoute
   authedProfileIndexRoute: typeof authedProfileIndexRoute
   authedSettingsIndexRoute: typeof authedSettingsIndexRoute
@@ -507,11 +567,14 @@ interface authedRouteRouteChildren {
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedDashboardRouteRoute: authedDashboardRouteRouteWithChildren,
   authedSupportRoute: authedSupportRoute,
+  authedGarmentGarmentIdRoute: authedGarmentGarmentIdRoute,
+  authedGarmentNewRoute: authedGarmentNewRoute,
   authedLookbooksLookbookIdRoute: authedLookbooksLookbookIdRoute,
   authedProfileProfileIdRoute: authedProfileProfileIdRoute,
   authedProfileNewRoute: authedProfileNewRoute,
   authedTryOnTryOnIdRoute: authedTryOnTryOnIdRoute,
   authedCatalogIndexRoute: authedCatalogIndexRoute,
+  authedGarmentIndexRoute: authedGarmentIndexRoute,
   authedLookbooksIndexRoute: authedLookbooksIndexRoute,
   authedProfileIndexRoute: authedProfileIndexRoute,
   authedSettingsIndexRoute: authedSettingsIndexRoute,

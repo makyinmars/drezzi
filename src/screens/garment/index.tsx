@@ -3,53 +3,54 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 
 import PageHeader from "@/components/common/page-header";
-import ProfileCard from "@/components/profile/profile-card";
-import ProfileForm from "@/components/profile/profile-form";
+import GarmentCard from "@/components/garment/garment-card";
+import GarmentForm from "@/components/garment/garment-form";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/react";
 
-const ProfileListScreen = () => {
+const GarmentListScreen = () => {
   const { t } = useLingui();
   const trpc = useTRPC();
-  const profilesQuery = useSuspenseQuery(trpc.profile.list.queryOptions());
+  const garmentsQuery = useSuspenseQuery(
+    trpc.garment.list.queryOptions({ includePublic: false })
+  );
 
   return (
     <div className="space-y-6">
       <PageHeader
         actions={
-          <ProfileForm>
+          <GarmentForm>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Profile</Trans>
+              <Trans>Add Garment</Trans>
             </Button>
-          </ProfileForm>
+          </GarmentForm>
         }
-        description={t`Manage your body profiles for virtual try-ons`}
-        title={t`Body Profiles`}
+        description={t`Manage your wardrobe for virtual try-ons`}
+        title={t`My Wardrobe`}
       />
 
-      {profilesQuery.data.length === 0 ? (
+      {garmentsQuery.data.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
           <h3 className="mb-2 font-medium text-lg">
-            <Trans>No profiles yet</Trans>
+            <Trans>No garments yet</Trans>
           </h3>
           <p className="mb-4 text-muted-foreground text-sm">
             <Trans>
-              Create your first body profile to start trying on clothes
-              virtually.
+              Add your first garment to start building your virtual wardrobe.
             </Trans>
           </p>
-          <ProfileForm>
+          <GarmentForm>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Your First Profile</Trans>
+              <Trans>Add Your First Garment</Trans>
             </Button>
-          </ProfileForm>
+          </GarmentForm>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {profilesQuery.data.map((profile) => (
-            <ProfileCard key={profile.id} profile={profile} />
+          {garmentsQuery.data.map((garment) => (
+            <GarmentCard garment={garment} key={garment.id} />
           ))}
         </div>
       )}
@@ -57,4 +58,4 @@ const ProfileListScreen = () => {
   );
 };
 
-export default ProfileListScreen;
+export default GarmentListScreen;

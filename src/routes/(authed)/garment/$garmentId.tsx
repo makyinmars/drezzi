@@ -4,30 +4,30 @@ import z from "zod/v4";
 
 import LoadingState from "@/components/common/loading-state";
 
-export const Route = createFileRoute("/(authed)/try-on/$tryOnId")({
+export const Route = createFileRoute("/(authed)/garment/$garmentId")({
   parseParams: (params) => ({
-    tryOnId: z.cuid("Invalid try-on ID format").parse(params.tryOnId),
+    garmentId: z.cuid("Invalid garment ID format").parse(params.garmentId),
   }),
   loader: async ({ context, params }) => {
-    const tryOn = await context.queryClient.ensureQueryData(
-      context.trpc.tryOn.byId.queryOptions({ id: params.tryOnId })
+    const garment = await context.queryClient.ensureQueryData(
+      context.trpc.garment.byId.queryOptions({ id: params.garmentId })
     );
-    return { tryOn };
+    return { garment };
   },
   head: ({ loaderData }) => ({
     meta: [
       {
-        title: `Drezzi - ${loaderData?.tryOn.garment.name ?? "Try-On"}`,
+        title: `Drezzi - ${loaderData?.garment.name ?? "Garment"}`,
       },
     ],
   }),
   errorComponent: ({ error }) => {
-    const isInvalidFormat = error.message.includes("Invalid try-on ID format");
+    const isInvalidFormat = error.message.includes("Invalid garment ID format");
     return (
       <div className="flex min-h-96 items-center justify-center">
         <div className="text-center">
           <h2 className="mb-2 font-semibold text-2xl">
-            {isInvalidFormat ? "Invalid Try-On ID" : "Try-On Not Found"}
+            {isInvalidFormat ? "Invalid Garment ID" : "Garment Not Found"}
           </h2>
           <p className="text-muted-foreground">{error.message}</p>
         </div>
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/(authed)/try-on/$tryOnId")({
   },
   pendingComponent: () => {
     const { t } = useLingui();
-    return <LoadingState text={t`Loading try-on...`} />;
+    return <LoadingState text={t`Loading garment...`} />;
   },
-  component: lazyRouteComponent(() => import("src/screens/try-on/try-on-id")),
+  component: lazyRouteComponent(() => import("src/screens/garment/garment-id")),
 });

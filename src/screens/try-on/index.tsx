@@ -1,0 +1,72 @@
+import { Trans, useLingui } from "@lingui/react/macro";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Sparkles } from "lucide-react";
+import { Suspense } from "react";
+
+import PageHeader from "@/components/common/page-header";
+import TryOnCard from "@/components/try-on/try-on-card";
+import TryOnForm from "@/components/try-on/try-on-form";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useTRPC } from "@/trpc/react";
+
+const TryOnListScreen = () => {
+  const { t } = useLingui();
+  const trpc = useTRPC();
+  const tryOnsQuery = useSuspenseQuery(trpc.tryOn.list.queryOptions({}));
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        actions={
+          <Suspense
+            fallback={
+              <Button disabled>
+                <Sparkles className="mr-2 h-4 w-4" />
+                <Trans>New Try-On</Trans>
+              </Button>
+            }
+          >
+            <TryOnForm>
+              <Button>
+                <Sparkles className="mr-2 h-4 w-4" />
+                <Trans>New Try-On</Trans>
+              </Button>
+            </TryOnForm>
+          </Suspense>
+        }
+        description={t`See how clothes look on you with AI-powered virtual try-on`}
+        title={t`Virtual Try-On`}
+      />
+
+      {tryOnsQuery.data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
+          <h3 className="mb-2 font-medium text-lg">
+            <Trans>No try-ons yet</Trans>
+          </h3>
+          <p className="mb-4 text-muted-foreground text-sm">
+            <Trans>
+              Start your first virtual try-on to see how clothes look on you.
+            </Trans>
+          </p>
+          <Suspense fallback={<Skeleton className="h-10 w-40" />}>
+            <TryOnForm>
+              <Button>
+                <Sparkles className="mr-2 h-4 w-4" />
+                <Trans>Start Your First Try-On</Trans>
+              </Button>
+            </TryOnForm>
+          </Suspense>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {tryOnsQuery.data.map((tryOn) => (
+            <TryOnCard key={tryOn.id} tryOn={tryOn} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TryOnListScreen;

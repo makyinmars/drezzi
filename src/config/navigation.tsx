@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/react/macro";
 import {
+  Archive,
   BookImage,
   LayoutDashboard,
   LifeBuoy,
@@ -27,6 +28,21 @@ export const navigationConfig: NavConfig = {
       title: <Trans>Try-On</Trans>,
       url: "/try-on",
       icon: Wand2,
+    },
+    {
+      title: <Trans>My Wardrobe</Trans>,
+      url: "/garment",
+      icon: Archive,
+      items: [
+        {
+          title: <Trans>All Garments</Trans>,
+          url: "/garment",
+        },
+        {
+          title: <Trans>Add Garment</Trans>,
+          url: "/garment/new",
+        },
+      ],
     },
     {
       title: <Trans>My Profiles</Trans>,

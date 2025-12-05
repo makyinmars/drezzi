@@ -5,26 +5,18 @@ import CustomError from "@/components/common/custom-error";
 import LoadingState from "@/components/common/loading-state";
 import NotFound from "@/components/common/not-found";
 
-export const Route = createFileRoute("/(authed)/try-on/")({
+export const Route = createFileRoute("/(authed)/garment/")({
   head: () => ({
     meta: [
       {
-        title: "Drezzi - Virtual Try-On",
+        title: "Drezzi - My Wardrobe",
       },
     ],
   }),
   loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(
-        context.trpc.tryOn.list.queryOptions({})
-      ),
-      context.queryClient.ensureQueryData(
-        context.trpc.profile.list.queryOptions()
-      ),
-      context.queryClient.ensureQueryData(
-        context.trpc.garment.list.queryOptions({ includePublic: true })
-      ),
-    ]);
+    await context.queryClient.ensureQueryData(
+      context.trpc.garment.list.queryOptions({ includePublic: false })
+    );
   },
   errorComponent: ({ error }) => (
     <CustomError description={error.message} title="Error" />
@@ -32,7 +24,7 @@ export const Route = createFileRoute("/(authed)/try-on/")({
   notFoundComponent: NotFound,
   pendingComponent: () => {
     const { t } = useLingui();
-    return <LoadingState text={t`Loading try-ons...`} />;
+    return <LoadingState text={t`Loading wardrobe...`} />;
   },
-  component: lazyRouteComponent(() => import("src/screens/try-on/index")),
+  component: lazyRouteComponent(() => import("src/screens/garment/index")),
 });
