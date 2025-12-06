@@ -5,6 +5,7 @@ export const sqs = new SQSClient({});
 
 export type TryOnJobPayload = {
   tryOnId: string;
+  userId: string;
   bodyImageUrl: string;
   garmentImageUrl: string;
 };

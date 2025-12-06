@@ -1,5 +1,17 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+
 import AuthContentLayout from "@/components/common/auth-content-layout";
+import { useTryOnSSE } from "@/hooks/use-tryon-sse";
+
+function AuthedLayout() {
+  useTryOnSSE();
+
+  return (
+    <AuthContentLayout>
+      <Outlet />
+    </AuthContentLayout>
+  );
+}
 
 export const Route = createFileRoute("/(authed)")({
   beforeLoad: async ({ context }) => {
@@ -17,9 +29,5 @@ export const Route = createFileRoute("/(authed)")({
       auth,
     };
   },
-  component: () => (
-    <AuthContentLayout>
-      <Outlet />
-    </AuthContentLayout>
-  ),
+  component: AuthedLayout,
 });

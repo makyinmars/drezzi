@@ -148,6 +148,7 @@ export const tryOnRouter = {
           // Enqueue - if this fails, transaction rolls back
           const jobId = await enqueueTryOnJob({
             tryOnId: tryOn.id,
+            userId,
             bodyImageUrl: bodyProfile.photo.key,
             garmentImageUrl: garment.image.key,
           });
@@ -256,6 +257,7 @@ export const tryOnRouter = {
           // Enqueue - if this fails, transaction rolls back
           const jobId = await enqueueTryOnJob({
             tryOnId: tryOn.id,
+            userId,
             bodyImageUrl: tryOn.bodyProfile.photo.key,
             garmentImageUrl: tryOn.garment.image.key,
           });

@@ -89,9 +89,10 @@ export default $config({
       link: [bucket],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
+        REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
         GOOGLE_GENERATIVE_AI_API_KEY:
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
-    AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
+        AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
       },
       permissions: [
         {
