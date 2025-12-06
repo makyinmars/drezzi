@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
   useMutation,
@@ -6,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +19,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -26,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTRPC } from "@/trpc/react";
+import { apiTryOnCreate, type TryOnCreate } from "@/validators/try-on";
 
 type TryOnFormProps = {
   children?: React.ReactNode;
@@ -41,16 +51,42 @@ const TryOnForm = ({
   const { t } = useLingui();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-
   const [open, setOpen] = useState(false);
-  const [profileId, setProfileId] = useState(preselectedProfileId ?? "");
-  const [garmentId, setGarmentId] = useState(preselectedGarmentId ?? "");
 
   const { data: profiles } = useSuspenseQuery(trpc.profile.list.queryOptions());
+  const defaultProfile = profiles.find((p) => p.isDefault);
+
+  const form = useForm<TryOnCreate>({
+    resolver: zodResolver(apiTryOnCreate),
+    defaultValues: {
+      bodyProfileId: preselectedProfileId ?? defaultProfile?.id ?? "",
+      garmentId: preselectedGarmentId ?? "",
+    },
+  });
+
+  const { formState } = form;
+
+  console.log("form state", formState);
+
+  const bodyProfileIdWatch = useWatch({
+    control: form.control,
+    name: "bodyProfileId",
+  });
+
+  console.log("bodyProfileIdWatch", bodyProfileIdWatch);
+
+  const garmentIdWatch = useWatch({
+    control: form.control,
+    name: "garmentId",
+  });
+
+  console.log("garmentIdWatch", garmentIdWatch);
 
   const { data: garments } = useSuspenseQuery(
     trpc.garment.list.queryOptions({ includePublic: true })
   );
+
+  console.log("garments", garments);
 
   const createMutation = useMutation(
     trpc.tryOn.create.mutationOptions({
@@ -60,24 +96,16 @@ const TryOnForm = ({
           return [data, ...old];
         });
         setOpen(false);
-        setProfileId(preselectedProfileId ?? "");
-        setGarmentId(preselectedGarmentId ?? "");
+        form.reset();
       },
     })
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!(profileId && garmentId)) {
-      toast.error(t`Please select both a profile and a garment`);
-      return;
-    }
-
+  const onSubmit = (data: TryOnCreate) => {
     toast.promise(
       createMutation.mutateAsync({
-        bodyProfileId: profileId,
-        garmentId,
+        bodyProfileId: data.bodyProfileId,
+        garmentId: data.garmentId,
       }),
       {
         loading: t`Starting try-on...`,
@@ -86,8 +114,6 @@ const TryOnForm = ({
       }
     );
   };
-
-  const defaultProfile = profiles.find((p) => p.isDefault);
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
@@ -110,94 +136,105 @@ const TryOnForm = ({
             </Trans>
           </DialogDescription>
         </DialogHeader>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="profile">
-              <Trans>Body Profile</Trans>
-            </Label>
-            <Select
-              onValueChange={setProfileId}
-              value={profileId || defaultProfile?.id || ""}
-            >
-              <SelectTrigger id="profile">
-                <SelectValue placeholder={t`Select a profile`} />
-              </SelectTrigger>
-              <SelectContent>
-                {profiles.map((profile) => (
-                  <SelectItem key={profile.id} value={profile.id}>
-                    {profile.name}
-                    {profile.isDefault && " (Default)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {profiles.length === 0 && (
-              <p className="text-muted-foreground text-sm">
-                <Trans>
-                  No profiles found. Please create a body profile first.
-                </Trans>
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="garment">
-              <Trans>Garment</Trans>
-            </Label>
-            <Select onValueChange={setGarmentId} value={garmentId}>
-              <SelectTrigger id="garment">
-                <SelectValue placeholder={t`Select a garment`} />
-              </SelectTrigger>
-              <SelectContent>
-                {garments.map((garment) => (
-                  <SelectItem key={garment.id} value={garment.id}>
-                    {garment.name} - {garment.category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {garments.length === 0 && (
-              <p className="text-muted-foreground text-sm">
-                <Trans>
-                  No garments found. Please add a garment to your wardrobe
-                  first.
-                </Trans>
-              </p>
-            )}
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              onClick={() => setOpen(false)}
-              type="button"
-              variant="outline"
-            >
-              <Trans>Cancel</Trans>
-            </Button>
-            <Button
-              disabled={
-                createMutation.isPending ||
-                !profileId ||
-                !garmentId ||
-                profiles.length === 0 ||
-                garments.length === 0
-              }
-              type="submit"
-            >
-              {createMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <Trans>Starting...</Trans>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  <Trans>Start Try-On</Trans>
-                </>
+        <Form {...form}>
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="bodyProfileId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans>Body Profile</Trans>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t`Select a profile`} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {profiles.map((profile) => (
+                        <SelectItem key={profile.id} value={profile.id}>
+                          {profile.name}
+                          {profile.isDefault && " (Default)"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {profiles.length === 0 && (
+                    <p className="text-muted-foreground text-sm">
+                      <Trans>
+                        No profiles found. Please create a body profile first.
+                      </Trans>
+                    </p>
+                  )}
+                  <FormMessage />
+                </FormItem>
               )}
-            </Button>
-          </div>
-        </form>
+            />
+
+            <FormField
+              control={form.control}
+              name="garmentId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <Trans>Garment</Trans>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t`Select a garment`} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {garments.map((garment) => (
+                        <SelectItem key={garment.id} value={garment.id}>
+                          {garment.name} - {garment.category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {garments.length === 0 && (
+                    <p className="text-muted-foreground text-sm">
+                      <Trans>
+                        No garments found. Please add a garment to your wardrobe
+                        first.
+                      </Trans>
+                    </p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                onClick={() => setOpen(false)}
+                type="button"
+                variant="outline"
+              >
+                <Trans>Cancel</Trans>
+              </Button>
+              <Button
+                disabled={profiles.length === 0 || garments.length === 0}
+                type="submit"
+              >
+                {createMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Trans>Starting...</Trans>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    <Trans>Start Try-On</Trans>
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

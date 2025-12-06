@@ -4,12 +4,19 @@ import { Resource } from "sst";
 
 import { redis } from "@/lib/redis";
 
-export const s3 = new S3Client({});
+export const s3 = new S3Client({
+  requestChecksumCalculation: "WHEN_REQUIRED",
+});
 
-const PRESIGNED_TTL = 3300; // 55 minutes
+const PRESIGNED_TTL = 300; // 5 minutes
 const CACHE_PREFIX = "presigned:";
 
-export async function getPresignedUrl(key: string, expiresIn = 3600) {
+async function isUrlValid(url: string): Promise<boolean> {
+  const response = await fetch(url, { method: "HEAD" }).catch(() => null);
+  return response?.ok ?? false;
+}
+
+export async function getPresignedUrl(key: string, expiresIn = 900) {
   const command = new GetObjectCommand({
     Bucket: Resource.MediaBucket.name,
     Key: key,
@@ -20,11 +27,11 @@ export async function getPresignedUrl(key: string, expiresIn = 3600) {
 export async function getCachedPresignedUrl(key: string): Promise<string> {
   const cacheKey = `${CACHE_PREFIX}${key}`;
 
-  const cached = await redis.get(cacheKey);
-  if (cached) return cached;
+  const cached = await redis.get(cacheKey).catch(() => null);
+  if (cached && (await isUrlValid(cached))) return cached;
 
   const url = await getPresignedUrl(key);
-  await redis.setex(cacheKey, PRESIGNED_TTL, url);
+  await redis.setex(cacheKey, PRESIGNED_TTL, url).catch(() => {});
 
   return url;
 }

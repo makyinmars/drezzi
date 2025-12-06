@@ -3,279 +3,124 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
+  ArrowUpRight,
   Book,
   CheckCircle,
-  Clock,
   Cpu,
   Eye,
   Layers,
-  Shield,
   Shirt,
   Sparkles,
   User,
   Wand2,
-  Zap,
 } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/react";
 
-const ACCENT = "#d4a574";
-const ACCENT_LIGHT = "#e8c9a8";
+import { TryOnDemo } from "./try-on-demo";
 
-const TryOnDemo = () => {
-  return (
-    <div className="relative mx-auto w-full max-w-4xl">
-      {/* Main demo container */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-muted via-muted to-card p-1">
-        <div className="relative overflow-hidden rounded-xl bg-background/50 p-8 md:p-12">
-          {/* Animated grid background */}
-          <div className="pointer-events-none absolute inset-0 opacity-20 dark:opacity-20">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `linear-gradient(${ACCENT}15 1px, transparent 1px), linear-gradient(90deg, ${ACCENT}15 1px, transparent 1px)`,
-                backgroundSize: "40px 40px",
-              }}
-            />
-          </div>
-
-          {/* Demo content */}
-          <div className="relative flex flex-col items-center gap-8 md:flex-row md:gap-12">
-            {/* Before - Body Profile */}
-            <motion.div
-              animate={{ opacity: 1, x: 0 }}
-              className="group relative"
-              initial={{ opacity: 0, x: -30 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <div className="relative h-48 w-36 overflow-hidden rounded-xl border-2 border-border bg-gradient-to-b from-muted to-card shadow-2xl md:h-64 md:w-48">
-                {/* Person silhouette placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <User
-                    className="h-20 w-20 text-muted-foreground/50 md:h-24 md:w-24"
-                    strokeWidth={1}
-                  />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-3">
-                  <p className="font-medium text-foreground text-xs tracking-wide">
-                    <Trans>Your Photo</Trans>
-                  </p>
-                </div>
-              </div>
-              <motion.div
-                animate={{ scale: 1, opacity: 1 }}
-                className="-right-2 -top-2 absolute rounded-full border border-border bg-card p-2"
-                initial={{ scale: 0, opacity: 0 }}
-                transition={{ delay: 0.6 }}
-              >
-                <User className="h-4 w-4" style={{ color: ACCENT }} />
-              </motion.div>
-            </motion.div>
-
-            {/* Plus sign */}
-            <motion.div
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card font-light text-2xl text-muted-foreground"
-              initial={{ opacity: 0, scale: 0 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-            >
-              +
-            </motion.div>
-
-            {/* Garment */}
-            <motion.div
-              animate={{ opacity: 1, x: 0 }}
-              className="group relative"
-              initial={{ opacity: 0, x: 30 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              <div className="relative h-48 w-36 overflow-hidden rounded-xl border-2 border-border bg-gradient-to-b from-muted to-card shadow-2xl md:h-64 md:w-48">
-                {/* Garment placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Shirt
-                    className="h-20 w-20 text-muted-foreground/50 md:h-24 md:w-24"
-                    strokeWidth={1}
-                  />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-3">
-                  <p className="font-medium text-foreground text-xs tracking-wide">
-                    <Trans>Any Garment</Trans>
-                  </p>
-                </div>
-              </div>
-              <motion.div
-                animate={{ scale: 1, opacity: 1 }}
-                className="-right-2 -top-2 absolute rounded-full border border-border bg-card p-2"
-                initial={{ scale: 0, opacity: 0 }}
-                transition={{ delay: 0.7 }}
-              >
-                <Shirt className="h-4 w-4" style={{ color: ACCENT }} />
-              </motion.div>
-            </motion.div>
-
-            {/* Arrow */}
-            <motion.div
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center"
-              initial={{ opacity: 0, x: -20 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-            >
-              <div className="hidden h-px w-8 bg-gradient-to-r from-transparent via-border to-border md:block" />
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                className="rounded-full border border-border bg-card p-3"
-                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-              >
-                <Wand2 className="h-5 w-5" style={{ color: ACCENT }} />
-              </motion.div>
-              <div className="hidden h-px w-8 bg-gradient-to-r from-border via-border to-transparent md:block" />
-            </motion.div>
-
-            {/* Result */}
-            <motion.div
-              animate={{ opacity: 1, scale: 1 }}
-              className="group relative"
-              initial={{ opacity: 0, scale: 0.8 }}
-              transition={{ delay: 1, duration: 0.8 }}
-            >
-              <div
-                className="relative h-48 w-36 overflow-hidden rounded-xl border-2 shadow-2xl md:h-64 md:w-48"
-                style={{ borderColor: ACCENT }}
-              >
-                {/* Glowing effect */}
-                <div
-                  className="absolute inset-0 opacity-20"
-                  style={{
-                    background: `radial-gradient(circle at center, ${ACCENT} 0%, transparent 70%)`,
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-muted to-card" />
-                {/* Combined result placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    className="relative"
-                    transition={{
-                      duration: 2,
-                      repeat: Number.POSITIVE_INFINITY,
-                    }}
-                  >
-                    <Sparkles
-                      className="h-20 w-20 md:h-24 md:w-24"
-                      strokeWidth={1}
-                      style={{ color: ACCENT }}
-                    />
-                  </motion.div>
-                </div>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-3">
-                  <p
-                    className="font-semibold text-xs tracking-wide"
-                    style={{ color: ACCENT }}
-                  >
-                    <Trans>AI Result</Trans>
-                  </p>
-                </div>
-              </div>
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  boxShadow: [
-                    `0 0 0 0 ${ACCENT}00`,
-                    `0 0 20px 10px ${ACCENT}30`,
-                    `0 0 0 0 ${ACCENT}00`,
-                  ],
-                }}
-                className="-right-2 -top-2 absolute rounded-full border bg-card p-2"
-                style={{ borderColor: ACCENT }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-              >
-                <CheckCircle className="h-4 w-4" style={{ color: ACCENT }} />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Processing time badge */}
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8 flex items-center justify-center gap-2"
-            initial={{ opacity: 0, y: 10 }}
-            transition={{ delay: 1.2 }}
-          >
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium text-muted-foreground text-xs tracking-wide">
-              <Trans>~10 seconds processing with Gemini 3 Pro</Trans>
-            </span>
-          </motion.div>
-        </div>
-      </div>
-    </div>
-  );
-};
+const easing = [0.16, 1, 0.3, 1] as const;
 
 const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
-    <section className="relative min-h-[90vh] overflow-hidden px-6 pt-32 pb-20 md:pt-40">
-      {/* Background effects */}
-      <div className="pointer-events-none absolute inset-0">
-        {/* Radial gradient */}
-        <div
-          className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-[800px] w-[800px] opacity-30"
-          style={{
-            background: `radial-gradient(circle, ${ACCENT}20 0%, transparent 70%)`,
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-20 pb-20 md:pt-24">
+      {/* Background with Ken Burns effect */}
+      <div className="absolute inset-0 z-0">
+        <motion.img
+          alt="Fashion Background"
+          animate={{ scale: 1.1 }}
+          className="h-full w-full object-cover"
+          initial={{ scale: 1 }}
+          src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2574&auto=format&fit=crop"
+          transition={{
+            duration: 20,
+            ease: "linear",
+            repeat: Number.POSITIVE_INFINITY,
+            repeatType: "reverse",
           }}
         />
-        {/* Subtle noise texture */}
+        {/* Multi-layer gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
+
+        {/* Radial amber glow from center */}
         <div
-          className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03]"
+          className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            background:
+              "radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 60%)",
+          }}
+        />
+
+        {/* Subtle grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(var(--primary) 1px, transparent 1px),
+              linear-gradient(90deg, var(--primary) 1px, transparent 1px)
+            `,
+            backgroundSize: "80px 80px",
           }}
         />
       </div>
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* Editorial badge */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
+        {/* Redesigned Editorial badge with shimmer */}
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 flex justify-center"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
+          className="mb-10 flex justify-center"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 1, ease: easing }}
         >
-          <div
-            className="inline-flex items-center gap-2 rounded-full border px-4 py-2"
-            style={{
-              borderColor: `${ACCENT}40`,
-              backgroundColor: `${ACCENT}10`,
-            }}
-          >
-            <Sparkles className="h-3.5 w-3.5" style={{ color: ACCENT }} />
-            <span
-              className="font-medium text-xs uppercase tracking-widest"
-              style={{ color: ACCENT }}
-            >
-              <Trans>AI-Powered Fashion</Trans>
-            </span>
+          <div className="group relative overflow-hidden">
+            {/* Shimmer effect on hover */}
+            <div className="-translate-x-full absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+            <div className="relative inline-flex items-center gap-3 border-primary border-l-2 bg-gradient-to-r from-accent/20 via-accent/10 to-transparent px-8 py-3 backdrop-blur-sm">
+              {/* Animated sparkle icon */}
+              <motion.div
+                animate={{ rotate: [0, 15, 0], scale: [1, 1.1, 1] }}
+                transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
+              >
+                <Sparkles className="h-4 w-4 text-primary" />
+              </motion.div>
+
+              <span className="font-sans font-semibold text-primary text-xs uppercase tracking-[0.2em]">
+                <Trans>AI-Powered Fashion</Trans>
+              </span>
+
+              {/* Decorative dot */}
+              <div className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+            </div>
           </div>
         </motion.div>
 
-        {/* Main headline */}
+        {/* Enhanced Main headline */}
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 text-center"
+          className="mb-8 text-center"
           initial={{ opacity: 0, y: 30 }}
-          transition={{ delay: 0.1, duration: 0.8 }}
+          transition={{ delay: 0.1, duration: 1, ease: easing }}
         >
-          <h1 className="mx-auto max-w-4xl font-serif text-4xl leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
-            <span className="text-foreground">
+          <h1 className="mx-auto max-w-5xl">
+            {/* Subtitle line */}
+            <span className="mb-4 block font-sans font-semibold text-muted-foreground text-sm uppercase tracking-[0.3em]">
+              <Trans>Virtual Try-On Technology</Trans>
+            </span>
+
+            {/* Main headline */}
+            <span className="block font-serif text-5xl text-foreground leading-[1.05] md:text-7xl lg:text-8xl">
               <Trans>See How Clothes</Trans>
             </span>
-            <br />
+
+            {/* Italic accent line with enhanced gradient */}
             <span
-              className="italic"
+              className="block font-light font-serif text-5xl italic md:text-7xl lg:text-8xl"
               style={{
-                background: `linear-gradient(135deg, ${ACCENT} 0%, ${ACCENT_LIGHT} 100%)`,
+                background:
+                  "linear-gradient(135deg, var(--primary) 0%, var(--chart-2) 50%, var(--chart-3) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -289,8 +134,8 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
         <motion.p
           animate={{ opacity: 1, y: 0 }}
           className="mx-auto mb-12 max-w-2xl text-center text-lg text-muted-foreground md:text-xl"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ delay: 0.2, duration: 1, ease: easing }}
         >
           <Trans>
             Try on any garment virtually with our AI-powered technology. Powered
@@ -298,33 +143,41 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           </Trans>
         </motion.p>
 
-        {/* CTA buttons */}
+        {/* Redesigned CTA buttons */}
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          className="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row md:mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mb-16 flex flex-col items-center justify-center gap-4 sm:flex-row md:mb-24"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ delay: 0.3, duration: 1, ease: easing }}
         >
+          {/* Primary CTA with glow effect */}
           <Button
             asChild
-            className="group h-12 gap-2 rounded-full px-8 font-medium text-base"
-            style={{ backgroundColor: ACCENT }}
+            className="group relative h-14 overflow-hidden rounded-full bg-primary px-10 font-medium text-base text-primary-foreground shadow-lg shadow-primary/30 transition-all hover:shadow-primary/40 hover:shadow-xl"
           >
             <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
-              {isAuthenticated ? (
-                <Trans>Go to Dashboard</Trans>
-              ) : (
-                <Trans>Get Started Free</Trans>
-              )}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              {/* Shine effect on hover */}
+              <div className="-translate-x-full absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+
+              <span className="relative flex items-center gap-2">
+                {isAuthenticated ? (
+                  <Trans>Go to Dashboard</Trans>
+                ) : (
+                  <Trans>Get Started Free</Trans>
+                )}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
             </Link>
           </Button>
+
+          {/* Secondary CTA with accent border */}
           <Button
             asChild
-            className="h-12 gap-2 rounded-full px-8 font-medium text-base"
+            className="group h-14 gap-2 rounded-full border-2 border-border bg-background/60 px-10 font-medium text-base text-foreground backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-accent/10"
             variant="outline"
           >
             <a href="#how-it-works">
+              <Eye className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
               <Trans>See How It Works</Trans>
             </a>
           </Button>
@@ -333,12 +186,45 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
         {/* Interactive Demo */}
         <motion.div
           animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 40 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          className="relative"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ delay: 0.4, duration: 1, ease: easing }}
         >
           <TryOnDemo />
         </motion.div>
       </div>
+
+      {/* Enhanced Scroll Indicator - Mouse style */}
+      <motion.div
+        animate={{ opacity: 1 }}
+        className="-translate-x-1/2 absolute bottom-10 left-1/2"
+        initial={{ opacity: 0 }}
+        transition={{ delay: 1.5, duration: 1 }}
+      >
+        <motion.a
+          animate={{ y: [0, 8, 0] }}
+          className="flex flex-col items-center gap-3 text-muted-foreground transition-colors hover:text-primary"
+          href="#how-it-works"
+          transition={{
+            duration: 2,
+            ease: "easeInOut",
+            repeat: Number.POSITIVE_INFINITY,
+          }}
+        >
+          <span className="font-medium font-sans text-[10px] uppercase tracking-[0.2em]">
+            <Trans>Discover</Trans>
+          </span>
+
+          {/* Mouse-style indicator */}
+          <div className="relative flex h-10 w-6 items-start justify-center rounded-full border-2 border-current p-1">
+            <motion.div
+              animate={{ y: [0, 12, 0], opacity: [1, 0.5, 1] }}
+              className="h-2 w-1 rounded-full bg-current"
+              transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+            />
+          </div>
+        </motion.a>
+      </motion.div>
     </section>
   );
 };
@@ -346,8 +232,9 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 const HowItWorksSection = () => {
   const steps = [
     {
-      number: "01",
-      title: <Trans>Upload Your Photo</Trans>,
+      num: "01",
+      title: <Trans>Upload</Trans>,
+      subtitle: <Trans>Your Body Profile</Trans>,
       description: (
         <Trans>
           Create a body profile with your reference photo. Your images are
@@ -357,8 +244,9 @@ const HowItWorksSection = () => {
       icon: User,
     },
     {
-      number: "02",
-      title: <Trans>Select a Garment</Trans>,
+      num: "02",
+      title: <Trans>Select</Trans>,
+      subtitle: <Trans>Any Garment</Trans>,
       description: (
         <Trans>
           Browse our catalog or upload your own clothing items. Any style, any
@@ -368,8 +256,9 @@ const HowItWorksSection = () => {
       icon: Shirt,
     },
     {
-      number: "03",
-      title: <Trans>AI Magic</Trans>,
+      num: "03",
+      title: <Trans>Process</Trans>,
+      subtitle: <Trans>AI Magic</Trans>,
       description: (
         <Trans>
           Gemini 3 Pro analyzes pose, lighting, and fabric physics to create
@@ -379,8 +268,9 @@ const HowItWorksSection = () => {
       icon: Cpu,
     },
     {
-      number: "04",
-      title: <Trans>See the Result</Trans>,
+      num: "04",
+      title: <Trans>Result</Trans>,
+      subtitle: <Trans>Photorealistic</Trans>,
       description: (
         <Trans>
           Get photorealistic 4K results in seconds. Save favorites to your
@@ -392,88 +282,99 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="relative px-6 py-24 md:py-32" id="how-it-works">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/50 to-transparent" />
-
-      <div className="relative mx-auto max-w-7xl">
-        {/* Section header */}
+    <section
+      className="relative bg-muted/30 px-6 py-28 md:py-36"
+      id="how-it-works"
+    >
+      <div className="mx-auto max-w-6xl">
+        {/* Section header with decorative elements */}
         <motion.div
-          className="mb-16 text-center md:mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
+          className="mb-24 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 1, ease: easing }}
           viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <h2 className="mb-4 font-serif text-3xl tracking-tight md:text-5xl">
+          {/* Decorative line */}
+          <div className="mx-auto mb-8 flex items-center justify-center gap-4">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/50" />
+            <div className="h-2 w-2 rotate-45 bg-primary/60" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/50" />
+          </div>
+
+          <span className="mb-4 block font-sans font-semibold text-muted-foreground text-xs uppercase tracking-[0.25em]">
+            <Trans>Simple Process</Trans>
+          </span>
+
+          <h2 className="mb-4 font-serif text-4xl text-foreground md:text-6xl">
             <Trans>How It Works</Trans>
           </h2>
-          <p className="mx-auto max-w-xl text-muted-foreground">
+
+          <p className="mx-auto max-w-md font-serif text-lg text-muted-foreground italic">
             <Trans>From upload to try-on in four simple steps</Trans>
           </p>
         </motion.div>
 
-        {/* Steps grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, index) => (
-            <motion.div
-              className="group relative"
-              initial={{ opacity: 0, y: 30 }}
-              key={step.number}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              viewport={{ once: true }}
-              whileInView={{ opacity: 1, y: 0 }}
-            >
-              <div className="relative h-full overflow-hidden rounded-2xl border border-border bg-card/50 p-6 transition-all duration-500 hover:border-border hover:bg-card">
-                {/* Step number */}
-                <div
-                  className="mb-4 font-bold font-mono text-5xl opacity-10"
-                  style={{ color: ACCENT }}
-                >
-                  {step.number}
-                </div>
-
-                {/* Icon */}
-                <div
-                  className="mb-4 inline-flex rounded-xl p-3"
-                  style={{ backgroundColor: `${ACCENT}15` }}
-                >
-                  <step.icon className="h-5 w-5" style={{ color: ACCENT }} />
-                </div>
-
-                {/* Content */}
-                <h3 className="mb-2 font-semibold text-lg">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {step.description}
-                </p>
-
-                {/* Connector line (except last) */}
-                {index < 3 && (
-                  <div className="-right-3 absolute top-1/2 hidden h-px w-6 bg-gradient-to-r from-border to-transparent lg:block" />
+        {/* Card-based layout */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                className="group relative"
+                initial={{ opacity: 0, y: 30 }}
+                key={step.num}
+                transition={{
+                  delay: index * 0.15,
+                  duration: 0.8,
+                  ease: easing,
+                }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
+              >
+                {/* Connector line (hidden on last item) */}
+                {index < steps.length - 1 && (
+                  <div className="-right-4 absolute top-10 hidden h-px w-8 bg-gradient-to-r from-border to-transparent lg:block" />
                 )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
 
-        {/* Processing time callout */}
-        <motion.div
-          className="mt-12 flex justify-center"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, y: 0 }}
-        >
-          <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card/50 px-6 py-3">
-            <Zap className="h-4 w-4" style={{ color: ACCENT }} />
-            <span className="text-sm">
-              <Trans>Total processing time:</Trans>{" "}
-              <span className="font-semibold" style={{ color: ACCENT }}>
-                ~10 seconds
-              </span>
-            </span>
-          </div>
-        </motion.div>
+                {/* Card */}
+                <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card to-card/50 p-6 transition-all duration-500 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
+                  {/* Step number badge */}
+                  <div className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted font-mono font-semibold text-muted-foreground text-sm">
+                    {step.num}
+                  </div>
+
+                  {/* Icon with animated background */}
+                  <div className="relative mb-6 inline-flex">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card transition-colors duration-500 group-hover:border-primary/40">
+                      <Icon
+                        className="h-7 w-7 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="space-y-2">
+                    <h4 className="font-serif text-2xl text-foreground">
+                      {step.title}
+                    </h4>
+                    <p className="font-serif text-base text-primary/80 italic">
+                      {step.subtitle}
+                    </p>
+                    <p className="pt-2 text-muted-foreground text-sm leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+
+                  {/* Bottom accent line on hover */}
+                  <div className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-primary to-primary/50 transition-transform duration-500 group-hover:scale-x-100" />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -482,130 +383,141 @@ const HowItWorksSection = () => {
 const FeaturesSection = () => {
   const features = [
     {
-      icon: User,
       title: <Trans>Body Profiles</Trans>,
       description: (
         <Trans>
-          Store multiple body profiles for different poses and occasions. Set
-          your default for quick try-ons.
+          Store multiple profiles for different poses and body types. Perfect
+          for seeing how clothes fit in various scenarios.
         </Trans>
       ),
+      icon: User,
     },
     {
-      icon: Shirt,
       title: <Trans>Garment Catalog</Trans>,
       description: (
         <Trans>
-          Browse curated collections or upload your own items. Supports any
-          category from tops to accessories.
+          Browse our curated collections or upload your own clothing items. Any
+          style, any brand, any occasion.
         </Trans>
       ),
+      icon: Shirt,
     },
     {
-      icon: Sparkles,
       title: <Trans>AI Try-On</Trans>,
-      description: (
-        <Trans>
-          Gemini 3 Pro fuses images with advanced reasoning about pose,
-          lighting, and fabric physics.
-        </Trans>
-      ),
+      description: <Trans>Advanced physics and lighting analysis.</Trans>,
+      icon: Sparkles,
     },
     {
+      title: <Trans>Style Tips</Trans>,
+      description: <Trans>Get AI-generated fashion advice.</Trans>,
       icon: Wand2,
-      title: <Trans>Style Intelligence</Trans>,
-      description: (
-        <Trans>
-          Get AI-generated styling tips for fit, color matching, and outfit
-          suggestions.
-        </Trans>
-      ),
     },
     {
-      icon: Book,
       title: <Trans>Lookbooks</Trans>,
-      description: (
-        <Trans>
-          Save your favorite try-ons to lookbooks. Share them publicly or keep
-          them private.
-        </Trans>
-      ),
+      description: <Trans>Organize and share your favorite outfits.</Trans>,
+      icon: Book,
     },
     {
+      title: <Trans>4K Quality</Trans>,
+      description: <Trans>Crystal clear photorealistic results.</Trans>,
       icon: Layers,
-      title: <Trans>4K Resolution</Trans>,
-      description: (
-        <Trans>
-          Get photorealistic results up to 4K resolution. Perfect for detailed
-          fabric visualization.
-        </Trans>
-      ),
     },
   ];
 
+  // Split features for asymmetric layout
+  const featured = features.slice(0, 2);
+  const remaining = features.slice(2);
+
   return (
-    <section className="relative px-6 py-24 md:py-32" id="features">
-      <div className="mx-auto max-w-7xl">
+    <section
+      className="relative overflow-hidden bg-background px-6 py-28 md:py-36"
+      id="features"
+    >
+      {/* Background decorative element */}
+      <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 opacity-20">
+        <div className="h-full w-full rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-6xl">
         {/* Section header */}
         <motion.div
-          className="mb-16 text-center md:mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
+          className="mb-20 flex flex-col items-start md:flex-row md:items-end md:justify-between"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 1, ease: easing }}
           viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <h2 className="mb-4 font-serif text-3xl tracking-tight md:text-5xl">
-            <Trans>Everything You Need</Trans>
-          </h2>
-          <p className="mx-auto max-w-xl text-muted-foreground">
+          <div>
+            <span className="mb-3 block font-sans font-semibold text-primary text-xs uppercase tracking-[0.25em]">
+              <Trans>Platform</Trans>
+            </span>
+            <h2 className="font-serif text-4xl text-foreground md:text-6xl">
+              <Trans>Features</Trans>
+            </h2>
+          </div>
+          <p className="mt-4 max-w-sm text-muted-foreground md:mt-0 md:text-right">
             <Trans>
-              A complete virtual try-on experience powered by the latest AI
+              Everything you need for the perfect virtual try-on experience
             </Trans>
           </p>
         </motion.div>
 
-        {/* Features grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
+        {/* Featured items - larger cards */}
+        <div className="mb-12 grid gap-8 md:grid-cols-2">
+          {featured.map((feature, index) => (
             <motion.div
-              className="group relative"
+              className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
               initial={{ opacity: 0, y: 30 }}
               key={index}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
+              transition={{ delay: index * 0.1, duration: 0.8, ease: easing }}
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <div className="relative h-full overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-500 hover:border-primary/30 hover:shadow-lg">
-                {/* Hover gradient */}
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{
-                    background: `linear-gradient(135deg, ${ACCENT}08 0%, transparent 50%)`,
-                  }}
-                />
-
-                {/* Icon */}
-                <div
-                  className="relative mb-4 inline-flex rounded-xl p-3 transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${ACCENT}15` }}
-                >
-                  <feature.icon className="h-5 w-5" style={{ color: ACCENT }} />
-                </div>
-
-                {/* Content */}
-                <h3 className="relative mb-2 font-semibold text-lg">
-                  {feature.title}
-                </h3>
-                <p className="relative text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Decorative corner */}
-                <div
-                  className="-right-8 -top-8 pointer-events-none absolute h-24 w-24 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20"
-                  style={{ backgroundColor: ACCENT }}
+              {/* Large icon */}
+              <div className="mb-8 inline-flex rounded-2xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
+                <feature.icon
+                  className="h-10 w-10 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
+                  strokeWidth={1}
                 />
               </div>
+
+              <h3 className="mb-3 font-serif text-3xl text-foreground italic">
+                {feature.title}
+              </h3>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {feature.description}
+              </p>
+
+              {/* Decorative corner */}
+              <div className="absolute top-0 right-0 h-24 w-24 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Remaining items - compact grid */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {remaining.map((feature, index) => (
+            <motion.div
+              className="group relative border-border border-t pt-6 transition-colors duration-500 hover:border-primary/60"
+              initial={{ opacity: 0, y: 20 }}
+              key={index}
+              transition={{ delay: index * 0.1, duration: 0.8, ease: easing }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <feature.icon
+                  className="h-5 w-5 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
+                  strokeWidth={1.5}
+                />
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 opacity-0 transition-all duration-500 group-hover:text-primary group-hover:opacity-100" />
+              </div>
+              <h3 className="mb-2 font-serif text-foreground text-xl italic">
+                {feature.title}
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                {feature.description}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -615,61 +527,122 @@ const FeaturesSection = () => {
 };
 
 const TechSection = () => {
-  const badges = [
-    { icon: Cpu, label: <Trans>Gemini 3 Pro</Trans> },
-    { icon: Layers, label: <Trans>4K Output</Trans> },
-    { icon: Shield, label: <Trans>SynthID Watermark</Trans> },
-    { icon: Zap, label: <Trans>~10s Processing</Trans> },
+  const stats = [
+    { value: "10s", label: <Trans>Processing</Trans> },
+    { value: "4K", label: <Trans>Resolution</Trans> },
+    { value: "99%", label: <Trans>Accuracy</Trans> },
+    { value: "24/7", label: <Trans>Available</Trans> },
   ];
 
   return (
-    <section className="relative px-6 py-24 md:py-32">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/50 to-transparent" />
+    <section className="relative overflow-hidden bg-foreground py-24 text-background md:py-32">
+      {/* Gradient overlays */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground to-chart-4/20" />
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 50%)",
+          }}
+        />
+      </div>
 
-      <div className="relative mx-auto max-w-4xl text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, y: 0 }}
-        >
-          <p
-            className="mb-4 font-medium text-sm uppercase tracking-widest"
-            style={{ color: ACCENT }}
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="grid min-h-[70vh] grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* Image Side with floating badge */}
+          <motion.div
+            className="relative flex items-center justify-center"
+            initial={{ opacity: 0, x: -30 }}
+            transition={{ duration: 1, ease: easing }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
           >
-            <Trans>Powered By</Trans>
-          </p>
-          <h2 className="mb-6 font-serif text-3xl tracking-tight md:text-5xl">
-            <Trans>Google&apos;s Latest AI</Trans>
-          </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-muted-foreground">
-            <Trans>
-              Built on Gemini 3 Pro&apos;s multi-image fusion capabilities. The
-              model reasons through complex prompts to understand pose,
-              lighting, and fabric physics before generating your try-on.
-            </Trans>
-          </p>
-        </motion.div>
-
-        {/* Tech badges */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-3"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, y: 0 }}
-        >
-          {badges.map((badge, index) => (
-            <div
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2"
-              key={index}
-            >
-              <badge.icon className="h-4 w-4" style={{ color: ACCENT }} />
-              <span className="font-medium text-sm">{badge.label}</span>
+            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-3xl">
+              <motion.img
+                alt="AI Technology"
+                className="h-full w-full object-cover"
+                initial={{ scale: 1 }}
+                src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop"
+                transition={{
+                  duration: 10,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "reverse",
+                }}
+                whileInView={{ scale: 1.05 }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-foreground/20" />
             </div>
-          ))}
-        </motion.div>
+
+            {/* Floating badge */}
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              className="-translate-x-1/2 absolute bottom-8 left-1/2 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 backdrop-blur-md"
+              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
+            >
+              <Cpu className="h-5 w-5 text-primary" />
+              <span className="font-semibold text-sm text-white uppercase tracking-widest">
+                <Trans>Powered by Gemini 3 Pro</Trans>
+              </span>
+            </motion.div>
+          </motion.div>
+
+          {/* Content Side */}
+          <motion.div
+            className="flex flex-col justify-center"
+            initial={{ opacity: 0, x: 30 }}
+            transition={{ duration: 1, ease: easing }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
+          >
+            <span className="mb-4 inline-flex items-center gap-2 font-sans font-semibold text-muted-foreground text-xs uppercase tracking-[0.25em]">
+              <div className="h-px w-8 bg-primary" />
+              <Trans>The Technology</Trans>
+            </span>
+
+            <h2 className="mb-8 font-serif text-5xl text-background md:text-6xl lg:text-7xl">
+              <span className="block">
+                <Trans>Next Gen</Trans>
+              </span>
+              <span className="block text-primary italic">
+                <Trans>AI Models</Trans>
+              </span>
+            </h2>
+
+            <p className="mb-12 max-w-lg text-lg text-muted-foreground leading-relaxed">
+              <Trans>
+                Built on Gemini 3 Pro&apos;s multi-image fusion capabilities.
+                The model reasons through complex prompts to understand pose,
+                lighting, and fabric physics for photorealistic results.
+              </Trans>
+            </p>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-8 border-white/10 border-t pt-8 md:grid-cols-4">
+              {stats.map((stat, index) => (
+                <motion.div
+                  className="text-center md:text-left"
+                  initial={{ opacity: 0, y: 20 }}
+                  key={index}
+                  transition={{
+                    delay: 0.1 * index,
+                    duration: 0.8,
+                    ease: easing,
+                  }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                >
+                  <h4 className="mb-1 font-serif text-3xl text-primary italic md:text-4xl">
+                    {stat.value}
+                  </h4>
+                  <p className="font-medium font-sans text-muted-foreground text-xs uppercase tracking-wider">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -677,53 +650,82 @@ const TechSection = () => {
 
 const CTASection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
-    <section className="relative px-6 py-24 md:py-32">
-      <div className="relative mx-auto max-w-4xl">
-        <motion.div
-          className="relative overflow-hidden rounded-3xl border border-border p-8 md:p-16"
-          initial={{ opacity: 0, y: 30 }}
+    <section className="relative overflow-hidden bg-gradient-to-b from-muted/50 to-background px-6 py-32 md:py-40">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0">
+        {/* Radial gradient */}
+        <div
+          className="absolute inset-0"
           style={{
-            background: `linear-gradient(135deg, ${ACCENT}10 0%, transparent 50%, ${ACCENT}05 100%)`,
+            background:
+              "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 70%)",
           }}
-          transition={{ duration: 0.6 }}
+        />
+
+        {/* Decorative vertical line */}
+        <div className="absolute inset-x-0 top-0 flex justify-center">
+          <div className="h-32 w-px bg-gradient-to-b from-primary/30 to-transparent" />
+        </div>
+      </div>
+
+      <div className="relative mx-auto max-w-3xl text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 1, ease: easing }}
           viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          {/* Decorative elements */}
-          <div
-            className="-translate-y-1/2 pointer-events-none absolute top-0 right-0 h-64 w-64 translate-x-1/2 rounded-full opacity-20 blur-3xl"
-            style={{ backgroundColor: ACCENT }}
-          />
-          <div
-            className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 h-48 w-48 translate-y-1/2 rounded-full opacity-20 blur-3xl"
-            style={{ backgroundColor: ACCENT }}
-          />
+          {/* Decorative quote mark */}
+          <div className="mb-8 flex justify-center">
+            <span className="font-serif text-6xl text-primary/30">"</span>
+          </div>
 
-          <div className="relative text-center">
-            <h2 className="mb-4 font-serif text-3xl tracking-tight md:text-5xl">
-              <Trans>Ready to Try It On?</Trans>
-            </h2>
-            <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
-              <Trans>
-                Create your first virtual try-on in minutes. No credit card
-                required.
-              </Trans>
-            </p>
-            <Button
-              asChild
-              className="group h-12 gap-2 rounded-full px-8 font-medium text-base"
-              style={{ backgroundColor: ACCENT }}
+          <h2 className="mb-6 font-serif text-5xl text-foreground md:text-7xl">
+            <span className="block italic">
+              <Trans>Your Style,</Trans>
+            </span>
+            <span
+              className="block"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--primary) 0%, var(--chart-3) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
             >
-              <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
+              <Trans>Reimagined</Trans>
+            </span>
+          </h2>
+
+          <p className="mb-12 text-muted-foreground">
+            <Trans>
+              Join thousands of fashion enthusiasts who trust Drezzi
+            </Trans>
+          </p>
+
+          {/* CTA Button with glow */}
+          <Button
+            asChild
+            className="group relative h-16 overflow-hidden rounded-full bg-foreground px-12 text-background text-lg shadow-2xl shadow-foreground/20 transition-all hover:shadow-foreground/30"
+          >
+            <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
+              <div className="-translate-x-full absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="relative flex items-center gap-3">
                 {isAuthenticated ? (
                   <Trans>Go to Dashboard</Trans>
                 ) : (
                   <Trans>Get Started Free</Trans>
                 )}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          </Button>
+
+          {/* Trust signal */}
+          <p className="mt-8 flex items-center justify-center gap-2 text-muted-foreground text-sm">
+            <CheckCircle className="h-4 w-4 text-primary" />
+            <Trans>No credit card required</Trans>
+          </p>
         </motion.div>
       </div>
     </section>
@@ -736,7 +738,7 @@ const Landing = () => {
   const isAuthenticated = Boolean(sessionQuery.data);
 
   return (
-    <div className="relative">
+    <div className="relative bg-background text-foreground">
       <HeroSection isAuthenticated={isAuthenticated} />
       <HowItWorksSection />
       <FeaturesSection />

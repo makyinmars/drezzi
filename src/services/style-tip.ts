@@ -30,7 +30,7 @@ export async function generateStyleTips(input: GenerateStyleTipsInput) {
   const prompt = buildStyleTipPrompt(input);
 
   const result = await generateObject({
-    model: google("gemini-2.5-flash-preview-05-20"),
+    model: google("gemini-2.5-flash-preview-09-2025"),
     schema: styleTipSchema,
     prompt,
   });

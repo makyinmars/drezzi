@@ -301,4 +301,226 @@
   .animate-loading-text {
     animation: loading-text-pulse 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
+
+  /* ===== Try-On Demo 3D Animations ===== */
+
+  /* Elegant floating with 3D depth */
+  @keyframes demo-float {
+    0%,
+    100% {
+      transform: translateY(0) translateZ(var(--float-z, 10px))
+        rotateY(var(--float-rotate-y, 0deg))
+        rotateX(var(--float-rotate-x, 0deg));
+    }
+    50% {
+      transform: translateY(-12px) translateZ(calc(var(--float-z, 10px) + 8px))
+        rotateY(var(--float-rotate-y, 0deg))
+        rotateX(calc(var(--float-rotate-x, 0deg) + 2deg));
+    }
+  }
+
+  /* Scan line sweep - editorial tech feel */
+  @keyframes demo-scan-line {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    95% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Subtle glow pulse */
+  @keyframes demo-glow-pulse {
+    0%,
+    100% {
+      box-shadow:
+        0 0 20px 0 var(--glow-color, var(--accent)),
+        0 0 40px -10px var(--glow-color, var(--accent));
+    }
+    50% {
+      box-shadow:
+        0 0 40px 5px var(--glow-color, var(--accent)),
+        0 0 80px -5px var(--glow-color, var(--accent));
+    }
+  }
+
+  /* Orbiting particles around wand */
+  @keyframes demo-particle-orbit {
+    0% {
+      transform: rotate(0deg) translateX(24px) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(360deg) translateX(24px) scale(0.6);
+      opacity: 0.3;
+    }
+  }
+
+  /* Wand wiggle during scanning */
+  @keyframes demo-wand-wiggle {
+    0%,
+    100% {
+      transform: rotate(-5deg) scale(1);
+    }
+    25% {
+      transform: rotate(15deg) scale(1.05);
+    }
+    75% {
+      transform: rotate(-10deg) scale(1.02);
+    }
+  }
+
+  /* Wand continuous spin during processing */
+  @keyframes demo-wand-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Result card cinematic reveal */
+  @keyframes demo-result-reveal {
+    0% {
+      transform: scale(0.7) rotateY(90deg) translateZ(30px);
+      opacity: 0;
+      filter: blur(4px);
+    }
+    60% {
+      filter: blur(0px);
+    }
+    100% {
+      transform: scale(1) rotateY(0deg) translateZ(40px);
+      opacity: 1;
+      filter: blur(0px);
+    }
+  }
+
+  /* Success sparkle burst */
+  @keyframes demo-sparkle-burst {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.8) rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+  /* Shimmer effect for scanning */
+  @keyframes demo-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Icon breathing effect */
+  @keyframes demo-icon-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.08);
+      opacity: 0.7;
+    }
+  }
+
+  /* Processing merge animation */
+  @keyframes demo-merge-left {
+    0% {
+      transform: translateX(0) translateZ(10px) rotateY(5deg);
+    }
+    100% {
+      transform: translateX(40px) translateZ(0px) rotateY(0deg) scale(0.92);
+    }
+  }
+
+  @keyframes demo-merge-right {
+    0% {
+      transform: translateX(0) translateZ(10px) rotateY(-5deg);
+    }
+    100% {
+      transform: translateX(-40px) translateZ(0px) rotateY(0deg) scale(0.92);
+    }
+  }
+
+  /* Connector line draw */
+  @keyframes demo-line-draw {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  /* Badge pulse */
+  @keyframes demo-badge-pulse {
+    0%,
+    100% {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  /* ===== Landing Page Utility Animations ===== */
+
+  /* Shimmer effect for interactive elements */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  /* Gradient text utility */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--primary), var(--chart-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Scale-in animation for hover effects */
+  @keyframes scale-x-in {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
 }
