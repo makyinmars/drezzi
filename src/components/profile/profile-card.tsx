@@ -1,6 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BodyProfile } from "generated/prisma/client";
 import { Check, Edit, Star, Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,12 +14,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTRPC } from "@/trpc/react";
+import type { ProfileListProcedure } from "@/trpc/routers/profile";
 
 import ProfileDelete from "./profile-delete";
 import ProfileForm from "./profile-form";
 
 type ProfileCardProps = {
-  profile: BodyProfile;
+  profile: ProfileListProcedure[number];
 };
 
 const ProfileCard = ({ profile }: ProfileCardProps) => {
@@ -78,10 +78,10 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
 
   return (
     <Card className="overflow-hidden">
-      <div className="relative h-48">
+      <div className="relative aspect-[4/5] bg-muted lg:aspect-[3/4]">
         <img
           alt={profile.name}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain p-1"
           src={profile.photoUrl}
         />
         {profile.isDefault && (

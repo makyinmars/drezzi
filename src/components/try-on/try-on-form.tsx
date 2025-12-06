@@ -90,10 +90,9 @@ const TryOnForm = ({
 
   const createMutation = useMutation(
     trpc.tryOn.create.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.setQueryData(trpc.tryOn.list.queryKey({}), (old) => {
-          if (!old) return [data];
-          return [data, ...old];
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.tryOn.list.queryKey(),
         });
         setOpen(false);
         form.reset();
@@ -102,17 +101,15 @@ const TryOnForm = ({
   );
 
   const onSubmit = (data: TryOnCreate) => {
-    toast.promise(
-      createMutation.mutateAsync({
-        bodyProfileId: data.bodyProfileId,
-        garmentId: data.garmentId,
-      }),
-      {
-        loading: t`Starting try-on...`,
-        success: t`Try-on started! It will be ready in a few moments.`,
-        error: (err) => t`Failed to start try-on: ${err.message}`,
-      }
-    );
+    const formData = new FormData();
+    formData.append("bodyProfileId", data.bodyProfileId);
+    formData.append("garmentId", data.garmentId);
+
+    toast.promise(createMutation.mutateAsync(formData), {
+      loading: t`Starting try-on...`,
+      success: t`Try-on started! It will be ready in a few moments.`,
+      error: (err) => t`Failed to start try-on: ${err.message}`,
+    });
   };
 
   return (

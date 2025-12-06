@@ -2,6 +2,7 @@ import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Resource } from "sst";
 
+import { prisma } from "@/lib/prisma";
 import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function getGarmentUploadUrl(userId: string, contentType: string) {
@@ -15,9 +16,17 @@ export async function getGarmentUploadUrl(userId: string, contentType: string) {
   });
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  const imageUrl = `https://${Resource.MediaBucket.name}.s3.us-east-2.amazonaws.com/${key}`;
 
-  return { url, key, imageUrl };
+  const file = await prisma.file.create({
+    data: {
+      key,
+      bucket: "media",
+      mimeType: contentType,
+      uploadedBy: userId,
+    },
+  });
+
+  return { url, key, fileId: file.id };
 }
 
 export async function deleteGarmentAssets(imageKey: string) {

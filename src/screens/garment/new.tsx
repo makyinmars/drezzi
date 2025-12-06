@@ -50,24 +50,6 @@ const GarmentNewScreen = () => {
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const getUploadUrlMutation = useMutation(
-    trpc.garment.getUploadUrl.mutationOptions({})
-  );
-
-  const uploadToS3 = async (file: File) => {
-    const { url, key, imageUrl } = await getUploadUrlMutation.mutateAsync({
-      contentType: file.type,
-      contentLength: file.size,
-    });
-    const response = await fetch(url, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!response.ok) throw new Error("Failed to upload image");
-    return { imageUrl, imageKey: key };
-  };
-
   const form = useForm<GarmentCreateAndUpdate>({
     resolver: zodResolver(apiGarmentCreateAndUpdate),
     defaultValues: {
@@ -78,7 +60,7 @@ const GarmentNewScreen = () => {
       brand: null,
       price: null,
       currency: "USD",
-      maskUrl: null,
+      maskId: null,
       retailUrl: null,
       colors: [],
       sizes: [],
@@ -106,39 +88,43 @@ const GarmentNewScreen = () => {
     setSelectedFile(file);
   };
 
+  const buildFormData = (data: GarmentCreateAndUpdate, file: File | null) => {
+    const formData = new FormData();
+    if (file) formData.append("file", file);
+    formData.append("name", data.name);
+    formData.append("description", data.description ?? "");
+    formData.append("category", data.category);
+    formData.append("subcategory", data.subcategory ?? "");
+    formData.append("brand", data.brand ?? "");
+    if (data.price !== null && data.price !== undefined) {
+      formData.append("price", data.price.toString());
+    } else {
+      formData.append("price", "");
+    }
+    formData.append("currency", data.currency);
+    formData.append("maskId", data.maskId ?? "");
+    formData.append("retailUrl", data.retailUrl ?? "");
+    formData.append("colors", JSON.stringify(data.colors ?? []));
+    formData.append("sizes", JSON.stringify(data.sizes ?? []));
+    formData.append("tags", JSON.stringify(data.tags ?? []));
+    formData.append("isActive", String(data.isActive));
+    formData.append("isPublic", String(data.isPublic));
+    return formData;
+  };
+
   const onSubmit = async (data: GarmentCreateAndUpdate) => {
     if (!selectedFile) {
       toast.error(t`Please upload an image first`);
       return;
     }
 
-    const uploaded = await uploadToS3(selectedFile);
+    const formData = buildFormData(data, selectedFile);
 
-    toast.promise(
-      createMutation.mutateAsync({
-        name: data.name,
-        description: data.description ?? undefined,
-        category: data.category,
-        subcategory: data.subcategory ?? undefined,
-        brand: data.brand ?? undefined,
-        price: data.price ?? undefined,
-        currency: data.currency,
-        imageUrl: uploaded.imageUrl,
-        imageKey: uploaded.imageKey,
-        maskUrl: data.maskUrl ?? undefined,
-        retailUrl: data.retailUrl ?? undefined,
-        colors: data.colors,
-        sizes: data.sizes,
-        tags: data.tags,
-        isActive: data.isActive,
-        isPublic: data.isPublic,
-      }),
-      {
-        loading: t`Adding garment...`,
-        success: (created) => t`"${created.name}" has been added`,
-        error: (err) => t`Error adding garment: ${err.message}`,
-      }
-    );
+    toast.promise(createMutation.mutateAsync(formData), {
+      loading: t`Adding garment...`,
+      success: (created) => t`"${created.name}" has been added`,
+      error: (err) => t`Error adding garment: ${err.message}`,
+    });
   };
 
   return (
@@ -399,9 +385,7 @@ const GarmentNewScreen = () => {
 
               <Button
                 className="w-full"
-                disabled={
-                  getUploadUrlMutation.isPending || createMutation.isPending
-                }
+                disabled={createMutation.isPending}
                 size="lg"
                 type="submit"
               >

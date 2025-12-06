@@ -1,11 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BodyProfile } from "generated/prisma/client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useTRPC } from "@/trpc/react";
+import type { ProfileListProcedure } from "@/trpc/routers/profile";
 import {
   apiBodyProfileCreateAndUpdate,
   type BodyProfileCreateAndUpdate,
@@ -41,7 +40,7 @@ import {
 import PhotoUpload from "./photo-upload";
 
 type ProfileFormProps = {
-  profile?: BodyProfile;
+  profile?: ProfileListProcedure[number];
   children?: React.ReactNode;
 };
 
@@ -52,31 +51,12 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const getUploadUrlMutation = useMutation(
-    trpc.profile.getUploadUrl.mutationOptions({})
-  );
-
-  const uploadToS3 = async (file: File) => {
-    const { url, key, photoUrl } = await getUploadUrlMutation.mutateAsync({
-      contentType: file.type,
-      contentLength: file.size,
-    });
-    const response = await fetch(url, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!response.ok) throw new Error("Failed to upload photo");
-    return { photoUrl, photoKey: key };
-  };
-
   const form = useForm<BodyProfileCreateAndUpdate>({
     resolver: zodResolver(apiBodyProfileCreateAndUpdate),
     defaultValues: {
       id: profile?.id,
       name: profile?.name || "Default",
-      photoUrl: profile?.photoUrl,
-      photoKey: profile?.photoKey,
+      photoId: profile?.photoId,
       height: profile?.height,
       waist: profile?.waist,
       hip: profile?.hip,
@@ -95,58 +75,9 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
 
   const createMutation = useMutation(
     trpc.profile.create.mutationOptions({
-      onMutate: async (variables) => {
-        await queryClient.cancelQueries({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
           queryKey: trpc.profile.list.queryKey(),
-          exact: true,
-        });
-
-        const previousData = queryClient.getQueryData(
-          trpc.profile.list.queryKey()
-        );
-
-        const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-
-        const optimisticProfile = {
-          id: tempId,
-          userId: "",
-          name: variables.name ?? "Default",
-          photoUrl: variables.photoUrl,
-          photoKey: variables.photoKey,
-          height: variables.height ?? null,
-          waist: variables.waist ?? null,
-          hip: variables.hip ?? null,
-          inseam: variables.inseam ?? null,
-          chest: variables.chest ?? null,
-          fitPreference: variables.fitPreference ?? "regular",
-          isDefault: variables.isDefault ?? false,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        queryClient.setQueryData(trpc.profile.list.queryKey(), (old) => {
-          if (!old) {
-            return [optimisticProfile];
-          }
-          return [optimisticProfile, ...old];
-        });
-
-        return { previousData, optimisticProfile };
-      },
-      onError: (_err, _variables, context) => {
-        queryClient.setQueryData(
-          trpc.profile.list.queryKey(),
-          context?.previousData
-        );
-      },
-      onSuccess: (created, _variables, context) => {
-        queryClient.setQueryData(trpc.profile.list.queryKey(), (old) => {
-          if (!old) {
-            return [created];
-          }
-          return old.map((p) =>
-            p.id === context?.optimisticProfile.id ? created : p
-          );
         });
         form.reset();
         setOpen(false);
@@ -156,41 +87,9 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
 
   const updateMutation = useMutation(
     trpc.profile.update.mutationOptions({
-      onMutate: async (variables) => {
-        await queryClient.cancelQueries({
-          queryKey: trpc.profile.list.queryKey(),
-          exact: true,
-        });
-
-        const previousData = queryClient.getQueryData(
-          trpc.profile.list.queryKey()
-        );
-
-        queryClient.setQueryData(trpc.profile.list.queryKey(), (old) => {
-          if (!old) {
-            return previousData;
-          }
-          return old.map((p) =>
-            p.id === variables.id
-              ? { ...p, ...variables, updatedAt: new Date() }
-              : p
-          );
-        });
-
-        return { previousData };
-      },
-      onError: (_err, _variables, context) => {
-        queryClient.setQueryData(
-          trpc.profile.list.queryKey(),
-          context?.previousData
-        );
-      },
       onSuccess: async (updated) => {
-        queryClient.setQueryData(trpc.profile.list.queryKey(), (old) => {
-          if (!old) {
-            return [updated];
-          }
-          return old.map((p) => (p.id === updated.id ? updated : p));
+        await queryClient.invalidateQueries({
+          queryKey: trpc.profile.list.queryKey(),
         });
         await queryClient.invalidateQueries({
           queryKey: trpc.profile.byId.queryKey({ id: updated.id }),
@@ -204,62 +103,54 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
     setSelectedFile(file);
   };
 
+  const buildFormData = (
+    data: BodyProfileCreateAndUpdate,
+    file: File | null
+  ) => {
+    const formData = new FormData();
+    if (data.id) formData.append("id", data.id);
+    if (file) formData.append("file", file);
+    formData.append("name", data.name);
+    formData.append("fitPreference", data.fitPreference);
+    formData.append("isDefault", String(data.isDefault));
+
+    const appendNumber = (key: string, value: number | null | undefined) => {
+      if (value === null) {
+        formData.append(key, "");
+      } else if (value !== undefined) {
+        formData.append(key, value.toString());
+      }
+    };
+
+    appendNumber("height", data.height);
+    appendNumber("waist", data.waist);
+    appendNumber("hip", data.hip);
+    appendNumber("inseam", data.inseam);
+    appendNumber("chest", data.chest);
+
+    return formData;
+  };
+
   const onSubmit = async (data: BodyProfileCreateAndUpdate) => {
-    let photoUrl = profile?.photoUrl;
-    let photoKey = profile?.photoKey;
+    const formData = buildFormData(data, selectedFile);
 
-    if (selectedFile) {
-      const uploaded = await uploadToS3(selectedFile);
-      photoUrl = uploaded.photoUrl;
-      photoKey = uploaded.photoKey;
-    }
-
-    if (!(photoUrl && photoKey)) {
+    if (!(data.id || selectedFile)) {
       toast.error(t`Please upload a photo first`);
       return;
     }
 
     if (data.id) {
-      toast.promise(
-        updateMutation.mutateAsync({
-          id: data.id,
-          name: data.name,
-          photoUrl,
-          photoKey,
-          height: data.height,
-          waist: data.waist,
-          hip: data.hip,
-          inseam: data.inseam,
-          chest: data.chest,
-          fitPreference: data.fitPreference,
-          isDefault: data.isDefault,
-        }),
-        {
-          loading: t`Updating profile...`,
-          success: (updated) => t`"${updated.name}" has been updated`,
-          error: (err) => t`Error updating profile: ${err.message}`,
-        }
-      );
+      toast.promise(updateMutation.mutateAsync(formData), {
+        loading: t`Updating profile...`,
+        success: (updated) => t`"${updated.name}" has been updated`,
+        error: (err) => t`Error updating profile: ${err.message}`,
+      });
     } else {
-      toast.promise(
-        createMutation.mutateAsync({
-          name: data.name,
-          photoUrl,
-          photoKey,
-          height: data.height ?? undefined,
-          waist: data.waist ?? undefined,
-          hip: data.hip ?? undefined,
-          inseam: data.inseam ?? undefined,
-          chest: data.chest ?? undefined,
-          fitPreference: data.fitPreference,
-          isDefault: data.isDefault,
-        }),
-        {
-          loading: t`Creating profile...`,
-          success: (created) => t`"${created.name}" has been created`,
-          error: (err) => t`Error creating profile: ${err.message}`,
-        }
-      );
+      toast.promise(createMutation.mutateAsync(formData), {
+        loading: t`Creating profile...`,
+        success: (created) => t`"${created.name}" has been created`,
+        error: (err) => t`Error creating profile: ${err.message}`,
+      });
     }
   };
 
@@ -503,8 +394,7 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
             <Button
               className="w-full"
               disabled={
-                getUploadUrlMutation.isPending ||
-                (profile ? updateMutation.isPending : createMutation.isPending)
+                profile ? updateMutation.isPending : createMutation.isPending
               }
               type="submit"
             >

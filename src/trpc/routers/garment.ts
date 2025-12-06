@@ -1,4 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import z from "zod/v4";
 
 import {
   deleteGarmentAssets,
@@ -16,10 +17,53 @@ import {
 import { createErrors } from "../errors";
 import { protectedProcedure, publicProcedure } from "../init";
 import type { RouterOutput } from "../utils";
+import { uploadFileToS3 } from "../utils/file-upload";
 
 const IMAGE_TYPE_REGEX = /^image\/(jpeg|png|webp)$/;
 
 export type GarmentListProcedure = RouterOutput["garment"]["list"];
+
+const toOptionalNumber = (value: FormDataEntryValue | null) => {
+  if (typeof value !== "string" || value.trim() === "") return;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+};
+
+const toNullableNumber = (value: FormDataEntryValue | null) => {
+  if (typeof value !== "string") return;
+  if (value.trim() === "") return null;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+};
+
+const toNullableString = (value: FormDataEntryValue | null) => {
+  if (typeof value !== "string") return;
+  return value.trim() === "" ? null : value;
+};
+
+const toOptionalString = (value: FormDataEntryValue | null) => {
+  if (typeof value !== "string") return;
+  return value.trim() === "" ? undefined : value;
+};
+
+const toBoolean = (value: FormDataEntryValue | null, fallback = false) => {
+  if (typeof value !== "string") return fallback;
+  return value === "true";
+};
+
+const toStringArray = (value: FormDataEntryValue | null) => {
+  if (typeof value !== "string") return;
+  if (!value.trim()) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.map((v) => String(v)) : [];
+  } catch {
+    return value
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+};
 
 export const garmentRouter = {
   list: protectedProcedure
@@ -44,13 +88,14 @@ export const garmentRouter = {
             price: { lte: input.maxPrice },
           }),
         },
+        include: { image: true },
         orderBy: { createdAt: "desc" },
       });
 
       return Promise.all(
         garments.map(async (g) => ({
           ...g,
-          imageUrl: await getGarmentImageUrl(g.imageKey),
+          imageUrl: await getGarmentImageUrl(g.image.key),
           isOwner: g.userId === userId,
         }))
       );
@@ -68,13 +113,14 @@ export const garmentRouter = {
           ...(input.tags?.length && { tags: { hasSome: input.tags } }),
           ...(input.colors?.length && { colors: { hasSome: input.colors } }),
         },
+        include: { image: true },
         orderBy: { createdAt: "desc" },
       });
 
       return Promise.all(
         garments.map(async (g) => ({
           ...g,
-          imageUrl: await getGarmentImageUrl(g.imageKey),
+          imageUrl: await getGarmentImageUrl(g.image.key),
         }))
       );
     }),
@@ -88,6 +134,7 @@ export const garmentRouter = {
         id: input.id,
         OR: [{ userId }, { isPublic: true }],
       },
+      include: { image: true, mask: true },
     });
 
     if (!garment) {
@@ -96,20 +143,51 @@ export const garmentRouter = {
 
     return {
       ...garment,
-      imageUrl: await getGarmentImageUrl(garment.imageKey),
+      imageUrl: await getGarmentImageUrl(garment.image.key),
       isOwner: garment.userId === userId,
     };
   }),
 
   create: protectedProcedure
-    .input(apiGarmentCreate)
+    .input(z.instanceof(FormData))
     .mutation(async ({ input, ctx }) => {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
+      const file = input.get("file");
+      if (!(file instanceof File)) {
+        throw errors.invalidGarmentImage();
+      }
+
+      const uploaded = await uploadFileToS3({
+        file,
+        userId,
+        prisma: ctx.prisma,
+        prefix: "garments",
+        allowedMimeTypes: IMAGE_TYPE_REGEX,
+      });
+
+      const parsed = apiGarmentCreate.parse({
+        name: input.get("name")?.toString(),
+        description: toOptionalString(input.get("description")),
+        category: input.get("category")?.toString(),
+        subcategory: toOptionalString(input.get("subcategory")),
+        brand: toOptionalString(input.get("brand")),
+        price: toOptionalNumber(input.get("price")),
+        currency: input.get("currency")?.toString() ?? "USD",
+        imageId: uploaded.id,
+        maskId: undefined,
+        retailUrl: toOptionalString(input.get("retailUrl")),
+        colors: toStringArray(input.get("colors")) ?? [],
+        sizes: toStringArray(input.get("sizes")) ?? [],
+        tags: toStringArray(input.get("tags")) ?? [],
+        isActive: toBoolean(input.get("isActive"), true),
+        isPublic: toBoolean(input.get("isPublic"), false),
+      });
+
       const garment = await ctx.prisma.garment.create({
         data: {
-          ...input,
+          ...parsed,
           userId,
         },
       });
@@ -122,11 +200,15 @@ export const garmentRouter = {
     }),
 
   update: protectedProcedure
-    .input(apiGarmentUpdate)
+    .input(z.instanceof(FormData))
     .mutation(async ({ input, ctx }) => {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
-      const { id, ...data } = input;
+
+      const id = input.get("id")?.toString();
+      if (!id) {
+        throw errors.invalidInput();
+      }
 
       const existing = await ctx.prisma.garment.findFirst({
         where: { id, userId },
@@ -136,9 +218,62 @@ export const garmentRouter = {
         throw errors.garmentNotFound();
       }
 
+      const file = input.get("file");
+      let imageId = existing.imageId;
+
+      if (file instanceof File) {
+        const uploaded = await uploadFileToS3({
+          file,
+          userId,
+          prisma: ctx.prisma,
+          prefix: "garments",
+          allowedMimeTypes: IMAGE_TYPE_REGEX,
+        });
+        imageId = uploaded.id;
+      }
+
+      const parsed = apiGarmentUpdate.parse({
+        id,
+        name: input.get("name")?.toString(),
+        description: toNullableString(input.get("description")),
+        category: input.get("category")?.toString(),
+        subcategory: toNullableString(input.get("subcategory")),
+        brand: toNullableString(input.get("brand")),
+        price: toNullableNumber(input.get("price")),
+        currency: input.get("currency")?.toString(),
+        imageId,
+        maskId: toNullableString(input.get("maskId")),
+        retailUrl: toNullableString(input.get("retailUrl")),
+        colors: toStringArray(input.get("colors")),
+        sizes: toStringArray(input.get("sizes")),
+        tags: toStringArray(input.get("tags")),
+        isActive: toBoolean(input.get("isActive"), existing.isActive),
+        isPublic: toBoolean(input.get("isPublic"), existing.isPublic),
+      });
+
+      const updateData: Record<string, unknown> = {};
+      if (parsed.name !== undefined) updateData.name = parsed.name;
+      if (parsed.description !== undefined)
+        updateData.description = parsed.description;
+      if (parsed.category !== undefined) updateData.category = parsed.category;
+      if (parsed.subcategory !== undefined)
+        updateData.subcategory = parsed.subcategory;
+      if (parsed.brand !== undefined) updateData.brand = parsed.brand;
+      if (parsed.price !== undefined) updateData.price = parsed.price;
+      if (parsed.currency !== undefined) updateData.currency = parsed.currency;
+      if (parsed.imageId !== undefined) updateData.imageId = parsed.imageId;
+      if (parsed.maskId !== undefined) updateData.maskId = parsed.maskId;
+      if (parsed.retailUrl !== undefined)
+        updateData.retailUrl = parsed.retailUrl;
+      if (parsed.colors !== undefined) updateData.colors = parsed.colors;
+      if (parsed.sizes !== undefined) updateData.sizes = parsed.sizes;
+      if (parsed.tags !== undefined) updateData.tags = parsed.tags;
+      if (parsed.isActive !== undefined) updateData.isActive = parsed.isActive;
+      if (parsed.isPublic !== undefined) updateData.isPublic = parsed.isPublic;
+
       const updated = await ctx.prisma.garment.update({
         where: { id },
-        data,
+        data: updateData,
       });
 
       return updated;
@@ -152,13 +287,14 @@ export const garmentRouter = {
 
       const garment = await ctx.prisma.garment.findFirst({
         where: { id: input.id, userId },
+        include: { image: true },
       });
 
       if (!garment) {
         throw errors.garmentNotFound();
       }
 
-      await deleteGarmentAssets(garment.imageKey);
+      await deleteGarmentAssets(garment.image.key);
 
       const deleted = await ctx.prisma.garment.delete({
         where: { id: input.id },

@@ -153,17 +153,17 @@ const TryOnDetailScreen = () => {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Result */}
         <Card className="overflow-hidden lg:col-span-2">
-          {tryOn.status === "completed" && tryOn.resultUrl ? (
-            <img
-              alt={t`Try-on result for ${tryOn.garment.name}`}
-              className="aspect-[3/4] w-full object-contain"
-              src={tryOn.resultUrl}
-            />
-          ) : (
-            <div className="flex aspect-[3/4] w-full items-center justify-center bg-muted">
+          <div className="flex max-h-[60vh] min-h-80 items-center justify-center bg-muted lg:max-h-[70vh]">
+            {tryOn.status === "completed" && tryOn.resultUrl ? (
+              <img
+                alt={t`Try-on result for ${tryOn.garment.name}`}
+                className="h-full w-full object-contain"
+                src={tryOn.resultUrl}
+              />
+            ) : (
               <TryOnProgress status={tryOn.status} />
-            </div>
-          )}
+            )}
+          </div>
         </Card>
 
         {/* Sidebar */}

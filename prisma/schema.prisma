@@ -15,7 +15,7 @@ enum UserRole {
 }
 
 model User {
-  id            String        @id
+  id            String        @id @default(cuid())
   name          String
   email         String        @unique
   emailVerified Boolean       @default(false) @map("email_verified")
@@ -34,7 +34,7 @@ model User {
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(cuid())
   expiresAt DateTime @map("expires_at")
   token     String   @unique
   createdAt DateTime @map("created_at")
@@ -48,7 +48,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
+  id                    String    @id @default(cuid())
   accountId             String    @map("account_id")
   providerId            String    @map("provider_id")
   userId                String    @map("user_id")
@@ -67,7 +67,7 @@ model Account {
 }
 
 model Verification {
-  id         String    @id
+  id         String    @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime  @map("expires_at")
@@ -86,7 +86,7 @@ enum TodoStatus {
 }
 
 model Todo {
-  id          String     @id @default(uuid())
+  id          String     @id @default(cuid())
   text        String
   description String?
   active      Boolean    @default(true)
@@ -97,12 +97,32 @@ model Todo {
   @@map("todo")
 }
 
+model File {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  bucket     String   @default("media")
+  filename   String?
+  mimeType   String?  @map("mime_type")
+  size       Int?
+  uploadedBy String?  @map("uploaded_by")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  bodyProfilePhoto BodyProfile? @relation("ProfilePhoto")
+  garmentImage     Garment?     @relation("GarmentImage")
+  garmentMask      Garment?     @relation("GarmentMask")
+  tryOnFrontPhoto  TryOn?       @relation("TryOnFrontPhoto")
+  tryOnBackPhoto   TryOn?       @relation("TryOnBackPhoto")
+  tryOnResult      TryOn?       @relation("TryOnResult")
+  lookbookCover    Lookbook?    @relation("LookbookCover")
+
+  @@map("file")
+}
+
 model BodyProfile {
   id            String   @id @default(cuid())
   userId        String   @map("user_id")
   name          String   @default("Default")
-  photoUrl      String   @map("photo_url")
-  photoKey      String   @map("photo_key")
+  photoId       String   @unique @map("photo_id")
   height        Float?
   waist         Float?
   hip           Float?
@@ -114,6 +134,7 @@ model BodyProfile {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo  File    @relation("ProfilePhoto", fields: [photoId], references: [id])
   tryOns TryOn[]
 
   @@index([userId])
@@ -130,9 +151,8 @@ model Garment {
   brand       String?
   price       Float?
   currency    String   @default("USD")
-  imageUrl    String   @map("image_url")
-  imageKey    String   @map("image_key")
-  maskUrl     String?  @map("mask_url")
+  imageId     String   @unique @map("image_id")
+  maskId      String?  @unique @map("mask_id")
   retailUrl   String?  @map("retail_url")
   colors      String[] @default([])
   sizes       String[] @default([])
@@ -144,6 +164,8 @@ model Garment {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  image  File    @relation("GarmentImage", fields: [imageId], references: [id])
+  mask   File?   @relation("GarmentMask", fields: [maskId], references: [id])
   tryOns TryOn[]
 
   @@index([userId])
@@ -159,8 +181,9 @@ model TryOn {
   bodyProfileId   String    @map("body_profile_id")
   garmentId       String    @map("garment_id")
   status          String    @default("pending")
-  resultUrl       String?   @map("result_url")
-  resultKey       String?   @map("result_key")
+  frontPhotoId    String?   @unique @map("front_photo_id")
+  backPhotoId     String?   @unique @map("back_photo_id")
+  resultId        String?   @unique @map("result_id")
   jobId           String?   @map("job_id")
   processingMs    Int?      @map("processing_ms")
   confidenceScore Float?    @map("confidence_score")
@@ -173,6 +196,9 @@ model TryOn {
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   bodyProfile   BodyProfile    @relation(fields: [bodyProfileId], references: [id])
   garment       Garment        @relation(fields: [garmentId], references: [id])
+  frontPhoto    File?          @relation("TryOnFrontPhoto", fields: [frontPhotoId], references: [id])
+  backPhoto     File?          @relation("TryOnBackPhoto", fields: [backPhotoId], references: [id])
+  result        File?          @relation("TryOnResult", fields: [resultId], references: [id])
   lookbookItems LookbookItem[]
   styleTips     StyleTip[]
 
@@ -186,14 +212,14 @@ model Lookbook {
   userId      String   @map("user_id")
   name        String
   description String?
-  coverUrl    String?  @map("cover_url")
-  coverKey    String?  @map("cover_key")
+  coverId     String?  @unique @map("cover_id")
   isPublic    Boolean  @default(false) @map("is_public")
   shareSlug   String?  @unique @map("share_slug")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cover File?          @relation("LookbookCover", fields: [coverId], references: [id])
   items LookbookItem[]
 
   @@index([userId])

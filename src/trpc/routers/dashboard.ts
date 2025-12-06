@@ -55,8 +55,9 @@ export const dashboardRouter = {
     const tryOns = await ctx.prisma.tryOn.findMany({
       where: { userId },
       include: {
-        bodyProfile: true,
-        garment: true,
+        result: true,
+        bodyProfile: { include: { photo: true } },
+        garment: { include: { image: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 5,
@@ -68,17 +69,17 @@ export const dashboardRouter = {
         status: t.status,
         createdAt: t.createdAt,
         completedAt: t.completedAt,
-        resultUrl: t.resultKey ? await getTryOnResultUrl(t.resultKey) : null,
+        resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
         garment: {
           id: t.garment.id,
           name: t.garment.name,
           category: t.garment.category,
-          imageUrl: await getGarmentImageUrl(t.garment.imageKey),
+          imageUrl: await getGarmentImageUrl(t.garment.image.key),
         },
         bodyProfile: {
           id: t.bodyProfile.id,
           name: t.bodyProfile.name,
-          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photoKey),
+          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
         },
       }))
     );

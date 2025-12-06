@@ -17,8 +17,7 @@ export const apiLookbookItemId = z.object({
 export const apiLookbookCreate = z.object({
   name: z.string().min(1, "Name is required").max(200),
   description: z.string().max(1000).optional(),
-  coverUrl: z.url().optional(),
-  coverKey: z.string().optional(),
+  coverId: z.cuid().optional(),
   isPublic: z.boolean().default(false),
 });
 
@@ -27,8 +26,7 @@ export const apiLookbookUpdate = z.object({
   id: z.cuid(),
   name: z.string().min(1).max(200).optional(),
   description: z.string().max(1000).nullable().optional(),
-  coverUrl: z.url().nullable().optional(),
-  coverKey: z.string().nullable().optional(),
+  coverId: z.cuid().nullable().optional(),
   isPublic: z.boolean().optional(),
 });
 
@@ -37,8 +35,7 @@ export const apiLookbookCreateAndUpdate = z.object({
   id: z.cuid().optional(),
   name: z.string().min(1, "Name is required").max(200),
   description: z.string().max(1000).nullable(),
-  coverUrl: z.url().optional(),
-  coverKey: z.string().optional(),
+  coverId: z.cuid().optional(),
   isPublic: z.boolean(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),

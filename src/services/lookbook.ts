@@ -41,9 +41,17 @@ export async function getLookbookCoverUploadUrl(
   });
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  const coverUrl = `https://${Resource.MediaBucket.name}.s3.us-east-2.amazonaws.com/${key}`;
 
-  return { url, key, coverUrl };
+  const file = await prisma.file.create({
+    data: {
+      key,
+      bucket: "media",
+      mimeType: contentType,
+      uploadedBy: userId,
+    },
+  });
+
+  return { url, key, fileId: file.id };
 }
 
 export async function getLookbookCoverUrl(

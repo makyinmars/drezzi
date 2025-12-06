@@ -321,7 +321,7 @@ const HowItWorksSection = () => {
             const Icon = step.icon;
             return (
               <motion.div
-                className="group relative"
+                className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
                 initial={{ opacity: 0, y: 30 }}
                 key={step.num}
                 transition={{
@@ -332,45 +332,26 @@ const HowItWorksSection = () => {
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, y: 0 }}
               >
-                {/* Connector line (hidden on last item) */}
-                {index < steps.length - 1 && (
-                  <div className="-right-4 absolute top-10 hidden h-px w-8 bg-gradient-to-r from-border to-transparent lg:block" />
-                )}
-
-                {/* Card */}
-                <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card to-card/50 p-6 transition-all duration-500 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
-                  {/* Step number badge */}
-                  <div className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted font-mono font-semibold text-muted-foreground text-sm">
-                    {step.num}
-                  </div>
-
-                  {/* Icon with animated background */}
-                  <div className="relative mb-6 inline-flex">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card transition-colors duration-500 group-hover:border-primary/40">
-                      <Icon
-                        className="h-7 w-7 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
-                        strokeWidth={1.5}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="space-y-2">
-                    <h4 className="font-serif text-2xl text-foreground">
-                      {step.title}
-                    </h4>
-                    <p className="font-serif text-base text-primary/80 italic">
-                      {step.subtitle}
-                    </p>
-                    <p className="pt-2 text-muted-foreground text-sm leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-
-                  {/* Bottom accent line on hover */}
-                  <div className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-primary to-primary/50 transition-transform duration-500 group-hover:scale-x-100" />
+                {/* Icon */}
+                <div className="mb-8 inline-flex rounded-2xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
+                  <Icon
+                    className="h-10 w-10 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
+                    strokeWidth={1}
+                  />
                 </div>
+
+                {/* Content */}
+                <div className="space-y-3">
+                  <h3 className="font-serif text-3xl text-foreground italic">
+                    {step.title}
+                  </h3>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+
+                {/* Decorative corner */}
+                <div className="absolute top-0 right-0 h-24 w-24 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               </motion.div>
             );
           })}

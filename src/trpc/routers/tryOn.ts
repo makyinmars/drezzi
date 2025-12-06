@@ -1,4 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import z from "zod/v4";
 
 import { enqueueTryOnJob } from "@/lib/sqs";
 import { getGarmentImageUrl } from "@/services/garment";
@@ -36,8 +37,9 @@ export const tryOnRouter = {
           ...(input.dateTo && { createdAt: { lte: input.dateTo } }),
         },
         include: {
-          bodyProfile: true,
-          garment: true,
+          result: true,
+          bodyProfile: { include: { photo: true } },
+          garment: { include: { image: true } },
         },
         orderBy: { createdAt: "desc" },
       });
@@ -45,14 +47,14 @@ export const tryOnRouter = {
       return Promise.all(
         tryOns.map(async (t) => ({
           ...t,
-          resultUrl: t.resultKey ? await getTryOnResultUrl(t.resultKey) : null,
+          resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
           bodyProfile: {
             ...t.bodyProfile,
-            photoUrl: await getProfilePhotoUrl(t.bodyProfile.photoKey),
+            photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
           },
           garment: {
             ...t.garment,
-            imageUrl: await getGarmentImageUrl(t.garment.imageKey),
+            imageUrl: await getGarmentImageUrl(t.garment.image.key),
           },
         }))
       );
@@ -65,8 +67,9 @@ export const tryOnRouter = {
     const tryOn = await ctx.prisma.tryOn.findFirst({
       where: { id: input.id, userId },
       include: {
-        bodyProfile: true,
-        garment: true,
+        result: true,
+        bodyProfile: { include: { photo: true } },
+        garment: { include: { image: true } },
         styleTips: true,
       },
     });
@@ -77,58 +80,65 @@ export const tryOnRouter = {
 
     return {
       ...tryOn,
-      resultUrl: tryOn.resultKey
-        ? await getTryOnResultUrl(tryOn.resultKey)
+      resultUrl: tryOn.result
+        ? await getTryOnResultUrl(tryOn.result.key)
         : null,
       bodyProfile: {
         ...tryOn.bodyProfile,
-        photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photoKey),
+        photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
       },
       garment: {
         ...tryOn.garment,
-        imageUrl: await getGarmentImageUrl(tryOn.garment.imageKey),
+        imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
       },
     };
   }),
 
   create: protectedProcedure
-    .input(apiTryOnCreate)
+    .input(z.union([apiTryOnCreate, z.instanceof(FormData)]))
     .mutation(async ({ input, ctx }) => {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      // Verify body profile ownership
+      const parsed =
+        input instanceof FormData
+          ? apiTryOnCreate.parse({
+              bodyProfileId: input.get("bodyProfileId")?.toString() ?? "",
+              garmentId: input.get("garmentId")?.toString() ?? "",
+            })
+          : input;
+
       const bodyProfile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.bodyProfileId, userId },
+        where: { id: parsed.bodyProfileId, userId },
+        include: { photo: true },
       });
 
       if (!bodyProfile) {
         throw errors.profileNotFound();
       }
 
-      // Verify garment exists (owned by user or public)
       const garment = await ctx.prisma.garment.findFirst({
         where: {
-          id: input.garmentId,
+          id: parsed.garmentId,
           OR: [{ userId }, { isPublic: true }],
         },
+        include: { image: true },
       });
 
       if (!garment) {
         throw errors.garmentNotFound();
       }
 
-      // Create try-on record
       const tryOn = await ctx.prisma.tryOn.create({
         data: {
           userId,
-          bodyProfileId: input.bodyProfileId,
-          garmentId: input.garmentId,
+          bodyProfileId: parsed.bodyProfileId,
+          garmentId: parsed.garmentId,
           status: "pending",
         },
         include: {
-          bodyProfile: true,
-          garment: true,
+          bodyProfile: { include: { photo: true } },
+          garment: { include: { image: true } },
         },
       });
 
@@ -136,14 +146,12 @@ export const tryOnRouter = {
         throw errors.tryOnCreateFailed();
       }
 
-      // Enqueue the job
       const jobId = await enqueueTryOnJob({
         tryOnId: tryOn.id,
-        bodyImageUrl: bodyProfile.photoKey,
-        garmentImageUrl: garment.imageKey,
+        bodyImageUrl: bodyProfile.photo.key,
+        garmentImageUrl: garment.image.key,
       });
 
-      // Update with job ID
       await ctx.prisma.tryOn.update({
         where: { id: tryOn.id },
         data: { jobId, status: "processing" },
@@ -156,11 +164,11 @@ export const tryOnRouter = {
         resultUrl: null,
         bodyProfile: {
           ...tryOn.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photoKey),
+          photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
         },
         garment: {
           ...tryOn.garment,
-          imageUrl: await getGarmentImageUrl(tryOn.garment.imageKey),
+          imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
         },
       };
     }),
@@ -195,14 +203,14 @@ export const tryOnRouter = {
 
       const tryOn = await ctx.prisma.tryOn.findFirst({
         where: { id: input.id, userId },
+        include: { result: true },
       });
 
       if (!tryOn) {
         throw errors.tryOnNotFound();
       }
 
-      // Clean up S3 assets
-      await deleteTryOnAssets(tryOn.resultKey);
+      await deleteTryOnAssets(tryOn.result?.key ?? null);
 
       const deleted = await ctx.prisma.tryOn.delete({
         where: { id: input.id },
@@ -220,8 +228,8 @@ export const tryOnRouter = {
       const tryOn = await ctx.prisma.tryOn.findFirst({
         where: { id: input.id, userId, status: "failed" },
         include: {
-          bodyProfile: true,
-          garment: true,
+          bodyProfile: { include: { photo: true } },
+          garment: { include: { image: true } },
         },
       });
 
@@ -229,14 +237,12 @@ export const tryOnRouter = {
         throw errors.tryOnNotFound();
       }
 
-      // Re-enqueue the job
       const jobId = await enqueueTryOnJob({
         tryOnId: tryOn.id,
-        bodyImageUrl: tryOn.bodyProfile.photoKey,
-        garmentImageUrl: tryOn.garment.imageKey,
+        bodyImageUrl: tryOn.bodyProfile.photo.key,
+        garmentImageUrl: tryOn.garment.image.key,
       });
 
-      // Reset status
       const updated = await ctx.prisma.tryOn.update({
         where: { id: tryOn.id },
         data: {
@@ -259,8 +265,9 @@ export const tryOnRouter = {
         status: "completed",
       },
       include: {
-        bodyProfile: true,
-        garment: true,
+        result: true,
+        bodyProfile: { include: { photo: true } },
+        garment: { include: { image: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -268,14 +275,14 @@ export const tryOnRouter = {
     return Promise.all(
       tryOns.map(async (t) => ({
         ...t,
-        resultUrl: t.resultKey ? await getTryOnResultUrl(t.resultKey) : null,
+        resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
         bodyProfile: {
           ...t.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photoKey),
+          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
         },
         garment: {
           ...t.garment,
-          imageUrl: await getGarmentImageUrl(t.garment.imageKey),
+          imageUrl: await getGarmentImageUrl(t.garment.image.key),
         },
       }))
     );
@@ -290,8 +297,9 @@ export const tryOnRouter = {
         status: "completed",
       },
       include: {
-        bodyProfile: true,
-        garment: true,
+        result: true,
+        bodyProfile: { include: { photo: true } },
+        garment: { include: { image: true } },
       },
       orderBy: { completedAt: "desc" },
       take: 10,
@@ -300,14 +308,14 @@ export const tryOnRouter = {
     return Promise.all(
       tryOns.map(async (t) => ({
         ...t,
-        resultUrl: t.resultKey ? await getTryOnResultUrl(t.resultKey) : null,
+        resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
         bodyProfile: {
           ...t.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photoKey),
+          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
         },
         garment: {
           ...t.garment,
-          imageUrl: await getGarmentImageUrl(t.garment.imageKey),
+          imageUrl: await getGarmentImageUrl(t.garment.image.key),
         },
       }))
     );

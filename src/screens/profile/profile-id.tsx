@@ -105,10 +105,10 @@ const ProfileDetailScreen = () => {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="overflow-hidden">
-          <div className="relative">
+          <div className="relative flex max-h-[60vh] min-h-80 items-center justify-center bg-muted lg:max-h-[70vh]">
             <img
               alt={profile.name}
-              className="aspect-[3/4] w-full object-cover"
+              className="h-full w-full object-contain"
               src={profile.photoUrl}
             />
             {profile.isDefault && (

@@ -48,24 +48,6 @@ const ProfileNewScreen = () => {
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const getUploadUrlMutation = useMutation(
-    trpc.profile.getUploadUrl.mutationOptions({})
-  );
-
-  const uploadToS3 = async (file: File) => {
-    const { url, key, photoUrl } = await getUploadUrlMutation.mutateAsync({
-      contentType: file.type,
-      contentLength: file.size,
-    });
-    const response = await fetch(url, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!response.ok) throw new Error("Failed to upload photo");
-    return { photoUrl, photoKey: key };
-  };
-
   const form = useForm<BodyProfileCreateAndUpdate>({
     resolver: zodResolver(apiBodyProfileCreateAndUpdate),
     defaultValues: {
@@ -98,33 +80,46 @@ const ProfileNewScreen = () => {
     setSelectedFile(file);
   };
 
+  const buildFormData = (
+    data: BodyProfileCreateAndUpdate,
+    file: File | null
+  ) => {
+    const formData = new FormData();
+    if (file) formData.append("file", file);
+    formData.append("name", data.name);
+    formData.append("fitPreference", data.fitPreference);
+    formData.append("isDefault", String(data.isDefault));
+
+    const appendNumber = (key: string, value: number | null | undefined) => {
+      if (value === null) {
+        formData.append(key, "");
+      } else if (value !== undefined) {
+        formData.append(key, value.toString());
+      }
+    };
+
+    appendNumber("height", data.height);
+    appendNumber("waist", data.waist);
+    appendNumber("hip", data.hip);
+    appendNumber("inseam", data.inseam);
+    appendNumber("chest", data.chest);
+
+    return formData;
+  };
+
   const onSubmit = async (data: BodyProfileCreateAndUpdate) => {
     if (!selectedFile) {
       toast.error(t`Please upload a photo first`);
       return;
     }
 
-    const uploaded = await uploadToS3(selectedFile);
+    const formData = buildFormData(data, selectedFile);
 
-    toast.promise(
-      createMutation.mutateAsync({
-        name: data.name,
-        photoUrl: uploaded.photoUrl,
-        photoKey: uploaded.photoKey,
-        height: data.height ?? undefined,
-        waist: data.waist ?? undefined,
-        hip: data.hip ?? undefined,
-        inseam: data.inseam ?? undefined,
-        chest: data.chest ?? undefined,
-        fitPreference: data.fitPreference,
-        isDefault: data.isDefault,
-      }),
-      {
-        loading: t`Creating profile...`,
-        success: (created) => t`"${created.name}" has been created`,
-        error: (err) => t`Error creating profile: ${err.message}`,
-      }
-    );
+    toast.promise(createMutation.mutateAsync(formData), {
+      loading: t`Creating profile...`,
+      success: (created) => t`"${created.name}" has been created`,
+      error: (err) => t`Error creating profile: ${err.message}`,
+    });
   };
 
   return (
@@ -402,9 +397,7 @@ const ProfileNewScreen = () => {
 
               <Button
                 className="w-full"
-                disabled={
-                  getUploadUrlMutation.isPending || createMutation.isPending
-                }
+                disabled={createMutation.isPending}
                 size="lg"
                 type="submit"
               >

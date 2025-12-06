@@ -1,11 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Garment } from "generated/prisma/client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,6 +32,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useTRPC } from "@/trpc/react";
+import type { GarmentListProcedure } from "@/trpc/routers/garment";
 import {
   apiGarmentCreateAndUpdate,
   GARMENT_CATEGORIES,
@@ -43,7 +42,7 @@ import {
 import GarmentImageUpload from "./garment-image-upload";
 
 type GarmentFormProps = {
-  garment?: Garment;
+  garment?: GarmentListProcedure[number];
   children?: React.ReactNode;
 };
 
@@ -53,24 +52,6 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-
-  const getUploadUrlMutation = useMutation(
-    trpc.garment.getUploadUrl.mutationOptions({})
-  );
-
-  const uploadToS3 = async (file: File) => {
-    const { url, key, imageUrl } = await getUploadUrlMutation.mutateAsync({
-      contentType: file.type,
-      contentLength: file.size,
-    });
-    const response = await fetch(url, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!response.ok) throw new Error("Failed to upload image");
-    return { imageUrl, imageKey: key };
-  };
 
   const form = useForm<GarmentCreateAndUpdate>({
     resolver: zodResolver(apiGarmentCreateAndUpdate),
@@ -85,9 +66,8 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
       price: garment?.price ?? null,
       currency:
         (garment?.currency as GarmentCreateAndUpdate["currency"]) ?? "USD",
-      imageUrl: garment?.imageUrl,
-      imageKey: garment?.imageKey,
-      maskUrl: garment?.maskUrl ?? null,
+      imageId: garment?.imageId,
+      maskId: garment?.maskId ?? null,
       retailUrl: garment?.retailUrl ?? null,
       colors: garment?.colors ?? [],
       sizes: garment?.sizes ?? [],
@@ -99,77 +79,10 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
 
   const createMutation = useMutation(
     trpc.garment.create.mutationOptions({
-      onMutate: async (variables) => {
-        await queryClient.cancelQueries({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
           queryKey: trpc.garment.list.queryKey(),
         });
-
-        const previousData = queryClient.getQueryData(
-          trpc.garment.list.queryKey({ includePublic: false })
-        );
-
-        const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-
-        const optimisticGarment = {
-          id: tempId,
-          userId: "",
-          name: variables.name,
-          description: variables.description ?? null,
-          category: variables.category,
-          subcategory: variables.subcategory ?? null,
-          brand: variables.brand ?? null,
-          price: variables.price ?? null,
-          currency: variables.currency ?? "USD",
-          imageUrl: variables.imageUrl,
-          imageKey: variables.imageKey,
-          maskUrl: variables.maskUrl ?? null,
-          retailUrl: variables.retailUrl ?? null,
-          colors: variables.colors ?? [],
-          sizes: variables.sizes ?? [],
-          tags: variables.tags ?? [],
-          metadata: null,
-          isActive: variables.isActive ?? true,
-          isPublic: variables.isPublic ?? false,
-          isOwner: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          (old) => {
-            if (!old) {
-              return [optimisticGarment];
-            }
-            return [optimisticGarment, ...old];
-          }
-        );
-
-        return { previousData, optimisticGarment };
-      },
-      onError: (_err, _variables, context) => {
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          context?.previousData
-        );
-      },
-      onSuccess: (created, _variables, context) => {
-        const createdWithOwner = {
-          ...created,
-          imageUrl: created.imageUrl,
-          isOwner: true,
-        };
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          (old) => {
-            if (!old) {
-              return [createdWithOwner];
-            }
-            return old.map((g) =>
-              g.id === context?.optimisticGarment.id ? createdWithOwner : g
-            );
-          }
-        );
         form.reset();
         setOpen(false);
       },
@@ -178,52 +91,10 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
 
   const updateMutation = useMutation(
     trpc.garment.update.mutationOptions({
-      onMutate: async (variables) => {
-        await queryClient.cancelQueries({
+      onSuccess: async (updated) => {
+        await queryClient.invalidateQueries({
           queryKey: trpc.garment.list.queryKey(),
         });
-
-        const previousData = queryClient.getQueryData(
-          trpc.garment.list.queryKey({ includePublic: false })
-        );
-
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          (old) => {
-            if (!old) {
-              return previousData;
-            }
-            return old.map((g) =>
-              g.id === variables.id
-                ? { ...g, ...variables, updatedAt: new Date() }
-                : g
-            );
-          }
-        );
-
-        return { previousData };
-      },
-      onError: (_err, _variables, context) => {
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          context?.previousData
-        );
-      },
-      onSuccess: async (updated) => {
-        const updatedWithOwner = {
-          ...updated,
-          imageUrl: updated.imageUrl,
-          isOwner: true,
-        };
-        queryClient.setQueryData(
-          trpc.garment.list.queryKey({ includePublic: false }),
-          (old) => {
-            if (!old) {
-              return [updatedWithOwner];
-            }
-            return old.map((g) => (g.id === updated.id ? updatedWithOwner : g));
-          }
-        );
         await queryClient.invalidateQueries({
           queryKey: trpc.garment.byId.queryKey({ id: updated.id }),
         });
@@ -236,74 +107,51 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
     setSelectedFile(file);
   };
 
-  const onSubmit = async (data: GarmentCreateAndUpdate) => {
-    let imageUrl = garment?.imageUrl;
-    let imageKey = garment?.imageKey;
-
-    if (selectedFile) {
-      const uploaded = await uploadToS3(selectedFile);
-      imageUrl = uploaded.imageUrl;
-      imageKey = uploaded.imageKey;
+  const buildFormData = (data: GarmentCreateAndUpdate, file: File | null) => {
+    const formData = new FormData();
+    if (data.id) formData.append("id", data.id);
+    if (file) formData.append("file", file);
+    formData.append("name", data.name);
+    formData.append("description", data.description ?? "");
+    formData.append("category", data.category);
+    formData.append("subcategory", data.subcategory ?? "");
+    formData.append("brand", data.brand ?? "");
+    if (data.price !== null && data.price !== undefined) {
+      formData.append("price", data.price.toString());
+    } else {
+      formData.append("price", "");
     }
+    formData.append("currency", data.currency);
+    formData.append("maskId", data.maskId ?? "");
+    formData.append("retailUrl", data.retailUrl ?? "");
+    formData.append("colors", JSON.stringify(data.colors ?? []));
+    formData.append("sizes", JSON.stringify(data.sizes ?? []));
+    formData.append("tags", JSON.stringify(data.tags ?? []));
+    formData.append("isActive", String(data.isActive));
+    formData.append("isPublic", String(data.isPublic));
+    return formData;
+  };
 
-    if (!(imageUrl && imageKey)) {
+  const onSubmit = async (data: GarmentCreateAndUpdate) => {
+    const formData = buildFormData(data, selectedFile);
+
+    if (!(data.id || selectedFile)) {
       toast.error(t`Please upload an image first`);
       return;
     }
 
     if (data.id) {
-      toast.promise(
-        updateMutation.mutateAsync({
-          id: data.id,
-          name: data.name,
-          description: data.description,
-          category: data.category,
-          subcategory: data.subcategory,
-          brand: data.brand,
-          price: data.price,
-          currency: data.currency,
-          imageUrl,
-          imageKey,
-          maskUrl: data.maskUrl,
-          retailUrl: data.retailUrl,
-          colors: data.colors,
-          sizes: data.sizes,
-          tags: data.tags,
-          isActive: data.isActive,
-          isPublic: data.isPublic,
-        }),
-        {
-          loading: t`Updating garment...`,
-          success: (updated) => t`"${updated.name}" has been updated`,
-          error: (err) => t`Error updating garment: ${err.message}`,
-        }
-      );
+      toast.promise(updateMutation.mutateAsync(formData), {
+        loading: t`Updating garment...`,
+        success: (updated) => t`"${updated.name}" has been updated`,
+        error: (err) => t`Error updating garment: ${err.message}`,
+      });
     } else {
-      toast.promise(
-        createMutation.mutateAsync({
-          name: data.name,
-          description: data.description ?? undefined,
-          category: data.category,
-          subcategory: data.subcategory ?? undefined,
-          brand: data.brand ?? undefined,
-          price: data.price ?? undefined,
-          currency: data.currency,
-          imageUrl,
-          imageKey,
-          maskUrl: data.maskUrl ?? undefined,
-          retailUrl: data.retailUrl ?? undefined,
-          colors: data.colors,
-          sizes: data.sizes,
-          tags: data.tags,
-          isActive: data.isActive,
-          isPublic: data.isPublic,
-        }),
-        {
-          loading: t`Creating garment...`,
-          success: (created) => t`"${created.name}" has been added`,
-          error: (err) => t`Error creating garment: ${err.message}`,
-        }
-      );
+      toast.promise(createMutation.mutateAsync(formData), {
+        loading: t`Creating garment...`,
+        success: (created) => t`"${created.name}" has been added`,
+        error: (err) => t`Error creating garment: ${err.message}`,
+      });
     }
   };
 
@@ -521,8 +369,7 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
             <Button
               className="w-full"
               disabled={
-                getUploadUrlMutation.isPending ||
-                (garment ? updateMutation.isPending : createMutation.isPending)
+                garment ? updateMutation.isPending : createMutation.isPending
               }
               type="submit"
             >

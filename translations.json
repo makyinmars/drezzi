@@ -1,0 +1,3271 @@
+{
+  "meta": {
+    "exported_at": "2025-12-06T01:55:45.449932+00:00",
+    "source_locale": "en",
+    "target_locales": ["fr", "sp"],
+    "total_strings": 358
+  },
+  "strings": [
+    {
+      "id": "\"{0}\" has been added",
+      "source": "\"{0}\" has been added",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:303, src/screens/garment/new.tsx:138",
+      "note": "placeholder {0}: created.name"
+    },
+    {
+      "id": "\"{0}\" has been created",
+      "source": "\"{0}\" has been created",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:199, src/components/profile/profile-form.tsx:259, src/screens/profile/new.tsx:124",
+      "note": "placeholder {0}: created.name"
+    },
+    {
+      "id": "\"{0}\" has been deleted",
+      "source": "\"{0}\" has been deleted",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-delete.tsx:72, src/components/lookbook/lookbook-delete.tsx:69, src/components/profile/profile-delete.tsx:70",
+      "note": "placeholder {0}: garment.name\nplaceholder {0}: lookbook.name\nplaceholder {0}: profile.name"
+    },
+    {
+      "id": "\"{0}\" is now private",
+      "source": "\"{0}\" is now private",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:68, src/components/lookbook/share-dialog.tsx:105, src/screens/garment/garment-id.tsx:57",
+      "note": "placeholder {0}: garment.name\nplaceholder {0}: lookbook.name"
+    },
+    {
+      "id": "\"{0}\" is now public",
+      "source": "\"{0}\" is now public",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:69, src/components/lookbook/share-dialog.tsx:106, src/screens/garment/garment-id.tsx:58",
+      "note": "placeholder {0}: garment.name\nplaceholder {0}: lookbook.name"
+    },
+    {
+      "id": "\"{0}\" is now your default profile",
+      "source": "\"{0}\" is now your default profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:66, src/screens/profile/profile-id.tsx:49",
+      "note": "placeholder {0}: profile.name"
+    },
+    {
+      "id": "{0} items",
+      "source": "{0} items",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-card.tsx:51",
+      "note": "placeholder {0}: lookbook.itemCount"
+    },
+    {
+      "id": "{0} measurements recorded",
+      "source": "{0} measurements recorded",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:101",
+      "note": "placeholder {0}: measurements.length"
+    },
+    {
+      "id": "~10s processing with Gemini 2.0",
+      "source": "~10s processing with Gemini 2.0",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:470"
+    },
+    {
+      "id": "4K Quality",
+      "source": "4K Quality",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:421"
+    },
+    {
+      "id": "About Measurements",
+      "source": "About Measurements",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:447"
+    },
+    {
+      "id": "About Public Garments",
+      "source": "About Public Garments",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:441"
+    },
+    {
+      "id": "Accuracy",
+      "source": "Accuracy",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:533"
+    },
+    {
+      "id": "Add",
+      "source": "Add",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:81"
+    },
+    {
+      "id": "Add a custom style tip for this try-on",
+      "source": "Add a custom style tip for this try-on",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:141"
+    },
+    {
+      "id": "Add a new body profile for virtual try-ons",
+      "source": "Add a new body profile for virtual try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:282, src/screens/profile/new.tsx:141"
+    },
+    {
+      "id": "Add a new garment to your wardrobe",
+      "source": "Add a new garment to your wardrobe",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:322, src/screens/garment/new.tsx:155"
+    },
+    {
+      "id": "Add a note...",
+      "source": "Add a note...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:142"
+    },
+    {
+      "id": "Add Garment",
+      "source": "Add Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:316, src/components/garment/garment-form.tsx:532, src/config/navigation.tsx:36"
+    },
+    {
+      "id": "Add Style Tip",
+      "source": "Add Style Tip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:135"
+    },
+    {
+      "id": "Add Tip",
+      "source": "Add Tip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:201"
+    },
+    {
+      "id": "Add to Lookbook",
+      "source": "Add to Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:159"
+    },
+    {
+      "id": "Add Try-On",
+      "source": "Add Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:83, src/screens/lookbooks/lookbook-id.tsx:214"
+    },
+    {
+      "id": "Add try-on results to this lookbook to start curat...",
+      "source": "Add try-on results to this lookbook to start curating.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:234"
+    },
+    {
+      "id": "Add Your First Garment",
+      "source": "Add Your First Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/index.tsx:46"
+    },
+    {
+      "id": "Add your first garment to start building your virt...",
+      "source": "Add your first garment to start building your virtual wardrobe.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/index.tsx:39"
+    },
+    {
+      "id": "Add Your First Item",
+      "source": "Add Your First Item",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:249"
+    },
+    {
+      "id": "Added to favorites",
+      "source": "Added to favorites",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:84, src/screens/try-on/try-on-id.tsx:73"
+    },
+    {
+      "id": "Added to lookbook",
+      "source": "Added to lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:71"
+    },
+    {
+      "id": "Adding garment...",
+      "source": "Adding garment...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:137"
+    },
+    {
+      "id": "Adding measurements helps improve try-on accuracy",
+      "source": "Adding measurements helps improve try-on accuracy",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:263"
+    },
+    {
+      "id": "Adding to favorites...",
+      "source": "Adding to favorites...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:82, src/screens/try-on/try-on-id.tsx:71"
+    },
+    {
+      "id": "Adding to lookbook...",
+      "source": "Adding to lookbook...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:70"
+    },
+    {
+      "id": "Advanced physics and lighting analysis.",
+      "source": "Advanced physics and lighting analysis.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:407"
+    },
+    {
+      "id": "AI generating try-on...",
+      "source": "AI generating try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:466"
+    },
+    {
+      "id": "AI Magic",
+      "source": "AI Magic",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:261"
+    },
+    {
+      "id": "AI Models",
+      "source": "AI Models",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:608"
+    },
+    {
+      "id": "AI Result",
+      "source": "AI Result",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:435"
+    },
+    {
+      "id": "AI Try-On",
+      "source": "AI Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:406"
+    },
+    {
+      "id": "AI-Powered Fashion",
+      "source": "AI-Powered Fashion",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:91"
+    },
+    {
+      "id": "All Garments",
+      "source": "All Garments",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:32"
+    },
+    {
+      "id": "All Lookbooks",
+      "source": "All Lookbooks",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:62"
+    },
+    {
+      "id": "All Profiles",
+      "source": "All Profiles",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:47"
+    },
+    {
+      "id": "All rights reserved.",
+      "source": "All rights reserved.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/common/content-layout.tsx:71"
+    },
+    {
+      "id": "All your virtual try-on sessions",
+      "source": "All your virtual try-on sessions",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:39"
+    },
+    {
+      "id": "Allow others to see and try on this garment",
+      "source": "Allow others to see and try on this garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:508, src/screens/garment/new.tsx:383"
+    },
+    {
+      "id": "Allow others to view this lookbook via link",
+      "source": "Allow others to view this lookbook via link",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:277"
+    },
+    {
+      "id": "Analyzing images...",
+      "source": "Analyzing images...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:464"
+    },
+    {
+      "id": "Any Garment",
+      "source": "Any Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:249, src/components/landing/try-on-demo/index.tsx:601"
+    },
+    {
+      "id": "Anyone with the link can view",
+      "source": "Anyone with the link can view",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:139"
+    },
+    {
+      "id": "Attributes",
+      "source": "Attributes",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:215"
+    },
+    {
+      "id": "Available",
+      "source": "Available",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:534"
+    },
+    {
+      "id": "Back",
+      "source": "Back",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:79, src/screens/garment/new.tsx:151, src/screens/lookbooks/lookbook-id.tsx:126"
+    },
+    {
+      "id": "Basic Information",
+      "source": "Basic Information",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:180"
+    },
+    {
+      "id": "Body Profile",
+      "source": "Body Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:147, src/screens/try-on/try-on-id.tsx:236"
+    },
+    {
+      "id": "Body Profiles",
+      "source": "Body Profiles",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:386, src/screens/dashboard/index.tsx:83, src/screens/profile/index.tsx:28"
+    },
+    {
+      "id": "Brand",
+      "source": "Brand",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:406, src/screens/garment/garment-id.tsx:166, src/screens/garment/new.tsx:260"
+    },
+    {
+      "id": "Browse our catalog or upload your own clothing ite...",
+      "source": "Browse our catalog or upload your own clothing items. Any style, any brand.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:251"
+    },
+    {
+      "id": "Browse our curated collections or upload your own ...",
+      "source": "Browse our curated collections or upload your own clothing items. Any style, any brand, any occasion.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:398"
+    },
+    {
+      "id": "Built on Gemini 3 Pro's multi-image fusion capabil...",
+      "source": "Built on Gemini 3 Pro's multi-image fusion capabilities. The model reasons through complex prompts to understand pose, lighting, and fabric physics for photorealistic results.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:613"
+    },
+    {
+      "id": "by {0}",
+      "source": "by {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/share/share-slug.tsx:43",
+      "note": "placeholder {0}: lookbook.user.name ?? \"Anonymous\""
+    },
+    {
+      "id": "Category",
+      "source": "Category",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:379, src/components/style-tip/style-tip-form.tsx:153, src/screens/garment/garment-id.tsx:156"
+    },
+    {
+      "id": "Chest",
+      "source": "Chest",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:73, src/screens/profile/profile-id.tsx:56"
+    },
+    {
+      "id": "Chest (cm)",
+      "source": "Chest (cm)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:345, src/screens/profile/new.tsx:302"
+    },
+    {
+      "id": "Colors",
+      "source": "Colors",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:222"
+    },
+    {
+      "id": "Complete",
+      "source": "Complete",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-progress.tsx:32"
+    },
+    {
+      "id": "completed successfully",
+      "source": "completed successfully",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:69"
+    },
+    {
+      "id": "Confidence",
+      "source": "Confidence",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/try-on-id.tsx:194"
+    },
+    {
+      "id": "Content",
+      "source": "Content",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:180"
+    },
+    {
+      "id": "Create a body profile with your reference photo. Y...",
+      "source": "Create a body profile with your reference photo. Your images are stored securely and never shared.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:239"
+    },
+    {
+      "id": "Create a new lookbook to curate your try-on looks",
+      "source": "Create a new lookbook to curate your try-on looks",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:222"
+    },
+    {
+      "id": "Create Body Profile",
+      "source": "Create Body Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:275, src/screens/profile/new.tsx:142"
+    },
+    {
+      "id": "Create Lookbook",
+      "source": "Create Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:215, src/components/lookbook/lookbook-form.tsx:300, src/screens/lookbooks/index.tsx:23"
+    },
+    {
+      "id": "Create Profile",
+      "source": "Create Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:514, src/screens/profile/index.tsx:23, src/screens/profile/new.tsx:411"
+    },
+    {
+      "id": "Create your first body profile to start trying on ...",
+      "source": "Create your first body profile to start trying on clothes virtually.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/index.tsx:37"
+    },
+    {
+      "id": "Create Your First Lookbook",
+      "source": "Create Your First Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/index.tsx:44"
+    },
+    {
+      "id": "Create your first lookbook to start curating your ...",
+      "source": "Create your first lookbook to start curating your try-on results.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/index.tsx:37"
+    },
+    {
+      "id": "Create Your First Profile",
+      "source": "Create Your First Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/index.tsx:45"
+    },
+    {
+      "id": "Created",
+      "source": "Created",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:183, src/screens/lookbooks/lookbook-id.tsx:186, src/screens/profile/profile-id.tsx:139"
+    },
+    {
+      "id": "Creating garment...",
+      "source": "Creating garment...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:302"
+    },
+    {
+      "id": "Creating lookbook...",
+      "source": "Creating lookbook...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:198"
+    },
+    {
+      "id": "Creating profile...",
+      "source": "Creating profile...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:258, src/screens/profile/new.tsx:123"
+    },
+    {
+      "id": "Creating style tip...",
+      "source": "Creating style tip...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:121"
+    },
+    {
+      "id": "Crystal clear photorealistic results.",
+      "source": "Crystal clear photorealistic results.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:422"
+    },
+    {
+      "id": "Curate and share your favorite try-on looks",
+      "source": "Curate and share your favorite try-on looks",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/index.tsx:27"
+    },
+    {
+      "id": "Currency",
+      "source": "Currency",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:455, src/screens/garment/new.tsx:318"
+    },
+    {
+      "id": "Default",
+      "source": "Default",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:90, src/screens/try-on/try-on-id.tsx:250"
+    },
+    {
+      "id": "Default Profile",
+      "source": "Default Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:485, src/screens/profile/new.tsx:237, src/screens/profile/profile-id.tsx:117"
+    },
+    {
+      "id": "Delete Style Tip?",
+      "source": "Delete Style Tip?",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-delete.tsx:54"
+    },
+    {
+      "id": "Deleting garment...",
+      "source": "Deleting garment...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-delete.tsx:71"
+    },
+    {
+      "id": "Deleting lookbook...",
+      "source": "Deleting lookbook...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-delete.tsx:68"
+    },
+    {
+      "id": "Deleting profile...",
+      "source": "Deleting profile...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-delete.tsx:69"
+    },
+    {
+      "id": "Deleting style tip...",
+      "source": "Deleting style tip...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-delete.tsx:42"
+    },
+    {
+      "id": "Deleting try-on...",
+      "source": "Deleting try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-delete.tsx:68"
+    },
+    {
+      "id": "Description",
+      "source": "Description",
+      "translations": {
+        "fr": "",
+        "sp": "Descripción"
+      },
+      "context": "src/components/garment/garment-form.tsx:358, src/components/lookbook/lookbook-form.tsx:253, src/components/todo/todo-detail.tsx:94"
+    },
+    {
+      "id": "Details",
+      "source": "Details",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:150, src/screens/lookbooks/lookbook-id.tsx:158"
+    },
+    {
+      "id": "Discover",
+      "source": "Discover",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:215"
+    },
+    {
+      "id": "Drop garment image here or click to upload",
+      "source": "Drop garment image here or click to upload",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-image-upload.tsx:100"
+    },
+    {
+      "id": "Drop photo here or click to upload",
+      "source": "Drop photo here or click to upload",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/photo-upload.tsx:97"
+    },
+    {
+      "id": "e.g., Blue Oxford Shirt",
+      "source": "e.g., Blue Oxford Shirt",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:343, src/screens/garment/new.tsx:194"
+    },
+    {
+      "id": "e.g., Default, Casual, Formal",
+      "source": "e.g., Default, Casual, Formal",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:303, src/screens/profile/new.tsx:182"
+    },
+    {
+      "id": "e.g., Nike",
+      "source": "e.g., Nike",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:410, src/screens/garment/new.tsx:264"
+    },
+    {
+      "id": "e.g., Summer Outfits 2025",
+      "source": "e.g., Summer Outfits 2025",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:238"
+    },
+    {
+      "id": "Edit Body Profile",
+      "source": "Edit Body Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:273"
+    },
+    {
+      "id": "Edit Garment",
+      "source": "Edit Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:316"
+    },
+    {
+      "id": "Edit Lookbook",
+      "source": "Edit Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:213"
+    },
+    {
+      "id": "Edit Style Tip",
+      "source": "Edit Style Tip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:135"
+    },
+    {
+      "id": "Email",
+      "source": "Email",
+      "translations": {
+        "fr": "",
+        "sp": "Correo"
+      },
+      "context": "src/routes/auth/index.tsx:140, src/routes/auth/signup.tsx:177"
+    },
+    {
+      "id": "Ensure good lighting",
+      "source": "Ensure good lighting",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:429"
+    },
+    {
+      "id": "Ensure good, even lighting",
+      "source": "Ensure good, even lighting",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:432"
+    },
+    {
+      "id": "Enter your style tip...",
+      "source": "Enter your style tip...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:184"
+    },
+    {
+      "id": "Error",
+      "source": "Error",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/try-on-id.tsx:223"
+    },
+    {
+      "id": "Error adding garment: {0}",
+      "source": "Error adding garment: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:139",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error adding item: {0}",
+      "source": "Error adding item: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:72",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error creating garment: {0}",
+      "source": "Error creating garment: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:304",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error creating lookbook: {0}",
+      "source": "Error creating lookbook: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:200",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error creating profile: {0}",
+      "source": "Error creating profile: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:260, src/screens/profile/new.tsx:125",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error creating: {0}",
+      "source": "Error creating: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:123",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error deleting garment: {0}",
+      "source": "Error deleting garment: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-delete.tsx:73",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error deleting lookbook: {0}",
+      "source": "Error deleting lookbook: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-delete.tsx:70",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error deleting profile: {0}",
+      "source": "Error deleting profile: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-delete.tsx:71",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error deleting try-on: {0}",
+      "source": "Error deleting try-on: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-delete.tsx:70",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error deleting: {0}",
+      "source": "Error deleting: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-delete.tsx:44",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error generating link: {0}",
+      "source": "Error generating link: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:96",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error removing item: {0}",
+      "source": "Error removing item: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:104",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error saving note: {0}",
+      "source": "Error saving note: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:95",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error setting default: {0}",
+      "source": "Error setting default: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:67, src/screens/profile/profile-id.tsx:50",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating favorite: {0}",
+      "source": "Error updating favorite: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:85, src/screens/try-on/try-on-id.tsx:74",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating garment: {0}",
+      "source": "Error updating garment: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:278",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating lookbook: {0}",
+      "source": "Error updating lookbook: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:185",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating profile: {0}",
+      "source": "Error updating profile: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:240",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating visibility: {0}",
+      "source": "Error updating visibility: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:70, src/components/lookbook/share-dialog.tsx:107, src/screens/garment/garment-id.tsx:59",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Error updating: {0}",
+      "source": "Error updating: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:110",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Everything you need for the perfect virtual try-on...",
+      "source": "Everything you need for the perfect virtual try-on experience",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:459"
+    },
+    {
+      "id": "Face the camera directly",
+      "source": "Face the camera directly",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:435"
+    },
+    {
+      "id": "Failed",
+      "source": "Failed",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-progress.tsx:37"
+    },
+    {
+      "id": "Failed to regenerate: {0}",
+      "source": "Failed to regenerate: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:65",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Failed to retry: {0}",
+      "source": "Failed to retry: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:93, src/screens/try-on/try-on-id.tsx:82",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "Failed to start try-on: {0}",
+      "source": "Failed to start try-on: {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:113",
+      "note": "placeholder {0}: err.message"
+    },
+    {
+      "id": "failed try-ons",
+      "source": "failed try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:133"
+    },
+    {
+      "id": "Favorite",
+      "source": "Favorite",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:172, src/screens/try-on/try-on-id.tsx:125"
+    },
+    {
+      "id": "Features",
+      "source": "Features",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:455"
+    },
+    {
+      "id": "File size must be less than 10MB",
+      "source": "File size must be less than 10MB",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-image-upload.tsx:32, src/components/profile/photo-upload.tsx:29"
+    },
+    {
+      "id": "Fit Preference",
+      "source": "Fit Preference",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:450, src/screens/profile/new.tsx:197, src/screens/profile/profile-id.tsx:133"
+    },
+    {
+      "id": "Flat lay or hanger shots work best",
+      "source": "Flat lay or hanger shots work best",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:432"
+    },
+    {
+      "id": "From upload to try-on in four simple steps",
+      "source": "From upload to try-on in four simple steps",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:314"
+    },
+    {
+      "id": "Garment",
+      "source": "Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:182, src/screens/try-on/try-on-id.tsx:262"
+    },
+    {
+      "id": "Garment Catalog",
+      "source": "Garment Catalog",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:396"
+    },
+    {
+      "id": "Garments",
+      "source": "Garments",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:62"
+    },
+    {
+      "id": "Gemini 3 Pro analyzes pose, lighting, and fabric p...",
+      "source": "Gemini 3 Pro analyzes pose, lighting, and fabric physics to create your try-on.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:263"
+    },
+    {
+      "id": "Generate a share link to let others view this look...",
+      "source": "Generate a share link to let others view this lookbook.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:188"
+    },
+    {
+      "id": "Generate Share Link",
+      "source": "Generate Share Link",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:199"
+    },
+    {
+      "id": "Generating share link...",
+      "source": "Generating share link...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:94"
+    },
+    {
+      "id": "Generating try-on...",
+      "source": "Generating try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-progress.tsx:26"
+    },
+    {
+      "id": "Get AI-generated fashion advice.",
+      "source": "Get AI-generated fashion advice.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:412"
+    },
+    {
+      "id": "Get photorealistic 4K results in seconds. Save fav...",
+      "source": "Get photorealistic 4K results in seconds. Save favorites to your lookbook.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:275"
+    },
+    {
+      "id": "Get Started Free",
+      "source": "Get Started Free",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:166, src/components/landing/index.tsx:717"
+    },
+    {
+      "id": "Go to Dashboard",
+      "source": "Go to Dashboard",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:164, src/components/landing/index.tsx:715"
+    },
+    {
+      "id": "Height",
+      "source": "Height",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:72, src/screens/profile/profile-id.tsx:55"
+    },
+    {
+      "id": "Height (cm)",
+      "source": "Height (cm)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:319, src/screens/profile/new.tsx:276"
+    },
+    {
+      "id": "Hip",
+      "source": "Hip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:75, src/screens/profile/profile-id.tsx:58"
+    },
+    {
+      "id": "Hip (cm)",
+      "source": "Hip (cm)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:397, src/screens/profile/new.tsx:354"
+    },
+    {
+      "id": "How It Works",
+      "source": "How It Works",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:310"
+    },
+    {
+      "id": "https://...",
+      "source": "https://...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:487, src/screens/garment/new.tsx:353"
+    },
+    {
+      "id": "Image",
+      "source": "Image",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:166"
+    },
+    {
+      "id": "Image Tips",
+      "source": "Image Tips",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:418"
+    },
+    {
+      "id": "Include your full body in the frame",
+      "source": "Include your full body in the frame",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:438"
+    },
+    {
+      "id": "Inseam",
+      "source": "Inseam",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:76, src/screens/profile/profile-id.tsx:59"
+    },
+    {
+      "id": "Inseam (cm)",
+      "source": "Inseam (cm)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:423, src/screens/profile/new.tsx:380"
+    },
+    {
+      "id": "Item removed",
+      "source": "Item removed",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:103"
+    },
+    {
+      "id": "Items",
+      "source": "Items",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:180, src/screens/lookbooks/lookbook-id.tsx:224"
+    },
+    {
+      "id": "Join thousands of fashion enthusiasts who trust Dr...",
+      "source": "Join thousands of fashion enthusiasts who trust Drezzi",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:701"
+    },
+    {
+      "id": "JPEG, PNG, or WebP up to 10MB",
+      "source": "JPEG, PNG, or WebP up to 10MB",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-image-upload.tsx:103, src/components/profile/photo-upload.tsx:100"
+    },
+    {
+      "id": "Link copied to clipboard",
+      "source": "Link copied to clipboard",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:115"
+    },
+    {
+      "id": "Loading dashboard...",
+      "source": "Loading dashboard...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/dashboard/index.tsx:24"
+    },
+    {
+      "id": "Loading garment...",
+      "source": "Loading garment...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/garment/$garmentId.tsx:39"
+    },
+    {
+      "id": "Loading lookbook...",
+      "source": "Loading lookbook...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/lookbooks/$lookbookId.tsx:41, src/routes/shared/lookbook/$slug.tsx:40"
+    },
+    {
+      "id": "Loading lookbooks...",
+      "source": "Loading lookbooks...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/lookbooks/index.tsx:27"
+    },
+    {
+      "id": "Loading profile...",
+      "source": "Loading profile...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/profile/$profileId.tsx:39"
+    },
+    {
+      "id": "Loading profiles...",
+      "source": "Loading profiles...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/profile/index.tsx:27"
+    },
+    {
+      "id": "Loading try-on...",
+      "source": "Loading try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/try-on/$tryOnId.tsx:39"
+    },
+    {
+      "id": "Loading try-ons...",
+      "source": "Loading try-ons...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/try-on/index.tsx:35"
+    },
+    {
+      "id": "Loading wardrobe...",
+      "source": "Loading wardrobe...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/garment/index.tsx:27"
+    },
+    {
+      "id": "Loading...",
+      "source": "Loading...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/routes/(authed)/garment/new.tsx:20, src/routes/(authed)/profile/new.tsx:20, src/screens/lookbooks/lookbook-id.tsx:207"
+    },
+    {
+      "id": "Look On You",
+      "source": "Look On You",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:128"
+    },
+    {
+      "id": "Lookbooks",
+      "source": "Lookbooks",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:416, src/config/navigation.tsx:57, src/screens/dashboard/index.tsx:53"
+    },
+    {
+      "id": "Loose",
+      "source": "Loose",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:469, src/screens/profile/new.tsx:221"
+    },
+    {
+      "id": "Make Private",
+      "source": "Make Private",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:149, src/screens/garment/garment-id.tsx:99"
+    },
+    {
+      "id": "Make Public",
+      "source": "Make Public",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:154, src/screens/garment/garment-id.tsx:104"
+    },
+    {
+      "id": "Making private...",
+      "source": "Making private...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:65, src/components/lookbook/share-dialog.tsx:102, src/screens/garment/garment-id.tsx:54"
+    },
+    {
+      "id": "Making public...",
+      "source": "Making public...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:65, src/components/lookbook/share-dialog.tsx:102, src/screens/garment/garment-id.tsx:54"
+    },
+    {
+      "id": "Manage your body profiles for virtual try-ons",
+      "source": "Manage your body profiles for virtual try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/index.tsx:27"
+    },
+    {
+      "id": "Manage your lookbook",
+      "source": "Manage your lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:149"
+    },
+    {
+      "id": "Manage your wardrobe for virtual try-ons",
+      "source": "Manage your wardrobe for virtual try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/index.tsx:29"
+    },
+    {
+      "id": "Measurements",
+      "source": "Measurements",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/profile-id.tsx:155"
+    },
+    {
+      "id": "Measurements (Optional)",
+      "source": "Measurements (Optional)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:260"
+    },
+    {
+      "id": "Measurements are optional but help improve the acc...",
+      "source": "Measurements are optional but help improve the accuracy of virtual try-ons. You can always add them later.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:450"
+    },
+    {
+      "id": "My Profiles",
+      "source": "My Profiles",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:42"
+    },
+    {
+      "id": "My Wardrobe",
+      "source": "My Wardrobe",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:27, src/screens/garment/index.tsx:30"
+    },
+    {
+      "id": "Name",
+      "source": "Name",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:339, src/components/lookbook/lookbook-form.tsx:234, src/screens/garment/new.tsx:190"
+    },
+    {
+      "id": "New Profile",
+      "source": "New Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:51"
+    },
+    {
+      "id": "New Try-On",
+      "source": "New Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:124, src/screens/try-on/index.tsx:26, src/screens/try-on/index.tsx:33"
+    },
+    {
+      "id": "Next Gen",
+      "source": "Next Gen",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:605"
+    },
+    {
+      "id": "No brand specified",
+      "source": "No brand specified",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:107"
+    },
+    {
+      "id": "No completed try-ons available",
+      "source": "No completed try-ons available",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:105"
+    },
+    {
+      "id": "No credit card required",
+      "source": "No credit card required",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:727"
+    },
+    {
+      "id": "No description",
+      "source": "No description",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-card.tsx:58"
+    },
+    {
+      "id": "No garments found. Please add a garment to your wa...",
+      "source": "No garments found. Please add a garment to your wardrobe first.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:200"
+    },
+    {
+      "id": "No garments yet",
+      "source": "No garments yet",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/index.tsx:36"
+    },
+    {
+      "id": "No image",
+      "source": "No image",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:132, src/components/lookbook/lookbook-item.tsx:130, src/screens/share/share-slug.tsx:69"
+    },
+    {
+      "id": "No items yet",
+      "source": "No items yet",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:231"
+    },
+    {
+      "id": "No lookbooks yet",
+      "source": "No lookbooks yet",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/index.tsx:34"
+    },
+    {
+      "id": "No matching try-ons",
+      "source": "No matching try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:107"
+    },
+    {
+      "id": "No measurements recorded",
+      "source": "No measurements recorded",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:103"
+    },
+    {
+      "id": "No note",
+      "source": "No note",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:167"
+    },
+    {
+      "id": "No profiles found. Please create a body profile fi...",
+      "source": "No profiles found. Please create a body profile first.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:166"
+    },
+    {
+      "id": "No profiles yet",
+      "source": "No profiles yet",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/index.tsx:34"
+    },
+    {
+      "id": "No recent activity",
+      "source": "No recent activity",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/dashboard/recent-activity.tsx:163"
+    },
+    {
+      "id": "No style tips available yet.",
+      "source": "No style tips available yet.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:102"
+    },
+    {
+      "id": "No try-ons yet",
+      "source": "No try-ons yet",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/index.tsx:45"
+    },
+    {
+      "id": "Note saved",
+      "source": "Note saved",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:94"
+    },
+    {
+      "id": "Optional description...",
+      "source": "Optional description...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:362, src/components/lookbook/lookbook-form.tsx:257, src/screens/garment/new.tsx:213"
+    },
+    {
+      "id": "Organize and share your favorite outfits.",
+      "source": "Organize and share your favorite outfits.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:417"
+    },
+    {
+      "id": "pending",
+      "source": "pending",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:105"
+    },
+    {
+      "id": "Photo",
+      "source": "Photo",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:152"
+    },
+    {
+      "id": "Photo Tips",
+      "source": "Photo Tips",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:421"
+    },
+    {
+      "id": "Photorealistic",
+      "source": "Photorealistic",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:273"
+    },
+    {
+      "id": "Platform",
+      "source": "Platform",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:452"
+    },
+    {
+      "id": "Please select a valid image file (JPEG, PNG, or We...",
+      "source": "Please select a valid image file (JPEG, PNG, or WebP)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-image-upload.tsx:27, src/components/profile/photo-upload.tsx:24"
+    },
+    {
+      "id": "Please upload a photo first",
+      "source": "Please upload a photo first",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:218, src/screens/profile/new.tsx:103"
+    },
+    {
+      "id": "Please upload an image first",
+      "source": "Please upload an image first",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:250, src/screens/garment/new.tsx:111"
+    },
+    {
+      "id": "Powered by Gemini 3 Pro",
+      "source": "Powered by Gemini 3 Pro",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:585"
+    },
+    {
+      "id": "Price",
+      "source": "Price",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:428, src/screens/garment/garment-id.tsx:174, src/screens/garment/new.tsx:291"
+    },
+    {
+      "id": "Pricing (Optional)",
+      "source": "Pricing (Optional)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:280"
+    },
+    {
+      "id": "Private",
+      "source": "Private",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/lookbooks/lookbook-id.tsx:174"
+    },
+    {
+      "id": "Process",
+      "source": "Process",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:260"
+    },
+    {
+      "id": "processing",
+      "source": "processing",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:108"
+    },
+    {
+      "id": "Processing",
+      "source": "Processing",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:531"
+    },
+    {
+      "id": "Processing Time",
+      "source": "Processing Time",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/try-on-id.tsx:183"
+    },
+    {
+      "id": "Profile Details",
+      "source": "Profile Details",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/profile-id.tsx:127"
+    },
+    {
+      "id": "Profile Information",
+      "source": "Profile Information",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:168"
+    },
+    {
+      "id": "Profile Name",
+      "source": "Profile Name",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:299, src/screens/profile/new.tsx:178"
+    },
+    {
+      "id": "Public",
+      "source": "Public",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:88, src/components/garment/garment-form.tsx:505, src/components/lookbook/lookbook-card.tsx:46"
+    },
+    {
+      "id": "Public Access",
+      "source": "Public Access",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:136"
+    },
+    {
+      "id": "Public garments can be seen and tried on by other ...",
+      "source": "Public garments can be seen and tried on by other users. Keep garments private if you want them for personal use only.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:444"
+    },
+    {
+      "id": "Recent Activity",
+      "source": "Recent Activity",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:121"
+    },
+    {
+      "id": "Regenerate",
+      "source": "Regenerate",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:93"
+    },
+    {
+      "id": "Regenerating style tips...",
+      "source": "Regenerating style tips...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:63"
+    },
+    {
+      "id": "Regular",
+      "source": "Regular",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:463, src/screens/profile/new.tsx:215"
+    },
+    {
+      "id": "Reimagined",
+      "source": "Reimagined",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:696"
+    },
+    {
+      "id": "Relaxed",
+      "source": "Relaxed",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:466, src/screens/profile/new.tsx:218"
+    },
+    {
+      "id": "Removed from favorites",
+      "source": "Removed from favorites",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:84, src/screens/try-on/try-on-id.tsx:73"
+    },
+    {
+      "id": "Removing from favorites...",
+      "source": "Removing from favorites...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:81, src/screens/try-on/try-on-id.tsx:70"
+    },
+    {
+      "id": "Removing item...",
+      "source": "Removing item...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:102"
+    },
+    {
+      "id": "Resolution",
+      "source": "Resolution",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:532"
+    },
+    {
+      "id": "Result",
+      "source": "Result",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:272"
+    },
+    {
+      "id": "Retail URL",
+      "source": "Retail URL",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:483, src/screens/garment/new.tsx:349"
+    },
+    {
+      "id": "Retry",
+      "source": "Retry",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:186, src/screens/try-on/try-on-id.tsx:138"
+    },
+    {
+      "id": "Retrying try-on...",
+      "source": "Retrying try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:91, src/screens/try-on/try-on-id.tsx:80"
+    },
+    {
+      "id": "Save",
+      "source": "Save",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:151"
+    },
+    {
+      "id": "Saving note...",
+      "source": "Saving note...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-item.tsx:93"
+    },
+    {
+      "id": "Search garments...",
+      "source": "Search garments...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:96"
+    },
+    {
+      "id": "See How Clothes",
+      "source": "See How Clothes",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:115"
+    },
+    {
+      "id": "See how clothes look on you with AI-powered virtua...",
+      "source": "See how clothes look on you with AI-powered virtual try-on",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/index.tsx:38"
+    },
+    {
+      "id": "See How It Works",
+      "source": "See How It Works",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:181"
+    },
+    {
+      "id": "Select",
+      "source": "Select",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:248"
+    },
+    {
+      "id": "Select a body profile and a garment to see how it ...",
+      "source": "Select a body profile and a garment to see how it looks on you.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:134"
+    },
+    {
+      "id": "Select a completed try-on to add to this lookbook",
+      "source": "Select a completed try-on to add to this lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/add-tryon-dialog.tsx:86"
+    },
+    {
+      "id": "Select a garment",
+      "source": "Select a garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:187"
+    },
+    {
+      "id": "Select a profile",
+      "source": "Select a profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:152"
+    },
+    {
+      "id": "Select category",
+      "source": "Select category",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:384, src/components/style-tip/style-tip-form.tsx:158, src/screens/garment/new.tsx:238"
+    },
+    {
+      "id": "Select fit preference",
+      "source": "Select fit preference",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:455, src/screens/profile/new.tsx:206"
+    },
+    {
+      "id": "Set Default",
+      "source": "Set Default",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:135, src/screens/profile/profile-id.tsx:92"
+    },
+    {
+      "id": "Setting as default...",
+      "source": "Setting as default...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:65, src/screens/profile/profile-id.tsx:48"
+    },
+    {
+      "id": "Settings",
+      "source": "Settings",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:70"
+    },
+    {
+      "id": "Share",
+      "source": "Share",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-card.tsx:71, src/screens/lookbooks/lookbook-id.tsx:138"
+    },
+    {
+      "id": "Share \"{0}\" with others",
+      "source": "Share \"{0}\" with others",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:128",
+      "note": "placeholder {0}: lookbook.name"
+    },
+    {
+      "id": "Share Link",
+      "source": "Share Link",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:152"
+    },
+    {
+      "id": "Share link generated",
+      "source": "Share link generated",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:95"
+    },
+    {
+      "id": "Share Lookbook",
+      "source": "Share Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:125"
+    },
+    {
+      "id": "Shared",
+      "source": "Shared",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-card.tsx:93, src/screens/garment/garment-id.tsx:139"
+    },
+    {
+      "id": "Shared from Drezzi - Virtual Try-On",
+      "source": "Shared from Drezzi - Virtual Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/share/share-slug.tsx:89"
+    },
+    {
+      "id": "shared publicly",
+      "source": "shared publicly",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:50"
+    },
+    {
+      "id": "Show the full garment clearly",
+      "source": "Show the full garment clearly",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:426"
+    },
+    {
+      "id": "Sign In",
+      "source": "Sign In",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/common/content-layout.tsx:42"
+    },
+    {
+      "id": "Simple Process",
+      "source": "Simple Process",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:306"
+    },
+    {
+      "id": "Sizes",
+      "source": "Sizes",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:236"
+    },
+    {
+      "id": "Slim",
+      "source": "Slim",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:460, src/screens/profile/new.tsx:212"
+    },
+    {
+      "id": "Stand in front of a plain background",
+      "source": "Stand in front of a plain background",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:426"
+    },
+    {
+      "id": "Start a try-on to see your activity here",
+      "source": "Start a try-on to see your activity here",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/dashboard/recent-activity.tsx:166"
+    },
+    {
+      "id": "Start Try-On",
+      "source": "Start Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:231"
+    },
+    {
+      "id": "Start Your First Try-On",
+      "source": "Start Your First Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/index.tsx:56"
+    },
+    {
+      "id": "Start your first virtual try-on to see how clothes...",
+      "source": "Start your first virtual try-on to see how clothes look on you.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/index.tsx:48"
+    },
+    {
+      "id": "Starting try-on...",
+      "source": "Starting try-on...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:111"
+    },
+    {
+      "id": "Starting...",
+      "source": "Starting...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:226"
+    },
+    {
+      "id": "Store multiple profiles for different poses and bo...",
+      "source": "Store multiple profiles for different poses and body types. Perfect for seeing how clothes fit in various scenarios.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:388"
+    },
+    {
+      "id": "Style tip created",
+      "source": "Style tip created",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:122"
+    },
+    {
+      "id": "Style tip deleted",
+      "source": "Style tip deleted",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-delete.tsx:43"
+    },
+    {
+      "id": "Style tip updated",
+      "source": "Style tip updated",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:109"
+    },
+    {
+      "id": "Style Tips",
+      "source": "Style Tips",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:411, src/components/style-tip/style-tip-card.tsx:73"
+    },
+    {
+      "id": "Style tips regenerated",
+      "source": "Style tips regenerated",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-card.tsx:64"
+    },
+    {
+      "id": "Success Rate",
+      "source": "Success Rate",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:73"
+    },
+    {
+      "id": "Support",
+      "source": "Support",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:75"
+    },
+    {
+      "id": "The Technology",
+      "source": "The Technology",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:600"
+    },
+    {
+      "id": "This action cannot be undone. This will permanentl...",
+      "source": "This action cannot be undone. This will permanently delete the body profile \"{0}\" and its associated photo.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-delete.tsx:84",
+      "note": "placeholder {0}: profile.name"
+    },
+    {
+      "id": "This action cannot be undone. This will permanentl...",
+      "source": "This action cannot be undone. This will permanently delete the garment \"{0}\" and its associated image.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-delete.tsx:86",
+      "note": "placeholder {0}: garment.name"
+    },
+    {
+      "id": "This action cannot be undone. This will permanentl...",
+      "source": "This action cannot be undone. This will permanently delete the lookbook \"{0}\" and all its items.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-delete.tsx:83",
+      "note": "placeholder {0}: lookbook.name"
+    },
+    {
+      "id": "This action cannot be undone. This will permanentl...",
+      "source": "This action cannot be undone. This will permanently delete this style tip.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-delete.tsx:57"
+    },
+    {
+      "id": "This action cannot be undone. This will permanentl...",
+      "source": "This action cannot be undone. This will permanently delete this try-on result for \"{0}\".",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-delete.tsx:83",
+      "note": "placeholder {0}: tryOn.garment.name"
+    },
+    {
+      "id": "This lookbook is empty.",
+      "source": "This lookbook is empty.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/share/share-slug.tsx:52"
+    },
+    {
+      "id": "This lookbook is private. Enable public access to ...",
+      "source": "This lookbook is private. Enable public access to share.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:173"
+    },
+    {
+      "id": "This lookbook is publicly accessible.",
+      "source": "This lookbook is publicly accessible.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/share-dialog.tsx:181"
+    },
+    {
+      "id": "Total Try-Ons",
+      "source": "Total Try-Ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:42"
+    },
+    {
+      "id": "Try Another Garment",
+      "source": "Try Another Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/try-on-id.tsx:294"
+    },
+    {
+      "id": "Try on any garment virtually with our AI-powered t...",
+      "source": "Try on any garment virtually with our AI-powered technology. Powered by Google Gemini 3 Pro for photorealistic results.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:140"
+    },
+    {
+      "id": "Try-On",
+      "source": "Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/config/navigation.tsx:22"
+    },
+    {
+      "id": "Try-on complete!",
+      "source": "Try-on complete!",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:468"
+    },
+    {
+      "id": "Try-on has been deleted",
+      "source": "Try-on has been deleted",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-delete.tsx:69"
+    },
+    {
+      "id": "Try-on restarted",
+      "source": "Try-on restarted",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:92, src/screens/try-on/try-on-id.tsx:81"
+    },
+    {
+      "id": "Try-on result for {0}",
+      "source": "Try-on result for {0}",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:110, src/screens/try-on/try-on-id.tsx:158",
+      "note": "placeholder {0}: tryOn.garment.name"
+    },
+    {
+      "id": "Try-on started! It will be ready in a few moments.",
+      "source": "Try-on started! It will be ready in a few moments.",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-form.tsx:112"
+    },
+    {
+      "id": "try-ons in progress",
+      "source": "try-ons in progress",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:101"
+    },
+    {
+      "id": "Unfavorite",
+      "source": "Unfavorite",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-card.tsx:167, src/screens/try-on/try-on-id.tsx:120"
+    },
+    {
+      "id": "Unknown",
+      "source": "Unknown",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/todo/todo-detail.tsx:58"
+    },
+    {
+      "id": "Update Garment",
+      "source": "Update Garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:530"
+    },
+    {
+      "id": "Update Lookbook",
+      "source": "Update Lookbook",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:298"
+    },
+    {
+      "id": "Update Profile",
+      "source": "Update Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:512"
+    },
+    {
+      "id": "Update Tip",
+      "source": "Update Tip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:201"
+    },
+    {
+      "id": "Update your body profile for virtual try-ons",
+      "source": "Update your body profile for virtual try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:280"
+    },
+    {
+      "id": "Update your garment details",
+      "source": "Update your garment details",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:320"
+    },
+    {
+      "id": "Update your lookbook details",
+      "source": "Update your lookbook details",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:220"
+    },
+    {
+      "id": "Update your style tip",
+      "source": "Update your style tip",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:139"
+    },
+    {
+      "id": "Updated",
+      "source": "Updated",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:189, src/screens/lookbooks/lookbook-id.tsx:194, src/screens/profile/profile-id.tsx:145"
+    },
+    {
+      "id": "Updating garment...",
+      "source": "Updating garment...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/garment/garment-form.tsx:276"
+    },
+    {
+      "id": "Updating lookbook...",
+      "source": "Updating lookbook...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/lookbook/lookbook-form.tsx:183"
+    },
+    {
+      "id": "Updating profile...",
+      "source": "Updating profile...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:238"
+    },
+    {
+      "id": "Updating style tip...",
+      "source": "Updating style tip...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/style-tip/style-tip-form.tsx:108"
+    },
+    {
+      "id": "Upload",
+      "source": "Upload",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:236"
+    },
+    {
+      "id": "Upload a clear image of the garment",
+      "source": "Upload a clear image of the garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:169"
+    },
+    {
+      "id": "Upload a full-body photo for the best try-on resul...",
+      "source": "Upload a full-body photo for the best try-on results",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:155"
+    },
+    {
+      "id": "Use a plain, light background",
+      "source": "Use a plain, light background",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:423"
+    },
+    {
+      "id": "Use this profile as your default for try-ons",
+      "source": "Use this profile as your default for try-ons",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:488, src/screens/profile/new.tsx:240"
+    },
+    {
+      "id": "View and manage your body profile",
+      "source": "View and manage your body profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/profile-id.tsx:102"
+    },
+    {
+      "id": "View and manage your garment",
+      "source": "View and manage your garment",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:118"
+    },
+    {
+      "id": "View and retry",
+      "source": "View and retry",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:138"
+    },
+    {
+      "id": "View on Retailer",
+      "source": "View on Retailer",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/garment-id.tsx:261"
+    },
+    {
+      "id": "View your virtual try-on result",
+      "source": "View your virtual try-on result",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/try-on/try-on-id.tsx:149"
+    },
+    {
+      "id": "Virtual Try-On",
+      "source": "Virtual Try-On",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/app-sidebar.tsx:37, src/components/try-on/try-on-form.tsx:131, src/screens/try-on/index.tsx:39"
+    },
+    {
+      "id": "Virtual Try-On Technology",
+      "source": "Virtual Try-On Technology",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:110"
+    },
+    {
+      "id": "Visibility",
+      "source": "Visibility",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/garment/new.tsx:369, src/screens/lookbooks/lookbook-id.tsx:164"
+    },
+    {
+      "id": "Waist",
+      "source": "Waist",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-card.tsx:74, src/screens/profile/profile-id.tsx:57"
+    },
+    {
+      "id": "Waist (cm)",
+      "source": "Waist (cm)",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/profile/profile-form.tsx:371, src/screens/profile/new.tsx:328"
+    },
+    {
+      "id": "Waiting in queue...",
+      "source": "Waiting in queue...",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/try-on/try-on-progress.tsx:21"
+    },
+    {
+      "id": "Wear fitted clothing for best results",
+      "source": "Wear fitted clothing for best results",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/profile/new.tsx:429"
+    },
+    {
+      "id": "Your Body Profile",
+      "source": "Your Body Profile",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:237"
+    },
+    {
+      "id": "Your Photo",
+      "source": "Your Photo",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/try-on-demo/index.tsx:573"
+    },
+    {
+      "id": "Your Style,",
+      "source": "Your Style,",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/components/landing/index.tsx:685"
+    },
+    {
+      "id": "Your virtual wardrobe at a glance",
+      "source": "Your virtual wardrobe at a glance",
+      "translations": {
+        "fr": "",
+        "sp": ""
+      },
+      "context": "src/screens/dashboard/index.tsx:30"
+    }
+  ]
+}

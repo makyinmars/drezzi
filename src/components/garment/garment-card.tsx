@@ -1,6 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Garment } from "generated/prisma/client";
 import { Edit, Eye, EyeOff, Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,12 +14,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTRPC } from "@/trpc/react";
+import type { GarmentListProcedure } from "@/trpc/routers/garment";
 
 import GarmentDelete from "./garment-delete";
 import GarmentForm from "./garment-form";
 
 type GarmentCardProps = {
-  garment: Garment & { isOwner?: boolean };
+  garment: GarmentListProcedure[number];
 };
 
 const GarmentCard = ({ garment }: GarmentCardProps) => {

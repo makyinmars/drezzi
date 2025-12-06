@@ -1,11 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Lookbook } from "generated/prisma/client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,17 +25,17 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useTRPC } from "@/trpc/react";
+import type { LookbookListProcedure } from "@/trpc/routers/lookbook";
 import {
   apiLookbookCreateAndUpdate,
   type LookbookCreateAndUpdate,
 } from "@/validators/lookbook";
 
 type LookbookFormProps = {
-  lookbook?: Pick<Lookbook, "id" | "name" | "description" | "isPublic"> & {
-    coverUrl?: string | null;
-    coverKey?: string | null;
-    shareSlug?: string | null;
-  };
+  lookbook?: Pick<
+    LookbookListProcedure[number],
+    "id" | "name" | "description" | "coverId" | "isPublic"
+  >;
   children?: React.ReactNode;
 };
 
@@ -53,8 +51,7 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
       id: lookbook?.id,
       name: lookbook?.name ?? "",
       description: lookbook?.description ?? null,
-      coverUrl: lookbook?.coverUrl || undefined,
-      coverKey: lookbook?.coverKey || undefined,
+      coverId: lookbook?.coverId || undefined,
       isPublic: lookbook?.isPublic ?? false,
     },
   });
@@ -72,13 +69,14 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
 
         const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
-        const optimistic = {
+        const optimistic: LookbookListProcedure[number] = {
           id: tempId,
           userId: "",
           name: variables.name,
           description: variables.description ?? null,
-          coverUrl: variables.coverUrl ?? null,
-          coverKey: variables.coverKey ?? null,
+          coverId: variables.coverId ?? null,
+          cover: null,
+          coverUrl: null,
           isPublic: variables.isPublic ?? false,
           shareSlug: null,
           itemCount: 0,
@@ -100,17 +98,9 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
           context?.previousData
         );
       },
-      onSuccess: (created, _variables, context) => {
-        const createdWithCount = {
-          ...created,
-          itemCount: 0,
-          _count: { items: 0 },
-        };
-        queryClient.setQueryData(trpc.lookbook.list.queryKey(), (old) => {
-          if (!old) return [createdWithCount];
-          return old.map((lb) =>
-            lb.id === context?.optimistic.id ? createdWithCount : lb
-          );
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.lookbook.list.queryKey(),
         });
         form.reset();
         setOpen(false);
@@ -147,18 +137,8 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
         );
       },
       onSuccess: async (updated) => {
-        queryClient.setQueryData(trpc.lookbook.list.queryKey(), (old) => {
-          if (!old) return old;
-          return old.map((lb) =>
-            lb.id === updated.id
-              ? {
-                  ...lb,
-                  ...updated,
-                  itemCount: lb.itemCount,
-                  _count: lb._count,
-                }
-              : lb
-          );
+        await queryClient.invalidateQueries({
+          queryKey: trpc.lookbook.list.queryKey(),
         });
         await queryClient.invalidateQueries({
           queryKey: trpc.lookbook.byId.queryKey({ id: updated.id }),
@@ -175,8 +155,7 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
           id: data.id,
           name: data.name,
           description: data.description,
-          coverUrl: data.coverUrl,
-          coverKey: data.coverKey,
+          coverId: data.coverId,
           isPublic: data.isPublic,
         }),
         {
@@ -190,8 +169,7 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
         createMutation.mutateAsync({
           name: data.name,
           description: data.description ?? undefined,
-          coverUrl: data.coverUrl,
-          coverKey: data.coverKey,
+          coverId: data.coverId,
           isPublic: data.isPublic,
         }),
         {

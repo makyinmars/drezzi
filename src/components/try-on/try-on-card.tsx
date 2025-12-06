@@ -103,17 +103,17 @@ const TryOnCard = ({ tryOn }: TryOnCardProps) => {
 
   return (
     <Card className="overflow-hidden">
-      <div className="relative h-48">
+      <div className="relative aspect-[4/5] bg-muted lg:aspect-[3/4]">
         {tryOn.status === "completed" && tryOn.resultUrl ? (
           <Link params={{ tryOnId: tryOn.id }} to="/try-on/$tryOnId">
             <img
               alt={t`Try-on result for ${tryOn.garment.name}`}
-              className="h-full w-full cursor-pointer object-cover transition-opacity hover:opacity-90"
+              className="h-full w-full cursor-pointer object-contain p-1 transition-opacity hover:opacity-90"
               src={tryOn.resultUrl}
             />
           </Link>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted">
+          <div className="flex h-full w-full items-center justify-center">
             <TryOnProgress status={tryOn.status} />
           </div>
         )}

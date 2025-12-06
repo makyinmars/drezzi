@@ -4,17 +4,25 @@ export const useElapsedTime = (paused = false) => {
   const [elapsed, setElapsed] = useState(0);
   const startRef = useRef(performance.now());
   const frameRef = useRef<number>(0);
-  const pausedAtRef = useRef<number>(0);
+  const pausedTimeRef = useRef(0);
+  const wasPausedRef = useRef(paused);
 
   useEffect(() => {
-    if (paused) {
-      pausedAtRef.current = elapsed;
+    // Handle transition from not-paused to paused
+    if (paused && !wasPausedRef.current) {
+      pausedTimeRef.current = performance.now() - startRef.current;
+      wasPausedRef.current = true;
       cancelAnimationFrame(frameRef.current);
       return;
     }
 
-    // Adjust start time to account for time spent paused
-    startRef.current = performance.now() - pausedAtRef.current * 1000;
+    // Handle transition from paused to not-paused
+    if (!paused && wasPausedRef.current) {
+      startRef.current = performance.now() - pausedTimeRef.current;
+      wasPausedRef.current = false;
+    }
+
+    if (paused) return;
 
     const tick = () => {
       setElapsed((performance.now() - startRef.current) / 1000);
@@ -23,11 +31,11 @@ export const useElapsedTime = (paused = false) => {
 
     frameRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameRef.current);
-  }, [paused, elapsed]);
+  }, [paused]);
 
   const reset = useCallback(() => {
     startRef.current = performance.now();
-    pausedAtRef.current = 0;
+    pausedTimeRef.current = 0;
     setElapsed(0);
   }, []);
 

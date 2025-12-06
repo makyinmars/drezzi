@@ -8,8 +8,7 @@ export const apiBodyProfileId = z.object({
 
 export const apiBodyProfileCreate = z.object({
   name: z.string().min(1).max(100).default("Default"),
-  photoUrl: z.url(),
-  photoKey: z.string().min(1),
+  photoId: z.cuid(),
   height: z.number().positive().optional(),
   waist: z.number().positive().optional(),
   hip: z.number().positive().optional(),
@@ -22,8 +21,7 @@ export const apiBodyProfileCreate = z.object({
 export const apiBodyProfileUpdate = z.object({
   id: z.cuid(),
   name: z.string().min(1).max(100).optional(),
-  photoUrl: z.url().optional(),
-  photoKey: z.string().min(1).optional(),
+  photoId: z.cuid().optional(),
   height: z.number().positive().nullable().optional(),
   waist: z.number().positive().nullable().optional(),
   hip: z.number().positive().nullable().optional(),
@@ -36,8 +34,7 @@ export const apiBodyProfileUpdate = z.object({
 export const apiBodyProfileCreateAndUpdate = z.object({
   id: z.cuid().optional(),
   name: z.string().min(1, "Name is required").max(100),
-  photoUrl: z.url().optional(),
-  photoKey: z.string().optional(),
+  photoId: z.cuid().optional(),
   height: z.number().positive().nullable(),
   waist: z.number().positive().nullable(),
   hip: z.number().positive().nullable(),

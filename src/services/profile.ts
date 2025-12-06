@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function getProfileUploadUrl(userId: string, contentType: string) {
-  const extension = contentType.split("/")[1] || "jpg";
+  const extension = contentType.split("/").at(1) ?? "jpg";
   const key = `profiles/${userId}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
 
   const command = new PutObjectCommand({
@@ -16,9 +16,17 @@ export async function getProfileUploadUrl(userId: string, contentType: string) {
   });
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  const photoUrl = `https://${Resource.MediaBucket.name}.s3.us-east-2.amazonaws.com/${key}`;
 
-  return { url, key, photoUrl };
+  const file = await prisma.file.create({
+    data: {
+      key,
+      bucket: "media",
+      mimeType: contentType,
+      uploadedBy: userId,
+    },
+  });
+
+  return { url, key, fileId: file.id };
 }
 
 export async function setDefaultProfile(userId: string, profileId: string) {

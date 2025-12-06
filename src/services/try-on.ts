@@ -18,16 +18,24 @@ export async function updateTryOnResult(
   tryOnId: string,
   params: UpdateTryOnResultParams
 ) {
-  const resultUrl = params.resultKey
-    ? `https://${Resource.MediaBucket.name}.s3.us-east-2.amazonaws.com/${params.resultKey}`
-    : undefined;
+  let resultId: string | undefined;
+
+  if (params.resultKey) {
+    const file = await prisma.file.create({
+      data: {
+        key: params.resultKey,
+        bucket: "media",
+        mimeType: "image/png",
+      },
+    });
+    resultId = file.id;
+  }
 
   return await prisma.tryOn.update({
     where: { id: tryOnId },
     data: {
       status: params.status,
-      resultUrl,
-      resultKey: params.resultKey,
+      resultId,
       processingMs: params.processingMs,
       confidenceScore: params.confidenceScore,
       errorMessage: params.errorMessage,

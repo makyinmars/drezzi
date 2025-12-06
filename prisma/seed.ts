@@ -59,7 +59,6 @@ const USER_NAME = "Franklin";
 const bodyProfilesData = [
   {
     name: "Default Profile",
-    photoUrl: "https://picsum.photos/seed/drezzi-profile1/400/600",
     photoKey: "profiles/seed/profile1.jpg",
     height: 175,
     waist: 81,
@@ -71,7 +70,6 @@ const bodyProfilesData = [
   },
   {
     name: "Athletic Fit",
-    photoUrl: "https://picsum.photos/seed/drezzi-profile2/400/600",
     photoKey: "profiles/seed/profile2.jpg",
     height: 175,
     waist: 76,
@@ -96,7 +94,6 @@ const garmentsData = [
     brand: "Uniqlo",
     price: 39.9,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment1/400/600",
     imageKey: "garments/seed/garment1.jpg",
     colors: ["white"],
     sizes: ["S", "M", "L", "XL"],
@@ -113,7 +110,6 @@ const garmentsData = [
     brand: "Zara",
     price: 129.0,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment2/400/600",
     imageKey: "garments/seed/garment2.jpg",
     colors: ["navy"],
     sizes: ["S", "M", "L"],
@@ -129,7 +125,6 @@ const garmentsData = [
     brand: "Gap",
     price: 59.95,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment3/400/600",
     imageKey: "garments/seed/garment3.jpg",
     colors: ["khaki", "beige"],
     sizes: ["28", "30", "32", "34", "36"],
@@ -145,7 +140,6 @@ const garmentsData = [
     brand: "Levi's",
     price: 79.5,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment4/400/600",
     imageKey: "garments/seed/garment4.jpg",
     colors: ["black"],
     sizes: ["28", "30", "32", "34"],
@@ -161,7 +155,6 @@ const garmentsData = [
     brand: "H&M",
     price: 49.99,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment5/400/600",
     imageKey: "garments/seed/garment5.jpg",
     colors: ["pink", "green", "white"],
     sizes: ["XS", "S", "M", "L"],
@@ -177,7 +170,6 @@ const garmentsData = [
     brand: "Ralph Lauren",
     price: 89.0,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment6/400/600",
     imageKey: "garments/seed/garment6.jpg",
     colors: ["navy", "white"],
     sizes: ["S", "M", "L", "XL"],
@@ -193,7 +185,6 @@ const garmentsData = [
     brand: "Everlane",
     price: 145.0,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment7/400/600",
     imageKey: "garments/seed/garment7.jpg",
     colors: ["gray", "charcoal"],
     sizes: ["S", "M", "L"],
@@ -209,7 +200,6 @@ const garmentsData = [
     brand: "Madewell",
     price: 118.0,
     currency: "USD",
-    imageUrl: "https://picsum.photos/seed/drezzi-garment8/400/600",
     imageKey: "garments/seed/garment8.jpg",
     colors: ["blue", "denim"],
     sizes: ["XS", "S", "M", "L", "XL"],
@@ -347,18 +337,28 @@ async function main() {
   await prisma.tryOn.deleteMany({ where: { userId: user.id } });
   await prisma.garment.deleteMany({ where: { userId: user.id } });
   await prisma.bodyProfile.deleteMany({ where: { userId: user.id } });
-  console.log("  Cleared lookbooks, try-ons, garments, and body profiles");
+  await prisma.file.deleteMany({ where: { uploadedBy: user.id } });
+  console.log(
+    "  Cleared lookbooks, try-ons, garments, body profiles, and files"
+  );
 
   // 3. Upload and create BodyProfiles
   console.log("Uploading profile images and creating body profiles...");
   const profiles: Awaited<ReturnType<typeof prisma.bodyProfile.create>>[] = [];
   for (const [idx, p] of bodyProfilesData.entries()) {
-    const { key, url } = await seedImage("profiles", `profile${idx + 1}`);
+    const { key } = await seedImage("profiles", `profile${idx + 1}`);
+    const file = await prisma.file.create({
+      data: {
+        key,
+        bucket: "media",
+        mimeType: "image/jpeg",
+        uploadedBy: user.id,
+      },
+    });
     const profile = await prisma.bodyProfile.create({
       data: {
         name: p.name,
-        photoUrl: url,
-        photoKey: key,
+        photoId: file.id,
         height: p.height,
         waist: p.waist,
         hip: p.hip,
@@ -377,7 +377,15 @@ async function main() {
   console.log("Uploading garment images and creating garments...");
   const garments: Awaited<ReturnType<typeof prisma.garment.create>>[] = [];
   for (const [idx, g] of garmentsData.entries()) {
-    const { key, url } = await seedImage("garments", `garment${idx + 1}`);
+    const { key } = await seedImage("garments", `garment${idx + 1}`);
+    const file = await prisma.file.create({
+      data: {
+        key,
+        bucket: "media",
+        mimeType: "image/jpeg",
+        uploadedBy: user.id,
+      },
+    });
     const garment = await prisma.garment.create({
       data: {
         name: g.name,
@@ -387,8 +395,7 @@ async function main() {
         brand: g.brand,
         price: g.price,
         currency: g.currency,
-        imageUrl: url,
-        imageKey: key,
+        imageId: file.id,
         colors: g.colors,
         sizes: g.sizes,
         tags: g.tags,
@@ -409,7 +416,15 @@ async function main() {
   for (const [idx, config] of tryOnsConfig.entries()) {
     const garment = garments[config.garmentIndex];
     const styleTips = generateStyleTips(garment.name, garment.category);
-    const { key, url } = await seedImage("try-ons", `tryon${idx + 1}`);
+    const { key } = await seedImage("try-ons", `tryon${idx + 1}`);
+    const resultFile = await prisma.file.create({
+      data: {
+        key,
+        bucket: "media",
+        mimeType: "image/jpeg",
+        uploadedBy: user.id,
+      },
+    });
 
     const tryOn = await prisma.tryOn.create({
       data: {
@@ -417,8 +432,7 @@ async function main() {
         bodyProfileId: profiles[config.profileIndex].id,
         garmentId: garment.id,
         status: "completed",
-        resultUrl: url,
-        resultKey: key,
+        resultId: resultFile.id,
         processingMs: 7000 + Math.floor(Math.random() * 4000),
         confidenceScore: 0.85 + Math.random() * 0.14,
         isFavorite: config.isFavorite,

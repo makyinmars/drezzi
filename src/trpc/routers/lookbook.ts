@@ -40,6 +40,7 @@ export const lookbookRouter = {
       where: { userId },
       include: {
         _count: { select: { items: true } },
+        cover: true,
       },
       orderBy: { updatedAt: "desc" },
     });
@@ -47,7 +48,7 @@ export const lookbookRouter = {
     return Promise.all(
       lookbooks.map(async (lb) => ({
         ...lb,
-        coverUrl: await getLookbookCoverUrl(lb.coverKey),
+        coverUrl: await getLookbookCoverUrl(lb.cover?.key ?? null),
         itemCount: lb._count.items,
       }))
     );
@@ -62,13 +63,15 @@ export const lookbookRouter = {
       const lookbook = await ctx.prisma.lookbook.findFirst({
         where: { id: input.id, userId },
         include: {
+          cover: true,
           items: {
             orderBy: { order: "asc" },
             include: {
               tryOn: {
                 include: {
-                  garment: true,
-                  bodyProfile: true,
+                  result: true,
+                  garment: { include: { image: true } },
+                  bodyProfile: { include: { photo: true } },
                 },
               },
             },
@@ -85,17 +88,17 @@ export const lookbookRouter = {
           ...item,
           tryOn: {
             ...item.tryOn,
-            resultUrl: item.tryOn.resultKey
-              ? await getTryOnResultUrl(item.tryOn.resultKey)
+            resultUrl: item.tryOn.result
+              ? await getTryOnResultUrl(item.tryOn.result.key)
               : null,
             garment: {
               ...item.tryOn.garment,
-              imageUrl: await getGarmentImageUrl(item.tryOn.garment.imageKey),
+              imageUrl: await getGarmentImageUrl(item.tryOn.garment.image.key),
             },
             bodyProfile: {
               ...item.tryOn.bodyProfile,
               photoUrl: await getProfilePhotoUrl(
-                item.tryOn.bodyProfile.photoKey
+                item.tryOn.bodyProfile.photo.key
               ),
             },
           },
@@ -104,7 +107,7 @@ export const lookbookRouter = {
 
       return {
         ...lookbook,
-        coverUrl: await getLookbookCoverUrl(lookbook.coverKey),
+        coverUrl: await getLookbookCoverUrl(lookbook.cover?.key ?? null),
         items,
       };
     }),
@@ -118,13 +121,15 @@ export const lookbookRouter = {
         where: { shareSlug: input.slug },
         include: {
           user: { select: { name: true, image: true } },
+          cover: true,
           items: {
             orderBy: { order: "asc" },
             include: {
               tryOn: {
                 include: {
-                  garment: true,
-                  bodyProfile: true,
+                  result: true,
+                  garment: { include: { image: true } },
+                  bodyProfile: { include: { photo: true } },
                 },
               },
             },
@@ -145,17 +150,17 @@ export const lookbookRouter = {
           ...item,
           tryOn: {
             ...item.tryOn,
-            resultUrl: item.tryOn.resultKey
-              ? await getTryOnResultUrl(item.tryOn.resultKey)
+            resultUrl: item.tryOn.result
+              ? await getTryOnResultUrl(item.tryOn.result.key)
               : null,
             garment: {
               ...item.tryOn.garment,
-              imageUrl: await getGarmentImageUrl(item.tryOn.garment.imageKey),
+              imageUrl: await getGarmentImageUrl(item.tryOn.garment.image.key),
             },
             bodyProfile: {
               ...item.tryOn.bodyProfile,
               photoUrl: await getProfilePhotoUrl(
-                item.tryOn.bodyProfile.photoKey
+                item.tryOn.bodyProfile.photo.key
               ),
             },
           },
@@ -164,7 +169,7 @@ export const lookbookRouter = {
 
       return {
         ...lookbook,
-        coverUrl: await getLookbookCoverUrl(lookbook.coverKey),
+        coverUrl: await getLookbookCoverUrl(lookbook.cover?.key ?? null),
         items,
       };
     }),
@@ -177,10 +182,11 @@ export const lookbookRouter = {
 
       const lookbook = await ctx.prisma.lookbook.create({
         data: {
-          ...input,
+          name: input.name,
+          description: input.description,
+          isPublic: input.isPublic,
           userId,
-          coverKey: input.coverKey ?? null,
-          coverUrl: input.coverUrl ?? null,
+          coverId: input.coverId ?? null,
         },
       });
 
@@ -200,23 +206,25 @@ export const lookbookRouter = {
 
       const existing = await ctx.prisma.lookbook.findFirst({
         where: { id, userId },
+        include: { cover: true },
       });
 
       if (!existing) {
         throw errors.lookbookNotFound();
       }
 
-      if (
-        data.coverKey &&
-        existing.coverKey &&
-        data.coverKey !== existing.coverKey
-      ) {
-        await deleteLookbookCover(existing.coverKey);
+      if (data.coverId && existing.cover && data.coverId !== existing.coverId) {
+        await deleteLookbookCover(existing.cover.key);
       }
 
       const updated = await ctx.prisma.lookbook.update({
         where: { id },
-        data,
+        data: {
+          name: data.name,
+          description: data.description,
+          isPublic: data.isPublic,
+          coverId: data.coverId,
+        },
       });
 
       return updated;
@@ -230,13 +238,14 @@ export const lookbookRouter = {
 
       const lookbook = await ctx.prisma.lookbook.findFirst({
         where: { id: input.id, userId },
+        include: { cover: true },
       });
 
       if (!lookbook) {
         throw errors.lookbookNotFound();
       }
 
-      await deleteLookbookCover(lookbook.coverKey);
+      await deleteLookbookCover(lookbook.cover?.key ?? null);
 
       const deleted = await ctx.prisma.lookbook.delete({
         where: { id: input.id },
@@ -450,8 +459,9 @@ export const lookbookRouter = {
           id: { notIn: existingIds },
         },
         include: {
-          garment: true,
-          bodyProfile: true,
+          result: true,
+          garment: { include: { image: true } },
+          bodyProfile: { include: { photo: true } },
         },
         orderBy: { createdAt: "desc" },
       });
@@ -459,14 +469,14 @@ export const lookbookRouter = {
       return Promise.all(
         tryOns.map(async (t) => ({
           ...t,
-          resultUrl: t.resultKey ? await getTryOnResultUrl(t.resultKey) : null,
+          resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
           garment: {
             ...t.garment,
-            imageUrl: await getGarmentImageUrl(t.garment.imageKey),
+            imageUrl: await getGarmentImageUrl(t.garment.image.key),
           },
           bodyProfile: {
             ...t.bodyProfile,
-            photoUrl: await getProfilePhotoUrl(t.bodyProfile.photoKey),
+            photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
           },
         }))
       );
