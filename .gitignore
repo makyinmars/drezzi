@@ -10,6 +10,7 @@ yarn.lock
 .nitro
 ./dist/*
 .dist
+/dist
 /build/
 /api/
 /server/build

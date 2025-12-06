@@ -22,7 +22,7 @@ export default $config({
   async run() {
 
 
-    const rootDomain = "getcima.app";
+    const rootDomain = "getdrezzi.app";
     const isLocalDev = $app.stage === "franklin";
 
     // Determine domain name based on stage
