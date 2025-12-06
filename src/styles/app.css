@@ -490,6 +490,204 @@
     }
   }
 
+  /* ===== Hero Gradient Background ===== */
+
+  /* Base gradient shift - bold color movement */
+  @keyframes hero-gradient-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Morphing blob animation 1 - organic shape transformation */
+  @keyframes hero-blob-morph-1 {
+    0%,
+    100% {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    }
+    25% {
+      border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+      transform: translate3d(50px, -60px, 80px) rotate(90deg) scale(1.15);
+    }
+    50% {
+      border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%;
+      transform: translate3d(-30px, 40px, 40px) rotate(180deg) scale(0.95);
+    }
+    75% {
+      border-radius: 40% 30% 60% 50% / 60% 70% 30% 50%;
+      transform: translate3d(40px, 20px, 60px) rotate(270deg) scale(1.1);
+    }
+  }
+
+  @keyframes hero-blob-morph-2 {
+    0%,
+    100% {
+      border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    }
+    20% {
+      border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+      transform: translate3d(-60px, 50px, 70px) rotate(72deg) scale(1.2);
+    }
+    40% {
+      border-radius: 30% 70% 40% 60% / 50% 40% 60% 50%;
+      transform: translate3d(40px, -30px, 30px) rotate(144deg) scale(0.9);
+    }
+    60% {
+      border-radius: 60% 40% 70% 30% / 40% 50% 30% 70%;
+      transform: translate3d(-20px, -50px, 50px) rotate(216deg) scale(1.05);
+    }
+    80% {
+      border-radius: 50% 50% 30% 70% / 60% 30% 60% 40%;
+      transform: translate3d(30px, 40px, 40px) rotate(288deg) scale(1.1);
+    }
+  }
+
+  @keyframes hero-blob-morph-3 {
+    0%,
+    100% {
+      border-radius: 50% 50% 40% 60% / 40% 60% 40% 60%;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    }
+    33% {
+      border-radius: 70% 30% 60% 40% / 30% 70% 50% 50%;
+      transform: translate3d(60px, 40px, 90px) rotate(120deg) scale(1.25);
+    }
+    66% {
+      border-radius: 30% 70% 50% 50% / 60% 40% 60% 40%;
+      transform: translate3d(-50px, -40px, 50px) rotate(240deg) scale(0.85);
+    }
+  }
+
+  /* Shimmer traveling light - more visible */
+  @keyframes hero-shimmer-sweep {
+    0% {
+      transform: translateX(-100%) rotate(-45deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateX(200%) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  /* Mesh gradient rotation */
+  @keyframes hero-mesh-rotate {
+    0% {
+      transform: rotate(0deg) scale(1.5);
+    }
+    100% {
+      transform: rotate(360deg) scale(1.5);
+    }
+  }
+
+  /* Grain flicker for organic feel */
+  @keyframes hero-grain-shift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    10% {
+      transform: translate(-1%, -1%);
+    }
+    20% {
+      transform: translate(1%, 1%);
+    }
+    30% {
+      transform: translate(-1%, 1%);
+    }
+    40% {
+      transform: translate(1%, -1%);
+    }
+    50% {
+      transform: translate(-1%, 0%);
+    }
+    60% {
+      transform: translate(1%, 0%);
+    }
+    70% {
+      transform: translate(0%, 1%);
+    }
+    80% {
+      transform: translate(0%, -1%);
+    }
+    90% {
+      transform: translate(1%, 1%);
+    }
+  }
+
+  /* ===== Tech Section - Engine Room ===== */
+
+  /* AI Core pulse animation */
+  @keyframes tech-core-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 30px var(--primary));
+    }
+    50% {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 60px var(--primary));
+    }
+  }
+
+  /* Core ring rotation */
+  @keyframes tech-ring-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Neural pattern flow */
+  @keyframes tech-neural-flow {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  /* Stat card glow */
+  @keyframes tech-stat-glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 20px color-mix(in oklch, var(--primary) 20%, transparent),
+        inset 0 0 20px color-mix(in oklch, var(--primary) 5%, transparent);
+    }
+    50% {
+      box-shadow:
+        0 0 40px color-mix(in oklch, var(--primary) 30%, transparent),
+        inset 0 0 30px color-mix(in oklch, var(--primary) 10%, transparent);
+    }
+  }
+
+  /* Card float animation */
+  @keyframes tech-card-float {
+    0%,
+    100% {
+      transform: translateY(0) rotateX(0deg);
+    }
+    50% {
+      transform: translateY(-8px) rotateX(2deg);
+    }
+  }
+
   /* ===== Landing Page Utility Animations ===== */
 
   /* Shimmer effect for interactive elements */

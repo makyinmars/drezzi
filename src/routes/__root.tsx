@@ -1,7 +1,9 @@
 /// <reference types="vite/client" />
 
 import type { I18n } from "@lingui/core";
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
@@ -17,7 +19,12 @@ import * as React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
-import { APP_LOGO_URL, APP_NAME } from "@/constants/app";
+import {
+  APP_LOGO_URL,
+  APP_NAME,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+} from "@/constants/app";
 import appCss from "@/styles/app.css?url";
 import type { TRPCRouter } from "@/trpc/router";
 import { seo } from "@/utils/seo";
@@ -86,11 +93,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       ...seo({
-        title: `${APP_NAME} - Modern Full-Stack Todo Application`,
-        description:
-          "A blazing fast, type-safe todo application built with TanStack Start, tRPC, and PostgreSQL. Manage your tasks efficiently with real-time updates and a beautiful UI.",
-        keywords:
-          "todo app, task management, productivity, TanStack, tRPC, PostgreSQL, React, TypeScript, full-stack",
+        title: `${APP_NAME} - AI Virtual Try-On | See Clothes On You Before Buying`,
+        description: DEFAULT_DESCRIPTION,
+        keywords: DEFAULT_KEYWORDS,
         image: APP_LOGO_URL,
       }),
     ],
@@ -152,7 +157,21 @@ function RootDocument({
           enableSystem
         >
           {children}
-          <TanStackRouterDevtools position="bottom-right" />
+
+          <TanStackDevtools
+            plugins={[
+              {
+                name: "TanStack Query",
+                render: <ReactQueryDevtoolsPanel />,
+                defaultOpen: true,
+              },
+              {
+                name: "TanStack Router",
+                render: <TanStackRouterDevtools />,
+                defaultOpen: false,
+              },
+            ]}
+          />
           <Toaster richColors={true} />
           <Scripts />
         </ThemeProvider>

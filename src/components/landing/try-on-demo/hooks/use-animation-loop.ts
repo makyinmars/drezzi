@@ -7,7 +7,7 @@ export type AnimationPhase =
   | "complete"
   | "reset";
 
-const LOOP_DURATION = 12;
+export const LOOP_DURATION = 12;
 
 const getPhase = (time: number): AnimationPhase => {
   const t = time % LOOP_DURATION;

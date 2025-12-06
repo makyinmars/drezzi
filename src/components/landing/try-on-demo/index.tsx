@@ -10,8 +10,15 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 
+import {
+  DEMO_TRY_ON_RESULT_1_URL,
+  DEMO_TRY_ON_RESULT_2_URL,
+  DEMO_YOUR_PHOTO_1_URL,
+  DEMO_YOUR_PHOTO_2_URL,
+  GARMENT_DEMO_URL,
+} from "@/constants/demo";
 import type { AnimationPhase } from "./hooks/use-animation-loop";
-import { useAnimationLoop } from "./hooks/use-animation-loop";
+import { LOOP_DURATION, useAnimationLoop } from "./hooks/use-animation-loop";
 import { useElapsedTime } from "./hooks/use-elapsed-time";
 import { useReducedMotion } from "./hooks/use-reduced-motion";
 
@@ -22,8 +29,9 @@ type IconCardProps = {
   phase: AnimationPhase;
   progress: number;
   reducedMotion: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   label: React.ReactNode;
+  imageSrc?: string;
 };
 
 const IconCard = ({
@@ -33,6 +41,7 @@ const IconCard = ({
   reducedMotion,
   children,
   label,
+  imageSrc,
 }: IconCardProps) => {
   const isUser = type === "user";
 
@@ -177,13 +186,24 @@ const IconCard = ({
                   ? { scale: [1, 1.05, 1], opacity: [0.6, 0.8, 0.6] }
                   : { scale: 1, opacity: showGlow ? 0.7 : 0.6 }
               }
+              className="h-full w-full"
               transition={{
                 duration: 3,
                 ease: "easeInOut",
                 repeat: phase === "idle" ? Number.POSITIVE_INFINITY : 0,
               }}
             >
-              {children}
+              {imageSrc ? (
+                <img
+                  alt={type === "user" ? "User photo" : "Garment"}
+                  className="h-full w-full object-cover transition-opacity duration-500"
+                  src={imageSrc}
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  {children}
+                </div>
+              )}
             </motion.div>
           </div>
 
@@ -335,9 +355,10 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
 type ResultCardProps = {
   phase: AnimationPhase;
   reducedMotion: boolean;
+  imageSrc?: string;
 };
 
-const ResultCard = ({ phase, reducedMotion }: ResultCardProps) => {
+const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
   const isVisible = phase === "processing" || phase === "complete";
   const isComplete = phase === "complete";
 
@@ -401,32 +422,53 @@ const ResultCard = ({ phase, reducedMotion }: ResultCardProps) => {
 
         {/* Icon container */}
         <div className="absolute inset-0 flex items-center justify-center">
-          {isComplete ? (
-            <motion.div
-              animate={{ scale: 1, rotate: 0 }}
-              initial={{ scale: 0, rotate: -180 }}
-              transition={{ duration: 0.6, ease: easing, delay: 0.2 }}
-            >
-              <CheckCircle
-                className="h-20 w-20 text-accent md:h-24 md:w-24"
-                strokeWidth={1}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              animate={reducedMotion ? {} : { rotate: 360 }}
-              transition={{
-                duration: 3,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "linear",
-              }}
-            >
-              <Sparkles
-                className="h-20 w-20 text-accent/70 md:h-24 md:w-24"
-                strokeWidth={1}
-              />
-            </motion.div>
-          )}
+          {(() => {
+            if (isComplete && imageSrc) {
+              return (
+                <motion.div
+                  animate={{ opacity: 1 }}
+                  className="h-full w-full"
+                  initial={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <img
+                    alt="Try-on Result"
+                    className="h-full w-full object-cover"
+                    src={imageSrc}
+                  />
+                </motion.div>
+              );
+            }
+            if (isComplete) {
+              return (
+                <motion.div
+                  animate={{ scale: 1, rotate: 0 }}
+                  initial={{ scale: 0, rotate: -180 }}
+                  transition={{ duration: 0.6, ease: easing, delay: 0.2 }}
+                >
+                  <CheckCircle
+                    className="h-20 w-20 text-accent md:h-24 md:w-24"
+                    strokeWidth={1}
+                  />
+                </motion.div>
+              );
+            }
+            return (
+              <motion.div
+                animate={reducedMotion ? {} : { rotate: 360 }}
+                transition={{
+                  duration: 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }}
+              >
+                <Sparkles
+                  className="h-20 w-20 text-accent/70 md:h-24 md:w-24"
+                  strokeWidth={1}
+                />
+              </motion.div>
+            );
+          })()}
         </div>
 
         {/* Bottom label */}
@@ -507,6 +549,18 @@ export const TryOnDemo = () => {
   const { elapsed } = useElapsedTime(reducedMotion);
   const { phase, progress } = useAnimationLoop(elapsed);
 
+  // Determine loop index based on total elapsed time and loop duration
+  // We want to switch sets every full loop
+  const loopIndex = Math.floor(elapsed / LOOP_DURATION);
+  const isSecondSet = loopIndex % 2 === 1;
+
+  const currentProfile = isSecondSet
+    ? DEMO_YOUR_PHOTO_2_URL
+    : DEMO_YOUR_PHOTO_1_URL;
+  const currentResult = isSecondSet
+    ? DEMO_TRY_ON_RESULT_2_URL
+    : DEMO_TRY_ON_RESULT_1_URL;
+
   return (
     <div
       className="relative mx-auto w-full max-w-4xl"
@@ -570,6 +624,7 @@ export const TryOnDemo = () => {
           >
             {/* User photo card */}
             <IconCard
+              imageSrc={currentProfile}
               label={<Trans>Your Photo</Trans>}
               phase={phase}
               progress={progress}
@@ -598,6 +653,7 @@ export const TryOnDemo = () => {
 
             {/* Garment card */}
             <IconCard
+              imageSrc={GARMENT_DEMO_URL}
               label={<Trans>Any Garment</Trans>}
               phase={phase}
               progress={progress}
@@ -614,7 +670,11 @@ export const TryOnDemo = () => {
             <WandConnector phase={phase} reducedMotion={reducedMotion} />
 
             {/* Result card */}
-            <ResultCard phase={phase} reducedMotion={reducedMotion} />
+            <ResultCard
+              imageSrc={currentResult}
+              phase={phase}
+              reducedMotion={reducedMotion}
+            />
           </div>
 
           {/* Processing badge */}

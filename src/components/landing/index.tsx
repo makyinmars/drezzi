@@ -6,13 +6,17 @@ import {
   ArrowUpRight,
   Book,
   CheckCircle,
+  Clock,
   Cpu,
   Eye,
   Layers,
+  Maximize2,
   Shirt,
   Sparkles,
+  Target,
   User,
   Wand2,
+  Zap,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -26,36 +30,25 @@ const easing = [0.16, 1, 0.3, 1] as const;
 const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-20 pb-20 md:pt-24">
-      {/* Background with Ken Burns effect */}
-      <div className="absolute inset-0 z-0">
-        <motion.img
-          alt="Fashion Background"
-          animate={{ scale: 1.1 }}
-          className="h-full w-full object-cover"
-          initial={{ scale: 1 }}
-          src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2574&auto=format&fit=crop"
-          transition={{
-            duration: 20,
-            ease: "linear",
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-          }}
-        />
-        {/* Multi-layer gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-background" />
+      {/* Hero-specific overlays (background is now global) */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        {/* Gradient fade to content at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80" />
 
-        {/* Radial amber glow from center */}
+        {/* Radial glow for hero area */}
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-40"
           style={{
-            background:
-              "radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--primary) 20%, transparent) 0%, transparent 60%)",
+            background: `radial-gradient(ellipse at 50% 30%,
+              color-mix(in oklch, var(--primary) 15%, transparent) 0%,
+              transparent 50%
+            )`,
           }}
         />
 
-        {/* Subtle grid pattern overlay */}
+        {/* Subtle grid pattern */}
         <div
-          className="absolute inset-0 opacity-[0.02]"
+          className="absolute inset-0 opacity-[0.025]"
           style={{
             backgroundImage: `
               linear-gradient(var(--primary) 1px, transparent 1px),
@@ -509,118 +502,180 @@ const FeaturesSection = () => {
 
 const TechSection = () => {
   const stats = [
-    { value: "10s", label: <Trans>Processing</Trans> },
-    { value: "4K", label: <Trans>Resolution</Trans> },
-    { value: "99%", label: <Trans>Accuracy</Trans> },
-    { value: "24/7", label: <Trans>Available</Trans> },
+    { value: "10s", label: <Trans>Processing</Trans>, icon: Zap },
+    { value: "4K", label: <Trans>Resolution</Trans>, icon: Maximize2 },
+    { value: "99%", label: <Trans>Accuracy</Trans>, icon: Target },
+    { value: "24/7", label: <Trans>Available</Trans>, icon: Clock },
   ];
 
   return (
-    <section className="relative overflow-hidden bg-foreground py-24 text-background md:py-32">
-      {/* Gradient overlays */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground to-chart-4/20" />
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 50%)",
-          }}
-        />
-      </div>
+    <section className="relative overflow-hidden py-32 md:py-40">
+      {/* Dark overlay for this section */}
+      <div className="absolute inset-0 bg-foreground/95" />
+
+      {/* Neural pattern background */}
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 25% 25%, var(--primary) 1px, transparent 1px),
+            radial-gradient(circle at 75% 75%, var(--accent) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          animation: "tech-neural-flow 30s linear infinite",
+        }}
+      />
+
+      {/* Radial glow from center */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at 50% 50%,
+            color-mix(in oklch, var(--primary) 15%, transparent) 0%,
+            transparent 60%
+          )`,
+        }}
+      />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid min-h-[70vh] grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
-          {/* Image Side with floating badge */}
-          <motion.div
-            className="relative flex items-center justify-center"
-            initial={{ opacity: 0, x: -30 }}
-            transition={{ duration: 1, ease: easing }}
-            viewport={{ once: true }}
-            whileInView={{ opacity: 1, x: 0 }}
-          >
-            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-3xl">
-              <motion.img
-                alt="AI Technology"
-                className="h-full w-full object-cover"
-                initial={{ scale: 1 }}
-                src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop"
-                transition={{
-                  duration: 10,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatType: "reverse",
-                }}
-                whileInView={{ scale: 1.05 }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-foreground/20" />
-            </div>
-
-            {/* Floating badge */}
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              className="-translate-x-1/2 absolute bottom-8 left-1/2 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 backdrop-blur-md"
-              transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
-            >
-              <Cpu className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-sm text-white uppercase tracking-widest">
-                <Trans>Powered by Gemini 3 Pro</Trans>
-              </span>
-            </motion.div>
-          </motion.div>
-
-          {/* Content Side */}
-          <motion.div
-            className="flex flex-col justify-center"
-            initial={{ opacity: 0, x: 30 }}
-            transition={{ duration: 1, ease: easing }}
-            viewport={{ once: true }}
-            whileInView={{ opacity: 1, x: 0 }}
-          >
-            <span className="mb-4 inline-flex items-center gap-2 font-sans font-semibold text-muted-foreground text-xs uppercase tracking-[0.25em]">
-              <div className="h-px w-8 bg-primary" />
+        {/* Section header */}
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.8, ease: easing }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
+        >
+          <span className="inline-flex items-center gap-3 text-primary">
+            <div className="h-px w-12 bg-primary" />
+            <span className="font-semibold text-xs uppercase tracking-[0.3em]">
               <Trans>The Technology</Trans>
             </span>
+            <div className="h-px w-12 bg-primary" />
+          </span>
+        </motion.div>
 
-            <h2 className="mb-8 font-serif text-5xl text-background md:text-6xl lg:text-7xl">
-              <span className="block">
-                <Trans>Next Gen</Trans>
-              </span>
-              <span className="block text-primary italic">
-                <Trans>AI Models</Trans>
-              </span>
-            </h2>
-
-            <p className="mb-12 max-w-lg text-lg text-muted-foreground leading-relaxed">
-              <Trans>
-                Built on Gemini 3 Pro&apos;s multi-image fusion capabilities.
-                The model reasons through complex prompts to understand pose,
-                lighting, and fabric physics for photorealistic results.
-              </Trans>
-            </p>
-
-            {/* Stats grid */}
-            <div className="grid grid-cols-2 gap-8 border-white/10 border-t pt-8 md:grid-cols-4">
-              {stats.map((stat, index) => (
-                <motion.div
-                  className="text-center md:text-left"
-                  initial={{ opacity: 0, y: 20 }}
-                  key={index}
-                  transition={{
-                    delay: 0.1 * index,
-                    duration: 0.8,
-                    ease: easing,
-                  }}
-                  viewport={{ once: true }}
-                  whileInView={{ opacity: 1, y: 0 }}
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+          {/* AI Core Card - Large card on left */}
+          <motion.div
+            className="md:col-span-5 md:row-span-2"
+            initial={{ opacity: 0, x: -30 }}
+            style={{ perspective: "1000px" }}
+            transition={{ duration: 1, ease: easing }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
+          >
+            <div
+              className="group relative h-full min-h-[400px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-8"
+              style={{
+                transformStyle: "preserve-3d",
+                animation: "tech-card-float 6s ease-in-out infinite",
+              }}
+            >
+              {/* AI Core Visualization */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Outer ring */}
+                <div
+                  className="absolute h-64 w-64 rounded-full border border-primary/30"
+                  style={{ animation: "tech-ring-rotate 20s linear infinite" }}
                 >
-                  <h4 className="mb-1 font-serif text-3xl text-primary italic md:text-4xl">
-                    {stat.value}
-                  </h4>
-                  <p className="font-medium font-sans text-muted-foreground text-xs uppercase tracking-wider">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
+                  {/* Orbital dots */}
+                  <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rounded-full bg-primary/60" />
+                  <div className="-translate-y-1/2 absolute top-1/2 right-0 h-2 w-2 translate-x-1/2 rounded-full bg-accent/60" />
+                </div>
+                {/* Middle ring */}
+                <div
+                  className="absolute h-48 w-48 rounded-full border border-primary/50"
+                  style={{
+                    animation: "tech-ring-rotate 15s linear infinite reverse",
+                  }}
+                >
+                  <div className="-translate-x-1/2 absolute bottom-0 left-1/2 h-1.5 w-1.5 translate-y-1/2 rounded-full bg-primary/80" />
+                </div>
+                {/* Inner ring */}
+                <div
+                  className="absolute h-36 w-36 rounded-full border border-primary/20"
+                  style={{ animation: "tech-ring-rotate 25s linear infinite" }}
+                />
+                {/* Inner core */}
+                <div
+                  className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/10"
+                  style={{
+                    animation: "tech-core-pulse 4s ease-in-out infinite",
+                  }}
+                >
+                  <Cpu className="h-10 w-10 text-primary" />
+                </div>
+              </div>
+
+              {/* Label */}
+              <div className="absolute bottom-8 left-8">
+                <span className="text-muted-foreground text-xs uppercase tracking-wider">
+                  <Trans>Gemini 3 Pro</Trans>
+                </span>
+                <h3 className="font-serif text-2xl text-white italic">
+                  <Trans>AI Core</Trans>
+                </h3>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Stat Cards - 2x2 grid on right */}
+          {stats.map((stat, index) => (
+            <motion.div
+              className="md:col-span-3 lg:col-span-3"
+              initial={{ opacity: 0, y: 20 }}
+              key={stat.value}
+              transition={{
+                delay: 0.1 * index,
+                duration: 0.8,
+                ease: easing,
+              }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
+            >
+              <div
+                className="group relative h-full min-h-[140px] overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6 transition-all hover:border-primary/30"
+                style={{
+                  animation: `tech-stat-glow 4s ease-in-out infinite ${index * 0.5}s`,
+                }}
+              >
+                <stat.icon className="mb-4 h-6 w-6 text-primary/60" />
+                <h4 className="font-serif text-4xl text-primary italic">
+                  {stat.value}
+                </h4>
+                <p className="mt-2 text-muted-foreground text-xs uppercase tracking-wider">
+                  {stat.label}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Description Card - spans bottom right */}
+          <motion.div
+            className="md:col-span-7"
+            initial={{ opacity: 0, y: 30 }}
+            transition={{ delay: 0.2, duration: 1, ease: easing }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, y: 0 }}
+          >
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-8">
+              <h2 className="mb-6 font-serif text-4xl text-white md:text-5xl">
+                <span className="block">
+                  <Trans>Next Gen</Trans>
+                </span>
+                <span className="text-primary italic">
+                  <Trans>AI Models</Trans>
+                </span>
+              </h2>
+              <p className="max-w-lg text-lg text-muted-foreground leading-relaxed">
+                <Trans>
+                  Built on Gemini 3 Pro&apos;s multi-image fusion capabilities.
+                  The model reasons through complex prompts to understand pose,
+                  lighting, and fabric physics for photorealistic results.
+                </Trans>
+              </p>
             </div>
           </motion.div>
         </div>
