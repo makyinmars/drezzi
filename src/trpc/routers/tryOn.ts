@@ -108,69 +108,73 @@ export const tryOnRouter = {
             })
           : input;
 
-      const bodyProfile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: parsed.bodyProfileId, userId },
-        include: { photo: true },
-      });
+      return await ctx.prisma.$transaction(
+        async (tx) => {
+          const bodyProfile = await tx.bodyProfile.findFirst({
+            where: { id: parsed.bodyProfileId, userId },
+            include: { photo: true },
+          });
 
-      if (!bodyProfile) {
-        throw errors.profileNotFound();
-      }
+          if (!bodyProfile) {
+            throw errors.profileNotFound();
+          }
 
-      const garment = await ctx.prisma.garment.findFirst({
-        where: {
-          id: parsed.garmentId,
-          OR: [{ userId }, { isPublic: true }],
+          const garment = await tx.garment.findFirst({
+            where: {
+              id: parsed.garmentId,
+              OR: [{ userId }, { isPublic: true }],
+            },
+            include: { image: true },
+          });
+
+          if (!garment) {
+            throw errors.garmentNotFound();
+          }
+
+          // Create with processing status directly
+          const tryOn = await tx.tryOn.create({
+            data: {
+              userId,
+              bodyProfileId: parsed.bodyProfileId,
+              garmentId: parsed.garmentId,
+              status: "processing",
+            },
+            include: {
+              bodyProfile: { include: { photo: true } },
+              garment: { include: { image: true } },
+            },
+          });
+
+          // Enqueue - if this fails, transaction rolls back
+          const jobId = await enqueueTryOnJob({
+            tryOnId: tryOn.id,
+            bodyImageUrl: bodyProfile.photo.key,
+            garmentImageUrl: garment.image.key,
+          });
+
+          // Update with jobId
+          await tx.tryOn.update({
+            where: { id: tryOn.id },
+            data: { jobId },
+          });
+
+          return {
+            ...tryOn,
+            jobId,
+            status: "processing" as const,
+            resultUrl: null,
+            bodyProfile: {
+              ...tryOn.bodyProfile,
+              photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
+            },
+            garment: {
+              ...tryOn.garment,
+              imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
+            },
+          };
         },
-        include: { image: true },
-      });
-
-      if (!garment) {
-        throw errors.garmentNotFound();
-      }
-
-      const tryOn = await ctx.prisma.tryOn.create({
-        data: {
-          userId,
-          bodyProfileId: parsed.bodyProfileId,
-          garmentId: parsed.garmentId,
-          status: "pending",
-        },
-        include: {
-          bodyProfile: { include: { photo: true } },
-          garment: { include: { image: true } },
-        },
-      });
-
-      if (!tryOn) {
-        throw errors.tryOnCreateFailed();
-      }
-
-      const jobId = await enqueueTryOnJob({
-        tryOnId: tryOn.id,
-        bodyImageUrl: bodyProfile.photo.key,
-        garmentImageUrl: garment.image.key,
-      });
-
-      await ctx.prisma.tryOn.update({
-        where: { id: tryOn.id },
-        data: { jobId, status: "processing" },
-      });
-
-      return {
-        ...tryOn,
-        jobId,
-        status: "processing" as const,
-        resultUrl: null,
-        bodyProfile: {
-          ...tryOn.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
-        },
-        garment: {
-          ...tryOn.garment,
-          imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
-        },
-      };
+        { timeout: 15000 }
+      );
     }),
 
   toggleFavorite: protectedProcedure
@@ -201,20 +205,30 @@ export const tryOnRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.id, userId },
-        include: { result: true },
+      // Store key for S3 cleanup after transaction
+      let resultKey: string | null = null;
+
+      const deleted = await ctx.prisma.$transaction(async (tx) => {
+        const tryOn = await tx.tryOn.findFirst({
+          where: { id: input.id, userId },
+          include: { result: true },
+        });
+
+        if (!tryOn) {
+          throw errors.tryOnNotFound();
+        }
+
+        resultKey = tryOn.result?.key ?? null;
+
+        return await tx.tryOn.delete({
+          where: { id: input.id },
+        });
       });
 
-      if (!tryOn) {
-        throw errors.tryOnNotFound();
+      // S3 cleanup after transaction commits (fire-and-forget)
+      if (resultKey) {
+        deleteTryOnAssets(resultKey).catch(() => {});
       }
-
-      await deleteTryOnAssets(tryOn.result?.key ?? null);
-
-      const deleted = await ctx.prisma.tryOn.delete({
-        where: { id: input.id },
-      });
 
       return deleted;
     }),
@@ -225,34 +239,40 @@ export const tryOnRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.id, userId, status: "failed" },
-        include: {
-          bodyProfile: { include: { photo: true } },
-          garment: { include: { image: true } },
+      return await ctx.prisma.$transaction(
+        async (tx) => {
+          const tryOn = await tx.tryOn.findFirst({
+            where: { id: input.id, userId, status: "failed" },
+            include: {
+              bodyProfile: { include: { photo: true } },
+              garment: { include: { image: true } },
+            },
+          });
+
+          if (!tryOn) {
+            throw errors.tryOnNotFound();
+          }
+
+          // Enqueue - if this fails, transaction rolls back
+          const jobId = await enqueueTryOnJob({
+            tryOnId: tryOn.id,
+            bodyImageUrl: tryOn.bodyProfile.photo.key,
+            garmentImageUrl: tryOn.garment.image.key,
+          });
+
+          const updated = await tx.tryOn.update({
+            where: { id: tryOn.id },
+            data: {
+              jobId,
+              status: "processing",
+              errorMessage: null,
+            },
+          });
+
+          return updated;
         },
-      });
-
-      if (!tryOn) {
-        throw errors.tryOnNotFound();
-      }
-
-      const jobId = await enqueueTryOnJob({
-        tryOnId: tryOn.id,
-        bodyImageUrl: tryOn.bodyProfile.photo.key,
-        garmentImageUrl: tryOn.garment.image.key,
-      });
-
-      const updated = await ctx.prisma.tryOn.update({
-        where: { id: tryOn.id },
-        data: {
-          jobId,
-          status: "processing",
-          errorMessage: null,
-        },
-      });
-
-      return updated;
+        { timeout: 15000 }
+      );
     }),
 
   favorites: protectedProcedure.query(async ({ ctx }) => {

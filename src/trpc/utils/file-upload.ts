@@ -4,10 +4,16 @@ import { Resource } from "sst";
 import { s3 } from "@/lib/s3";
 import type { PrismaClient } from "../../../generated/prisma/client";
 
+// Type that works for both PrismaClient and transaction client
+type PrismaTransactionClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
+
 type UploadParams = {
   file: File | Blob;
   userId: string;
-  prisma: PrismaClient;
+  prisma: PrismaClient | PrismaTransactionClient;
   prefix: string;
   maxSizeBytes?: number;
   allowedMimeTypes?: RegExp;

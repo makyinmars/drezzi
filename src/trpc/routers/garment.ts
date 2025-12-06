@@ -159,44 +159,42 @@ export const garmentRouter = {
         throw errors.invalidGarmentImage();
       }
 
-      const uploaded = await uploadFileToS3({
-        file,
-        userId,
-        prisma: ctx.prisma,
-        prefix: "garments",
-        allowedMimeTypes: IMAGE_TYPE_REGEX,
-      });
-
-      const parsed = apiGarmentCreate.parse({
-        name: input.get("name")?.toString(),
-        description: toOptionalString(input.get("description")),
-        category: input.get("category")?.toString(),
-        subcategory: toOptionalString(input.get("subcategory")),
-        brand: toOptionalString(input.get("brand")),
-        price: toOptionalNumber(input.get("price")),
-        currency: input.get("currency")?.toString() ?? "USD",
-        imageId: uploaded.id,
-        maskId: undefined,
-        retailUrl: toOptionalString(input.get("retailUrl")),
-        colors: toStringArray(input.get("colors")) ?? [],
-        sizes: toStringArray(input.get("sizes")) ?? [],
-        tags: toStringArray(input.get("tags")) ?? [],
-        isActive: toBoolean(input.get("isActive"), true),
-        isPublic: toBoolean(input.get("isPublic"), false),
-      });
-
-      const garment = await ctx.prisma.garment.create({
-        data: {
-          ...parsed,
+      return await ctx.prisma.$transaction(async (tx) => {
+        const uploaded = await uploadFileToS3({
+          file,
           userId,
-        },
+          prisma: tx,
+          prefix: "garments",
+          allowedMimeTypes: IMAGE_TYPE_REGEX,
+        });
+
+        const parsed = apiGarmentCreate.parse({
+          name: input.get("name")?.toString(),
+          description: toOptionalString(input.get("description")),
+          category: input.get("category")?.toString(),
+          subcategory: toOptionalString(input.get("subcategory")),
+          brand: toOptionalString(input.get("brand")),
+          price: toOptionalNumber(input.get("price")),
+          currency: input.get("currency")?.toString() ?? "USD",
+          imageId: uploaded.id,
+          maskId: undefined,
+          retailUrl: toOptionalString(input.get("retailUrl")),
+          colors: toStringArray(input.get("colors")) ?? [],
+          sizes: toStringArray(input.get("sizes")) ?? [],
+          tags: toStringArray(input.get("tags")) ?? [],
+          isActive: toBoolean(input.get("isActive"), true),
+          isPublic: toBoolean(input.get("isPublic"), false),
+        });
+
+        const garment = await tx.garment.create({
+          data: {
+            ...parsed,
+            userId,
+          },
+        });
+
+        return garment;
       });
-
-      if (!garment) {
-        throw errors.garmentCreateFailed();
-      }
-
-      return garment;
     }),
 
   update: protectedProcedure
@@ -210,73 +208,80 @@ export const garmentRouter = {
         throw errors.invalidInput();
       }
 
-      const existing = await ctx.prisma.garment.findFirst({
-        where: { id, userId },
-      });
-
-      if (!existing) {
-        throw errors.garmentNotFound();
-      }
-
       const file = input.get("file");
-      let imageId = existing.imageId;
 
-      if (file instanceof File) {
-        const uploaded = await uploadFileToS3({
-          file,
-          userId,
-          prisma: ctx.prisma,
-          prefix: "garments",
-          allowedMimeTypes: IMAGE_TYPE_REGEX,
+      return await ctx.prisma.$transaction(async (tx) => {
+        const existing = await tx.garment.findFirst({
+          where: { id, userId },
         });
-        imageId = uploaded.id;
-      }
 
-      const parsed = apiGarmentUpdate.parse({
-        id,
-        name: input.get("name")?.toString(),
-        description: toNullableString(input.get("description")),
-        category: input.get("category")?.toString(),
-        subcategory: toNullableString(input.get("subcategory")),
-        brand: toNullableString(input.get("brand")),
-        price: toNullableNumber(input.get("price")),
-        currency: input.get("currency")?.toString(),
-        imageId,
-        maskId: toNullableString(input.get("maskId")),
-        retailUrl: toNullableString(input.get("retailUrl")),
-        colors: toStringArray(input.get("colors")),
-        sizes: toStringArray(input.get("sizes")),
-        tags: toStringArray(input.get("tags")),
-        isActive: toBoolean(input.get("isActive"), existing.isActive),
-        isPublic: toBoolean(input.get("isPublic"), existing.isPublic),
+        if (!existing) {
+          throw errors.garmentNotFound();
+        }
+
+        let imageId = existing.imageId;
+
+        if (file instanceof File) {
+          const uploaded = await uploadFileToS3({
+            file,
+            userId,
+            prisma: tx,
+            prefix: "garments",
+            allowedMimeTypes: IMAGE_TYPE_REGEX,
+          });
+          imageId = uploaded.id;
+        }
+
+        const parsed = apiGarmentUpdate.parse({
+          id,
+          name: input.get("name")?.toString(),
+          description: toNullableString(input.get("description")),
+          category: input.get("category")?.toString(),
+          subcategory: toNullableString(input.get("subcategory")),
+          brand: toNullableString(input.get("brand")),
+          price: toNullableNumber(input.get("price")),
+          currency: input.get("currency")?.toString(),
+          imageId,
+          maskId: toNullableString(input.get("maskId")),
+          retailUrl: toNullableString(input.get("retailUrl")),
+          colors: toStringArray(input.get("colors")),
+          sizes: toStringArray(input.get("sizes")),
+          tags: toStringArray(input.get("tags")),
+          isActive: toBoolean(input.get("isActive"), existing.isActive),
+          isPublic: toBoolean(input.get("isPublic"), existing.isPublic),
+        });
+
+        const updateData: Record<string, unknown> = {};
+        if (parsed.name !== undefined) updateData.name = parsed.name;
+        if (parsed.description !== undefined)
+          updateData.description = parsed.description;
+        if (parsed.category !== undefined)
+          updateData.category = parsed.category;
+        if (parsed.subcategory !== undefined)
+          updateData.subcategory = parsed.subcategory;
+        if (parsed.brand !== undefined) updateData.brand = parsed.brand;
+        if (parsed.price !== undefined) updateData.price = parsed.price;
+        if (parsed.currency !== undefined)
+          updateData.currency = parsed.currency;
+        if (parsed.imageId !== undefined) updateData.imageId = parsed.imageId;
+        if (parsed.maskId !== undefined) updateData.maskId = parsed.maskId;
+        if (parsed.retailUrl !== undefined)
+          updateData.retailUrl = parsed.retailUrl;
+        if (parsed.colors !== undefined) updateData.colors = parsed.colors;
+        if (parsed.sizes !== undefined) updateData.sizes = parsed.sizes;
+        if (parsed.tags !== undefined) updateData.tags = parsed.tags;
+        if (parsed.isActive !== undefined)
+          updateData.isActive = parsed.isActive;
+        if (parsed.isPublic !== undefined)
+          updateData.isPublic = parsed.isPublic;
+
+        const updated = await tx.garment.update({
+          where: { id },
+          data: updateData,
+        });
+
+        return updated;
       });
-
-      const updateData: Record<string, unknown> = {};
-      if (parsed.name !== undefined) updateData.name = parsed.name;
-      if (parsed.description !== undefined)
-        updateData.description = parsed.description;
-      if (parsed.category !== undefined) updateData.category = parsed.category;
-      if (parsed.subcategory !== undefined)
-        updateData.subcategory = parsed.subcategory;
-      if (parsed.brand !== undefined) updateData.brand = parsed.brand;
-      if (parsed.price !== undefined) updateData.price = parsed.price;
-      if (parsed.currency !== undefined) updateData.currency = parsed.currency;
-      if (parsed.imageId !== undefined) updateData.imageId = parsed.imageId;
-      if (parsed.maskId !== undefined) updateData.maskId = parsed.maskId;
-      if (parsed.retailUrl !== undefined)
-        updateData.retailUrl = parsed.retailUrl;
-      if (parsed.colors !== undefined) updateData.colors = parsed.colors;
-      if (parsed.sizes !== undefined) updateData.sizes = parsed.sizes;
-      if (parsed.tags !== undefined) updateData.tags = parsed.tags;
-      if (parsed.isActive !== undefined) updateData.isActive = parsed.isActive;
-      if (parsed.isPublic !== undefined) updateData.isPublic = parsed.isPublic;
-
-      const updated = await ctx.prisma.garment.update({
-        where: { id },
-        data: updateData,
-      });
-
-      return updated;
     }),
 
   delete: protectedProcedure
@@ -285,20 +290,30 @@ export const garmentRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const garment = await ctx.prisma.garment.findFirst({
-        where: { id: input.id, userId },
-        include: { image: true },
+      // Store key for S3 cleanup after transaction
+      let imageKey: string | null = null;
+
+      const deleted = await ctx.prisma.$transaction(async (tx) => {
+        const garment = await tx.garment.findFirst({
+          where: { id: input.id, userId },
+          include: { image: true },
+        });
+
+        if (!garment) {
+          throw errors.garmentNotFound();
+        }
+
+        imageKey = garment.image.key;
+
+        return await tx.garment.delete({
+          where: { id: input.id },
+        });
       });
 
-      if (!garment) {
-        throw errors.garmentNotFound();
+      // S3 cleanup after transaction commits (fire-and-forget)
+      if (imageKey) {
+        deleteGarmentAssets(imageKey).catch(() => {});
       }
-
-      await deleteGarmentAssets(garment.image.key);
-
-      const deleted = await ctx.prisma.garment.delete({
-        where: { id: input.id },
-      });
 
       return deleted;
     }),

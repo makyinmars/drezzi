@@ -6,7 +6,6 @@ import {
   generateShareSlug,
   getLookbookCoverUploadUrl,
   getLookbookCoverUrl,
-  getNextItemOrder,
   reorderLookbookItems,
 } from "@/services/lookbook";
 import { getProfilePhotoUrl } from "@/services/profile";
@@ -204,28 +203,43 @@ export const lookbookRouter = {
       const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      const existing = await ctx.prisma.lookbook.findFirst({
-        where: { id, userId },
-        include: { cover: true },
+      // Store old cover key for S3 cleanup after transaction
+      let oldCoverKey: string | null = null;
+
+      const updated = await ctx.prisma.$transaction(async (tx) => {
+        const existing = await tx.lookbook.findFirst({
+          where: { id, userId },
+          include: { cover: true },
+        });
+
+        if (!existing) {
+          throw errors.lookbookNotFound();
+        }
+
+        // Check if cover is being replaced
+        if (
+          data.coverId &&
+          existing.cover &&
+          data.coverId !== existing.coverId
+        ) {
+          oldCoverKey = existing.cover.key;
+        }
+
+        return await tx.lookbook.update({
+          where: { id },
+          data: {
+            name: data.name,
+            description: data.description,
+            isPublic: data.isPublic,
+            coverId: data.coverId,
+          },
+        });
       });
 
-      if (!existing) {
-        throw errors.lookbookNotFound();
+      // S3 cleanup after transaction commits (fire-and-forget)
+      if (oldCoverKey) {
+        deleteLookbookCover(oldCoverKey).catch(() => {});
       }
-
-      if (data.coverId && existing.cover && data.coverId !== existing.coverId) {
-        await deleteLookbookCover(existing.cover.key);
-      }
-
-      const updated = await ctx.prisma.lookbook.update({
-        where: { id },
-        data: {
-          name: data.name,
-          description: data.description,
-          isPublic: data.isPublic,
-          coverId: data.coverId,
-        },
-      });
 
       return updated;
     }),
@@ -236,20 +250,30 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.id, userId },
-        include: { cover: true },
+      // Store key for S3 cleanup after transaction
+      let coverKey: string | null = null;
+
+      const deleted = await ctx.prisma.$transaction(async (tx) => {
+        const lookbook = await tx.lookbook.findFirst({
+          where: { id: input.id, userId },
+          include: { cover: true },
+        });
+
+        if (!lookbook) {
+          throw errors.lookbookNotFound();
+        }
+
+        coverKey = lookbook.cover?.key ?? null;
+
+        return await tx.lookbook.delete({
+          where: { id: input.id },
+        });
       });
 
-      if (!lookbook) {
-        throw errors.lookbookNotFound();
+      // S3 cleanup after transaction commits (fire-and-forget)
+      if (coverKey) {
+        deleteLookbookCover(coverKey).catch(() => {});
       }
-
-      await deleteLookbookCover(lookbook.cover?.key ?? null);
-
-      const deleted = await ctx.prisma.lookbook.delete({
-        where: { id: input.id },
-      });
 
       return deleted;
     }),
@@ -260,55 +284,62 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.lookbookId, userId },
-      });
+      return await ctx.prisma.$transaction(async (tx) => {
+        const lookbook = await tx.lookbook.findFirst({
+          where: { id: input.lookbookId, userId },
+        });
 
-      if (!lookbook) {
-        throw errors.lookbookNotFound();
-      }
+        if (!lookbook) {
+          throw errors.lookbookNotFound();
+        }
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.tryOnId, userId, status: "completed" },
-      });
+        const tryOn = await tx.tryOn.findFirst({
+          where: { id: input.tryOnId, userId, status: "completed" },
+        });
 
-      if (!tryOn) {
-        throw errors.tryOnNotFound();
-      }
+        if (!tryOn) {
+          throw errors.tryOnNotFound();
+        }
 
-      const existing = await ctx.prisma.lookbookItem.findUnique({
-        where: {
-          lookbookId_tryOnId: {
-            lookbookId: input.lookbookId,
-            tryOnId: input.tryOnId,
-          },
-        },
-      });
-
-      if (existing) {
-        throw errors.lookbookItemDuplicate();
-      }
-
-      const order = input.order ?? (await getNextItemOrder(input.lookbookId));
-
-      const item = await ctx.prisma.lookbookItem.create({
-        data: {
-          lookbookId: input.lookbookId,
-          tryOnId: input.tryOnId,
-          note: input.note,
-          order,
-        },
-        include: {
-          tryOn: {
-            include: {
-              garment: true,
-              bodyProfile: true,
+        const existing = await tx.lookbookItem.findUnique({
+          where: {
+            lookbookId_tryOnId: {
+              lookbookId: input.lookbookId,
+              tryOnId: input.tryOnId,
             },
           },
-        },
-      });
+        });
 
-      return item;
+        if (existing) {
+          throw errors.lookbookItemDuplicate();
+        }
+
+        // Calculate order within transaction to prevent race conditions
+        const maxItem = await tx.lookbookItem.findFirst({
+          where: { lookbookId: input.lookbookId },
+          orderBy: { order: "desc" },
+        });
+        const order = input.order ?? (maxItem ? maxItem.order + 1 : 0);
+
+        const item = await tx.lookbookItem.create({
+          data: {
+            lookbookId: input.lookbookId,
+            tryOnId: input.tryOnId,
+            note: input.note,
+            order,
+          },
+          include: {
+            tryOn: {
+              include: {
+                garment: true,
+                bodyProfile: true,
+              },
+            },
+          },
+        });
+
+        return item;
+      });
     }),
 
   removeItem: protectedProcedure
@@ -381,27 +412,30 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.id, userId },
+      return await ctx.prisma.$transaction(async (tx) => {
+        const lookbook = await tx.lookbook.findFirst({
+          where: { id: input.id, userId },
+        });
+
+        if (!lookbook) {
+          throw errors.lookbookNotFound();
+        }
+
+        // Early return if already public with slug
+        if (lookbook.shareSlug && lookbook.isPublic) {
+          return { slug: lookbook.shareSlug, isPublic: true };
+        }
+
+        const slug =
+          lookbook.shareSlug ?? (await generateShareSlug(lookbook.name));
+
+        const updated = await tx.lookbook.update({
+          where: { id: input.id },
+          data: { shareSlug: slug, isPublic: true },
+        });
+
+        return { slug: updated.shareSlug, isPublic: updated.isPublic };
       });
-
-      if (!lookbook) {
-        throw errors.lookbookNotFound();
-      }
-
-      if (lookbook.shareSlug && lookbook.isPublic) {
-        return { slug: lookbook.shareSlug, isPublic: true };
-      }
-
-      const slug =
-        lookbook.shareSlug ?? (await generateShareSlug(lookbook.name));
-
-      const updated = await ctx.prisma.lookbook.update({
-        where: { id: input.id },
-        data: { shareSlug: slug, isPublic: true },
-      });
-
-      return { slug: updated.shareSlug, isPublic: updated.isPublic };
     }),
 
   togglePublic: protectedProcedure

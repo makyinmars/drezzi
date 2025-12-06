@@ -89,45 +89,43 @@ export const profileRouter = {
         throw errors.invalidProfileImage();
       }
 
-      const uploaded = await uploadFileToS3({
-        file,
-        userId,
-        prisma: ctx.prisma,
-        prefix: "profiles",
-        allowedMimeTypes: IMAGE_TYPE_REGEX,
-      });
-
-      const parsed = apiBodyProfileCreate.parse({
-        name: input.get("name")?.toString(),
-        photoId: uploaded.id,
-        height: toOptionalNumber(input.get("height")),
-        waist: toOptionalNumber(input.get("waist")),
-        hip: toOptionalNumber(input.get("hip")),
-        inseam: toOptionalNumber(input.get("inseam")),
-        chest: toOptionalNumber(input.get("chest")),
-        fitPreference: input.get("fitPreference")?.toString(),
-        isDefault: toBoolean(input.get("isDefault"), false),
-      });
-
-      if (parsed.isDefault) {
-        await ctx.prisma.bodyProfile.updateMany({
-          where: { userId, isDefault: true },
-          data: { isDefault: false },
-        });
-      }
-
-      const profile = await ctx.prisma.bodyProfile.create({
-        data: {
-          ...parsed,
+      return await ctx.prisma.$transaction(async (tx) => {
+        const uploaded = await uploadFileToS3({
+          file,
           userId,
-        },
+          prisma: tx,
+          prefix: "profiles",
+          allowedMimeTypes: IMAGE_TYPE_REGEX,
+        });
+
+        const parsed = apiBodyProfileCreate.parse({
+          name: input.get("name")?.toString(),
+          photoId: uploaded.id,
+          height: toOptionalNumber(input.get("height")),
+          waist: toOptionalNumber(input.get("waist")),
+          hip: toOptionalNumber(input.get("hip")),
+          inseam: toOptionalNumber(input.get("inseam")),
+          chest: toOptionalNumber(input.get("chest")),
+          fitPreference: input.get("fitPreference")?.toString(),
+          isDefault: toBoolean(input.get("isDefault"), false),
+        });
+
+        if (parsed.isDefault) {
+          await tx.bodyProfile.updateMany({
+            where: { userId, isDefault: true },
+            data: { isDefault: false },
+          });
+        }
+
+        const profile = await tx.bodyProfile.create({
+          data: {
+            ...parsed,
+            userId,
+          },
+        });
+
+        return profile;
       });
-
-      if (!profile) {
-        throw errors.profileCreateFailed();
-      }
-
-      return profile;
     }),
 
   update: protectedProcedure
@@ -141,67 +139,71 @@ export const profileRouter = {
         throw errors.invalidInput();
       }
 
-      const existing = await ctx.prisma.bodyProfile.findFirst({
-        where: { id, userId },
-      });
-
-      if (!existing) {
-        throw errors.profileNotFound();
-      }
-
       const file = input.get("file");
-      let photoId = existing.photoId;
 
-      if (file instanceof File) {
-        const uploaded = await uploadFileToS3({
-          file,
-          userId,
-          prisma: ctx.prisma,
-          prefix: "profiles",
-          allowedMimeTypes: IMAGE_TYPE_REGEX,
+      return await ctx.prisma.$transaction(async (tx) => {
+        const existing = await tx.bodyProfile.findFirst({
+          where: { id, userId },
         });
-        photoId = uploaded.id;
-      }
 
-      const parsed = apiBodyProfileUpdate.parse({
-        id,
-        name: input.get("name")?.toString(),
-        photoId,
-        height: toNullableNumber(input.get("height")),
-        waist: toNullableNumber(input.get("waist")),
-        hip: toNullableNumber(input.get("hip")),
-        inseam: toNullableNumber(input.get("inseam")),
-        chest: toNullableNumber(input.get("chest")),
-        fitPreference: input.get("fitPreference")?.toString(),
-        isDefault: toBoolean(input.get("isDefault"), existing.isDefault),
-      });
+        if (!existing) {
+          throw errors.profileNotFound();
+        }
 
-      const updateData: Record<string, unknown> = {};
-      if (parsed.name !== undefined) updateData.name = parsed.name;
-      if (parsed.photoId !== undefined) updateData.photoId = parsed.photoId;
-      if (parsed.height !== undefined) updateData.height = parsed.height;
-      if (parsed.waist !== undefined) updateData.waist = parsed.waist;
-      if (parsed.hip !== undefined) updateData.hip = parsed.hip;
-      if (parsed.inseam !== undefined) updateData.inseam = parsed.inseam;
-      if (parsed.chest !== undefined) updateData.chest = parsed.chest;
-      if (parsed.fitPreference !== undefined)
-        updateData.fitPreference = parsed.fitPreference;
-      if (parsed.isDefault !== undefined)
-        updateData.isDefault = parsed.isDefault;
+        let photoId = existing.photoId;
 
-      if (parsed.isDefault) {
-        await ctx.prisma.bodyProfile.updateMany({
-          where: { userId, isDefault: true, id: { not: id } },
-          data: { isDefault: false },
+        if (file instanceof File) {
+          const uploaded = await uploadFileToS3({
+            file,
+            userId,
+            prisma: tx,
+            prefix: "profiles",
+            allowedMimeTypes: IMAGE_TYPE_REGEX,
+          });
+          photoId = uploaded.id;
+        }
+
+        const parsed = apiBodyProfileUpdate.parse({
+          id,
+          name: input.get("name")?.toString(),
+          photoId,
+          height: toNullableNumber(input.get("height")),
+          waist: toNullableNumber(input.get("waist")),
+          hip: toNullableNumber(input.get("hip")),
+          inseam: toNullableNumber(input.get("inseam")),
+          chest: toNullableNumber(input.get("chest")),
+          fitPreference: input.get("fitPreference")?.toString(),
+          isDefault: toBoolean(input.get("isDefault"), existing.isDefault),
         });
-      }
 
-      const updated = await ctx.prisma.bodyProfile.update({
-        where: { id },
-        data: updateData,
+        const updateData: Record<string, unknown> = {};
+        if (parsed.name !== undefined) updateData.name = parsed.name;
+        if (parsed.photoId !== undefined) updateData.photoId = parsed.photoId;
+        if (parsed.height !== undefined) updateData.height = parsed.height;
+        if (parsed.waist !== undefined) updateData.waist = parsed.waist;
+        if (parsed.hip !== undefined) updateData.hip = parsed.hip;
+        if (parsed.inseam !== undefined) updateData.inseam = parsed.inseam;
+        if (parsed.chest !== undefined) updateData.chest = parsed.chest;
+        if (parsed.fitPreference !== undefined)
+          updateData.fitPreference = parsed.fitPreference;
+        if (parsed.isDefault !== undefined)
+          updateData.isDefault = parsed.isDefault;
+
+        // Update other profiles BEFORE updating the target profile
+        if (parsed.isDefault) {
+          await tx.bodyProfile.updateMany({
+            where: { userId, isDefault: true, id: { not: id } },
+            data: { isDefault: false },
+          });
+        }
+
+        const updated = await tx.bodyProfile.update({
+          where: { id },
+          data: updateData,
+        });
+
+        return updated;
       });
-
-      return updated;
     }),
 
   delete: protectedProcedure
@@ -210,20 +212,30 @@ export const profileRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const profile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.id, userId },
-        include: { photo: true },
+      // Store key for S3 cleanup after transaction
+      let photoKey: string | null = null;
+
+      const deleted = await ctx.prisma.$transaction(async (tx) => {
+        const profile = await tx.bodyProfile.findFirst({
+          where: { id: input.id, userId },
+          include: { photo: true },
+        });
+
+        if (!profile) {
+          throw errors.profileNotFound();
+        }
+
+        photoKey = profile.photo.key;
+
+        return await tx.bodyProfile.delete({
+          where: { id: input.id },
+        });
       });
 
-      if (!profile) {
-        throw errors.profileNotFound();
+      // S3 cleanup after transaction commits (fire-and-forget)
+      if (photoKey) {
+        deleteProfileAssets(photoKey).catch(() => {});
       }
-
-      await deleteProfileAssets(profile.photo.key);
-
-      const deleted = await ctx.prisma.bodyProfile.delete({
-        where: { id: input.id },
-      });
 
       return deleted;
     }),
