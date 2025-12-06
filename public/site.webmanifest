@@ -1,6 +1,6 @@
 {
-  "name": "F7 Stack",
-  "short_name": "F7",
+  "name": "Drezzi",
+  "short_name": "Drezzi",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#10b981",
+  "theme_color": "#C9A050",
   "background_color": "#ffffff",
   "display": "standalone"
 }

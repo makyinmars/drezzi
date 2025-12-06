@@ -112,6 +112,7 @@
     "lefthook": "^2.0.2",
     "lint-staged": "^16.2.6",
     "prisma": "^7.1.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.1.10",
     "tw-animate-css": "^1.3.4",
     "typescript": "^5.7.2",
