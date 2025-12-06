@@ -144,7 +144,7 @@ const IconCard = ({
       >
         {/* Card */}
         <div
-          className={`relative h-48 w-36 overflow-hidden rounded-2xl border-2 bg-gradient-to-b from-muted/80 via-card to-card/95 shadow-xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 dark:from-muted/80 dark:via-card dark:to-card/90 ${showGlow ? "border-accent/60 dark:border-accent/60" : "border-border/80 shadow-md dark:border-border/60"}
+          className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-gradient-to-b from-muted/80 via-card to-card/95 shadow-xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 dark:from-muted/80 dark:via-card dark:to-card/90 ${showGlow ? "border-accent/60 dark:border-accent/60" : "border-border/80 shadow-md dark:border-border/60"}
           `}
           style={{
             boxShadow: showGlow
@@ -284,7 +284,7 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
       {/* Wand container */}
       <motion.div
         animate={{ scale: getScale() }}
-        className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border bg-gradient-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent/50" : "border-border/80 dark:border-border/50"}
+        className={`relative flex h-14 w-14 items-center justify-center rounded-xl border bg-gradient-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent/50" : "border-border/80 dark:border-border/50"}
         `}
         style={{
           boxShadow: isActive
@@ -385,14 +385,14 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
               "0 0 30px 0px var(--accent), 0 0 60px -10px var(--accent)",
             ],
           }}
-          className="-m-3 absolute inset-0 rounded-3xl"
+          className="-m-3 absolute inset-0 rounded-xl"
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
         />
       )}
 
       {/* Card */}
       <div
-        className={`relative h-48 w-36 overflow-hidden rounded-2xl border-2 bg-gradient-to-b from-accent/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 ${isComplete ? "border-accent" : "border-accent/60 dark:border-accent/40"}
+        className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-gradient-to-b from-accent/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 ${isComplete ? "border-accent" : "border-accent/60 dark:border-accent/40"}
         `}
       >
         {/* Success sparkles background */}
@@ -523,7 +523,7 @@ const ProcessingBadge = ({ phase, reducedMotion }: ProcessingBadgeProps) => {
           ? { scale: [1, 1.02, 1], opacity: [0.8, 1, 0.8] }
           : { scale: 1, opacity: isActive ? 1 : 0.7 }
       }
-      className={`mt-8 flex items-center justify-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm transition-all duration-500 ${isActive ? "border-accent/30 bg-accent/10" : "border-border/80 bg-muted/80 dark:border-border/50 dark:bg-card/50"}
+      className={`mt-8 flex items-center justify-center gap-2 rounded-xl border px-4 py-2 backdrop-blur-sm transition-all duration-500 ${isActive ? "border-accent/30 bg-accent/10" : "border-border/80 bg-muted/80 dark:border-border/50 dark:bg-card/50"}
       `}
       transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
     >
@@ -563,7 +563,7 @@ export const TryOnDemo = () => {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl"
+      className="relative mx-auto w-full max-w-6xl"
       style={{ perspective: "1200px" }}
     >
       {/* Screen reader announcements */}
@@ -574,9 +574,9 @@ export const TryOnDemo = () => {
       </div>
 
       {/* Main container with 3D scene */}
-      <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-muted/50 via-background to-card/70 p-1.5 shadow-2xl dark:border-border/50 dark:from-muted/50 dark:via-background dark:to-card/30">
+      <div className="relative overflow-hidden rounded-xl border border-border/80 bg-gradient-to-br from-muted/50 via-background to-card/70 p-1.5 shadow-2xl dark:border-border/50 dark:from-muted/50 dark:via-background dark:to-card/30">
         <div
-          className="relative overflow-hidden rounded-2xl bg-background/80 p-8 backdrop-blur-sm md:p-12"
+          className="relative overflow-hidden rounded-xl bg-background/80 p-8 backdrop-blur-sm md:p-12"
           style={{
             transformStyle: "preserve-3d",
             transform: reducedMotion ? "none" : "rotateX(2deg)",

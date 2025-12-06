@@ -667,13 +667,13 @@
     0%,
     100% {
       box-shadow:
-        0 0 20px color-mix(in oklch, var(--primary) 20%, transparent),
-        inset 0 0 20px color-mix(in oklch, var(--primary) 5%, transparent);
+        0 0 25px color-mix(in oklch, var(--primary) 30%, transparent),
+        inset 0 0 20px color-mix(in oklch, var(--primary) 8%, transparent);
     }
     50% {
       box-shadow:
-        0 0 40px color-mix(in oklch, var(--primary) 30%, transparent),
-        inset 0 0 30px color-mix(in oklch, var(--primary) 10%, transparent);
+        0 0 50px color-mix(in oklch, var(--primary) 45%, transparent),
+        inset 0 0 35px color-mix(in oklch, var(--primary) 15%, transparent);
     }
   }
 

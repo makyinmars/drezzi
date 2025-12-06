@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 
+import { NeuralBackground } from "@/components/common/neural-background";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/react";
 
@@ -146,7 +147,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           {/* Primary CTA with glow effect */}
           <Button
             asChild
-            className="group relative h-14 overflow-hidden rounded-full bg-primary px-10 font-medium text-base text-primary-foreground shadow-lg shadow-primary/30 transition-all hover:shadow-primary/40 hover:shadow-xl"
+            className="group relative h-14 overflow-hidden rounded-md bg-primary px-10 font-medium text-base text-primary-foreground shadow-lg shadow-primary/30 transition-all hover:shadow-primary/40 hover:shadow-xl"
           >
             <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
               {/* Shine effect on hover */}
@@ -166,7 +167,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           {/* Secondary CTA with accent border */}
           <Button
             asChild
-            className="group h-14 gap-2 rounded-full border-2 border-border bg-background/60 px-10 font-medium text-base text-foreground backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-accent/10"
+            className="group h-14 gap-2 rounded-md border-2 border-border bg-background/60 px-10 font-medium text-base text-foreground backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-accent/10"
             variant="outline"
           >
             <a href="#how-it-works">
@@ -314,7 +315,7 @@ const HowItWorksSection = () => {
             const Icon = step.icon;
             return (
               <motion.div
-                className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
+                className="group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
                 initial={{ opacity: 0, y: 30 }}
                 key={step.num}
                 transition={{
@@ -326,7 +327,7 @@ const HowItWorksSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
               >
                 {/* Icon */}
-                <div className="mb-8 inline-flex rounded-2xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
+                <div className="mb-8 inline-flex rounded-xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
                   <Icon
                     className="h-10 w-10 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
                     strokeWidth={1}
@@ -440,7 +441,7 @@ const FeaturesSection = () => {
         <div className="mb-12 grid gap-8 md:grid-cols-2">
           {featured.map((feature, index) => (
             <motion.div
-              className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
+              className="group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-muted/50 to-card p-8 transition-all duration-500 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 md:p-10"
               initial={{ opacity: 0, y: 30 }}
               key={index}
               transition={{ delay: index * 0.1, duration: 0.8, ease: easing }}
@@ -448,7 +449,7 @@ const FeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
             >
               {/* Large icon */}
-              <div className="mb-8 inline-flex rounded-2xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
+              <div className="mb-8 inline-flex rounded-xl border border-border bg-card p-4 transition-colors duration-500 group-hover:border-primary/40 group-hover:bg-accent/10">
                 <feature.icon
                   className="h-10 w-10 text-muted-foreground transition-colors duration-500 group-hover:text-primary"
                   strokeWidth={1}
@@ -510,32 +511,11 @@ const TechSection = () => {
 
   return (
     <section className="relative overflow-hidden py-32 md:py-40">
-      {/* Dark overlay for this section */}
-      <div className="absolute inset-0 bg-foreground/95" />
+      {/* Background overlay - adapts to light/dark mode */}
+      <div className="absolute inset-0 bg-muted" />
 
       {/* Neural pattern background */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at 25% 25%, var(--primary) 1px, transparent 1px),
-            radial-gradient(circle at 75% 75%, var(--accent) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          animation: "tech-neural-flow 30s linear infinite",
-        }}
-      />
-
-      {/* Radial glow from center */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `radial-gradient(ellipse at 50% 50%,
-            color-mix(in oklch, var(--primary) 15%, transparent) 0%,
-            transparent 60%
-          )`,
-        }}
-      />
+      <NeuralBackground opacity={20} showGlow />
 
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Section header */}
@@ -567,7 +547,7 @@ const TechSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
           >
             <div
-              className="group relative h-full min-h-[400px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-8"
+              className="group relative h-full min-h-[400px] overflow-hidden rounded-xl border border-border bg-gradient-to-br from-muted/60 to-transparent p-8 dark:from-background/20"
               style={{
                 transformStyle: "preserve-3d",
                 animation: "tech-card-float 6s ease-in-out infinite",
@@ -578,17 +558,21 @@ const TechSection = () => {
                 {/* Outer ring */}
                 <div
                   className="absolute h-64 w-64 rounded-full border border-primary/30"
-                  style={{ animation: "tech-ring-rotate 20s linear infinite" }}
+                  style={{
+                    animation: "tech-ring-rotate 20s linear infinite",
+                    filter: "drop-shadow(0 0 8px var(--primary))",
+                  }}
                 >
                   {/* Orbital dots */}
-                  <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rounded-full bg-primary/60" />
-                  <div className="-translate-y-1/2 absolute top-1/2 right-0 h-2 w-2 translate-x-1/2 rounded-full bg-accent/60" />
+                  <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rounded-full bg-primary/70" />
+                  <div className="-translate-y-1/2 absolute top-1/2 right-0 h-2 w-2 translate-x-1/2 rounded-full bg-primary/50" />
                 </div>
                 {/* Middle ring */}
                 <div
                   className="absolute h-48 w-48 rounded-full border border-primary/50"
                   style={{
                     animation: "tech-ring-rotate 15s linear infinite reverse",
+                    filter: "drop-shadow(0 0 6px var(--primary))",
                   }}
                 >
                   <div className="-translate-x-1/2 absolute bottom-0 left-1/2 h-1.5 w-1.5 translate-y-1/2 rounded-full bg-primary/80" />
@@ -596,11 +580,14 @@ const TechSection = () => {
                 {/* Inner ring */}
                 <div
                   className="absolute h-36 w-36 rounded-full border border-primary/20"
-                  style={{ animation: "tech-ring-rotate 25s linear infinite" }}
+                  style={{
+                    animation: "tech-ring-rotate 25s linear infinite",
+                    filter: "drop-shadow(0 0 4px var(--primary))",
+                  }}
                 />
                 {/* Inner core */}
                 <div
-                  className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/10"
+                  className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-primary/25 to-primary/10"
                   style={{
                     animation: "tech-core-pulse 4s ease-in-out infinite",
                   }}
@@ -614,7 +601,7 @@ const TechSection = () => {
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">
                   <Trans>Gemini 3 Pro</Trans>
                 </span>
-                <h3 className="font-serif text-2xl text-white italic">
+                <h3 className="font-serif text-2xl text-foreground italic dark:text-white">
                   <Trans>AI Core</Trans>
                 </h3>
               </div>
@@ -636,7 +623,7 @@ const TechSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
             >
               <div
-                className="group relative h-full min-h-[140px] overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6 transition-all hover:border-primary/30"
+                className="group relative h-full min-h-[140px] overflow-hidden rounded-xl border border-border bg-gradient-to-br from-muted/60 to-transparent p-6 transition-all hover:border-primary/30 dark:from-background/20"
                 style={{
                   animation: `tech-stat-glow 4s ease-in-out infinite ${index * 0.5}s`,
                 }}
@@ -660,8 +647,8 @@ const TechSection = () => {
             viewport={{ once: true }}
             whileInView={{ opacity: 1, y: 0 }}
           >
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-8">
-              <h2 className="mb-6 font-serif text-4xl text-white md:text-5xl">
+            <div className="rounded-xl border border-border bg-gradient-to-br from-muted/60 to-transparent p-8 dark:from-background/20">
+              <h2 className="mb-6 font-serif text-4xl text-foreground md:text-5xl dark:text-white">
                 <span className="block">
                   <Trans>Next Gen</Trans>
                 </span>
@@ -742,7 +729,7 @@ const CTASection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           {/* CTA Button with glow */}
           <Button
             asChild
-            className="group relative h-16 overflow-hidden rounded-full bg-foreground px-12 text-background text-lg shadow-2xl shadow-foreground/20 transition-all hover:shadow-foreground/30"
+            className="group relative h-16 overflow-hidden rounded-md bg-foreground px-12 text-background text-lg shadow-2xl shadow-foreground/20 transition-all hover:shadow-foreground/30"
           >
             <Link to={isAuthenticated ? "/dashboard" : "/auth"}>
               <div className="-translate-x-full absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />

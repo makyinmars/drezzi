@@ -51,7 +51,7 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
 
       {children}
       {/* Footer */}
-      <footer className="border-border border-t bg-background py-16">
+      <footer className="z-10 border-border border-t bg-background py-16">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div className="flex items-center gap-3">
