@@ -157,25 +157,27 @@ function RootDocument({
       <body suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           disableTransitionOnChange
           enableSystem
         >
           {children}
-          <TanStackDevtools
-            plugins={[
-              {
-                name: "TanStack Query",
-                render: <ReactQueryDevtoolsPanel />,
-                defaultOpen: true,
-              },
-              {
-                name: "TanStack Router",
-                render: <TanStackRouterDevtools />,
-                defaultOpen: false,
-              },
-            ]}
-          />
+          {process.env.NODE_ENV === "development" && (
+            <TanStackDevtools
+              plugins={[
+                {
+                  name: "TanStack Query",
+                  render: <ReactQueryDevtoolsPanel />,
+                  defaultOpen: true,
+                },
+                {
+                  name: "TanStack Router",
+                  render: <TanStackRouterDevtools />,
+                  defaultOpen: false,
+                },
+              ]}
+            />
+          )}
           <Toaster richColors={true} />
           <Scripts />
         </ThemeProvider>

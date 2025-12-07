@@ -76,7 +76,7 @@ const GarmentImageUpload = ({
       {preview ? (
         <MediaDisplay
           alt="Garment preview"
-          className="h-48 rounded-lg"
+          className="h-72"
           fit="cover"
           src={preview}
           variant="card"
@@ -88,12 +88,12 @@ const GarmentImageUpload = ({
             type="button"
             variant="destructive"
           >
-            <X className="h-4 w-4" />
+            <X />
           </Button>
         </MediaDisplay>
       ) : (
         <label
-          className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed transition-colors hover:border-muted-foreground/50"
+          className="flex h-72 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed transition-colors hover:border-muted-foreground/50"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
         >
