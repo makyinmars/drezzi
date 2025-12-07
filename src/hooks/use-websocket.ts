@@ -12,6 +12,7 @@ type TryOnStage =
   | "fetching_images"
   | "generating"
   | "uploading"
+  | "generating_tips"
   | "complete"
   | "failed";
 
@@ -50,6 +51,8 @@ function getStageMessage(stage: TryOnStage): string {
       return "Generating your try-on...";
     case "uploading":
       return "Uploading result...";
+    case "generating_tips":
+      return "Generating style tips...";
     case "complete":
       return "Try-on complete!";
     case "failed":

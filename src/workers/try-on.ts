@@ -154,19 +154,18 @@ The result should look like a professional fashion photo.`,
     processingMs,
   });
 
-  // Publish complete event
-  await publish({
-    type: "progress",
-    tryOnId,
-    userId,
-    stage: "complete",
-    timestamp: Date.now(),
-  });
-
   // 6. Generate style tips
   const tryOnData = await getTryOnForTipGeneration(tryOnId).catch(() => null);
 
   if (tryOnData) {
+    await publish({
+      type: "progress",
+      tryOnId,
+      userId,
+      stage: "generating_tips",
+      timestamp: Date.now(),
+    });
+
     await generateStyleTips({
       tryOnId,
       garmentName: tryOnData.garment.name,
@@ -179,6 +178,15 @@ The result should look like a professional fashion photo.`,
     );
     console.log(`Style tips generated for try-on ${tryOnId}`);
   }
+
+  // Publish complete event after tips
+  await publish({
+    type: "progress",
+    tryOnId,
+    userId,
+    stage: "complete",
+    timestamp: Date.now(),
+  });
 }
 
 function getMimeTypeFromKey(key: string): string {

@@ -18,6 +18,7 @@ export type TryOnStage =
   | "fetching_images"
   | "generating"
   | "uploading"
+  | "generating_tips"
   | "complete"
   | "failed";
 

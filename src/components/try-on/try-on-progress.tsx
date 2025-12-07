@@ -5,6 +5,7 @@ import {
   CheckCircle,
   Clock,
   Download,
+  Lightbulb,
   Loader2,
   Sparkles,
   Upload,
@@ -30,6 +31,7 @@ const STAGES: TryOnStage[] = [
   "fetching_images",
   "generating",
   "uploading",
+  "generating_tips",
 ];
 
 const stageConfig: Record<
@@ -61,6 +63,12 @@ const stageConfig: Record<
   uploading: {
     icon: Upload,
     label: <Trans>Uploading result...</Trans>,
+    color: "text-primary",
+    animate: true,
+  },
+  generating_tips: {
+    icon: Lightbulb,
+    label: <Trans>Generating style tips...</Trans>,
     color: "text-primary",
     animate: true,
   },
