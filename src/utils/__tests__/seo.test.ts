@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 
 import {
-  APP_LOGO_URL,
   APP_NAME,
+  APP_SEO_OG_URL,
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
 } from "@/constants/app";
@@ -74,7 +74,7 @@ describe("seo utility", () => {
         (t) => "name" in t && t.name === "twitter:site"
       );
       expect(siteTag).toBeDefined();
-      expect((siteTag as { content: string }).content).toBe("@f7stack");
+      expect((siteTag as { content: string }).content).toBe("@makyinc");
     });
 
     test("includes twitter:creator", () => {
@@ -83,7 +83,7 @@ describe("seo utility", () => {
         (t) => "name" in t && t.name === "twitter:creator"
       );
       expect(creatorTag).toBeDefined();
-      expect((creatorTag as { content: string }).content).toBe("@f7stack");
+      expect((creatorTag as { content: string }).content).toBe("@makyinc");
     });
 
     test("includes twitter:title with full title", () => {
@@ -106,25 +106,15 @@ describe("seo utility", () => {
       expect((descTag as { content: string }).content).toBe("Test description");
     });
 
-    test("includes twitter:image", () => {
-      const tags = seo({ image: "https://example.com/image.png" });
-      const imageTag = tags.find(
-        (t) => "name" in t && t.name === "twitter:image"
-      );
-      expect(imageTag).toBeDefined();
-      expect((imageTag as { content: string }).content).toBe(
-        "https://example.com/image.png"
-      );
-    });
-
-    test("uses default image when not provided", () => {
+    test("includes twitter:image with default", () => {
       const tags = seo({});
       const imageTag = tags.find(
         (t) => "name" in t && t.name === "twitter:image"
       );
       expect(imageTag).toBeDefined();
-      expect((imageTag as { content: string }).content).toBe(APP_LOGO_URL);
+      expect((imageTag as { content: string }).content).toBe(APP_SEO_OG_URL);
     });
+
   });
 
   describe("OpenGraph tags", () => {
@@ -175,15 +165,13 @@ describe("seo utility", () => {
       expect((descTag as { content: string }).content).toBe("OG Description");
     });
 
-    test("includes og:image", () => {
-      const tags = seo({ image: "https://example.com/og.png" });
+    test("includes og:image with default", () => {
+      const tags = seo({});
       const imageTag = tags.find(
         (t) => "property" in t && t.property === "og:image"
       );
       expect(imageTag).toBeDefined();
-      expect((imageTag as { content: string }).content).toBe(
-        "https://example.com/og.png"
-      );
+      expect((imageTag as { content: string }).content).toBe(APP_SEO_OG_URL);
     });
 
     test("includes og:site_name", () => {
@@ -208,24 +196,21 @@ describe("seo utility", () => {
       );
     });
 
-    test("does not include og:url when url is not provided", () => {
+    test("uses default APP_URL when url is not provided", () => {
       const tags = seo({});
       const urlTag = tags.find(
         (t) => "property" in t && t.property === "og:url"
       );
-      expect(urlTag).toBeUndefined();
+      expect(urlTag).toBeDefined();
+      expect((urlTag as { content: string }).content).toBe(
+        "https://getdrezzi.app"
+      );
     });
   });
 
-  test("returns expected number of tags without url", () => {
+  test("returns expected number of tags", () => {
     const tags = seo({});
-    // 1 title + 2 meta (desc, keywords) + 6 twitter + 5 og (no url) = 14
-    expect(tags.length).toBe(14);
-  });
-
-  test("returns expected number of tags with url", () => {
-    const tags = seo({ url: "https://example.com" });
-    // 1 title + 2 meta + 6 twitter + 6 og (with url) = 15
-    expect(tags.length).toBe(15);
+    // 1 title + 2 meta (desc, keywords) + 7 twitter + 6 og = 16
+    expect(tags.length).toBe(16);
   });
 });
