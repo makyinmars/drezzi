@@ -22,6 +22,19 @@ export default $config({
   async run() {
 
 
+    // ==========================================
+    // EMAIL - Amazon SES
+    // ==========================================
+    // Production: getcima.app (production account)
+    // Franklin: dev.getcima.app (dev account)
+    const emailDomain = $app.stage === "production" ? "getdrezzi.app" : "dev.getdrezzi.app";
+
+    const email = new sst.aws.Email("MyEmail", {
+      sender: emailDomain,
+      dns: sst.cloudflare.dns(),
+    });
+
+
     const rootDomain = "getdrezzi.app";
     const isLocalDev = $app.stage === "franklin";
 
@@ -115,7 +128,7 @@ export default $config({
 
 
     const web = new sst.aws.TanStackStart("MyWeb", {
-      link: [bucket, queue],
+      link: [bucket, queue, email],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
         REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
@@ -143,6 +156,7 @@ export default $config({
       app: $app.stage === "production" ? web.url : publicUrl,
       bucket: bucket.name,
       queue: queue.url,
+      emailSender: email.sender,
     };
   },
 });

@@ -9,6 +9,11 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Bucket"
     }
+    "MyEmail": {
+      "configSet": string
+      "sender": string
+      "type": "sst.aws.Email"
+    }
     "MyWeb": {
       "type": "sst.aws.TanstackStart"
       "url": string
