@@ -51,9 +51,15 @@ Extract the following details from the product page:
 - Primary colors as an array (e.g., ["black", "white"])
 - Available sizes as an array (e.g., ["S", "M", "L", "XL"])
 - Main product image URL:
-  - For Zara: Find the image URL from static.zara.net/assets/public/... (NOT the old /photos/ format)
-  - Get the highest quality/resolution version available
-  - Return the complete, absolute URL (not relative paths or data URIs)
+  - Check these sources IN ORDER:
+    1. Open Graph meta tag: <meta property="og:image" content="...">
+    2. Twitter card image: <meta name="twitter:image" content="...">
+    3. JSON-LD structured data: <script type="application/ld+json"> containing "image" property
+    4. Preload links: <link rel="preload" as="image" href="...">
+  - For Zara: Look for URLs containing "static.zara.net/assets/public/" with product ID
+  - The URL format is: https://static.zara.net/assets/public/{hash}/{hash}/{hash}/{hash}/{productId}-{suffix}/{productId}-{suffix}.jpg
+  - Prefer high resolution images
+  - Return the complete, absolute URL (not data URIs or placeholder images)
 
 Return null for any field you cannot determine with confidence.
 For category, use your best judgment based on the product type.

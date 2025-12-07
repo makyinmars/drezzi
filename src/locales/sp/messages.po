@@ -15,7 +15,7 @@ msgstr ""
 
 #. placeholder {0}: created.name
 #: src/components/garment/garment-form.tsx:160
-#: src/screens/garment/new.tsx:126
+#: src/screens/garment/new.tsx:171
 msgid "\"{0}\" has been added"
 msgstr "\"{0}\" ha sido añadido"
 
@@ -141,7 +141,7 @@ msgstr "<0>Cookies de preferencia:</0> Recordar su configuración (idioma, tema)
 msgid "<0>Restriction:</0> Request restriction of processing in certain circumstances"
 msgstr "<0>Restricción:</0> Solicitar restricción del procesamiento en ciertas circunstancias"
 
-#: src/components/landing/try-on-demo/index.tsx:506
+#: src/components/landing/try-on-demo/index.tsx:517
 msgid "~20s processing with Gemini 3.0"
 msgstr "~20s de procesamiento con Gemini 3.0"
 
@@ -257,7 +257,7 @@ msgstr "Un lookbook es una colección curada de conjuntos y estilos. Puedes crea
 msgid "About Measurements"
 msgstr "Acerca de las Medidas"
 
-#: src/screens/garment/new.tsx:432
+#: src/screens/garment/new.tsx:219
 msgid "About Public Garments"
 msgstr "Acerca de las Prendas Públicas"
 
@@ -313,7 +313,7 @@ msgid "Add a new body profile for virtual try-ons"
 msgstr "Añadir un nuevo perfil corporal para probadores virtuales"
 
 #: src/components/garment/garment-form.tsx:180
-#: src/screens/garment/new.tsx:142
+#: src/screens/garment/new.tsx:187
 msgid "Add a new garment to your wardrobe"
 msgstr "Añadir una nueva prenda a tu guardarropa"
 
@@ -329,8 +329,8 @@ msgstr "Añadir una nota..."
 #: src/components/garment/garment-form.tsx:405
 #: src/config/navigation.tsx:36
 #: src/screens/garment/index.tsx:46
-#: src/screens/garment/new.tsx:143
-#: src/screens/garment/new.tsx:399
+#: src/screens/garment/new.tsx:188
+#: src/screens/garment/new.tsx:530
 msgid "Add Garment"
 msgstr "Añadir Prenda"
 
@@ -386,7 +386,7 @@ msgstr "Añadido a favoritos"
 msgid "Adding {0} item(s) to lookbook..."
 msgstr "Añadiendo {0} elemento(s) al lookbook..."
 
-#: src/screens/garment/new.tsx:125
+#: src/screens/garment/new.tsx:170
 msgid "Adding garment..."
 msgstr "Añadiendo prenda..."
 
@@ -407,7 +407,7 @@ msgstr "Análisis avanzado de física e iluminación."
 msgid "AI Core"
 msgstr "Núcleo IA"
 
-#: src/components/landing/try-on-demo/index.tsx:502
+#: src/components/landing/try-on-demo/index.tsx:513
 msgid "AI generating try-on..."
 msgstr "IA generando probador..."
 
@@ -419,7 +419,7 @@ msgstr "Magia de la IA"
 msgid "AI Models"
 msgstr "Modelos de IA"
 
-#: src/components/landing/try-on-demo/index.tsx:471
+#: src/components/landing/try-on-demo/index.tsx:479
 msgid "AI Result"
 msgstr "Resultado de IA"
 
@@ -472,7 +472,7 @@ msgid "All your virtual try-on sessions"
 msgstr "Todas tus sesiones de probador virtual"
 
 #: src/components/garment/garment-form.tsx:380
-#: src/screens/garment/new.tsx:376
+#: src/screens/garment/new.tsx:507
 msgid "Allow others to see and try on this garment"
 msgstr "Permitir que otros vean y prueben esta prenda"
 
@@ -484,7 +484,7 @@ msgstr "Permitir que otros vean este lookbook mediante enlace"
 msgid "Already have an account?"
 msgstr "¿Ya tienes una cuenta?"
 
-#: src/components/landing/try-on-demo/index.tsx:500
+#: src/components/landing/try-on-demo/index.tsx:511
 msgid "Analyzing images..."
 msgstr "Analizando imágenes..."
 
@@ -498,7 +498,7 @@ msgid "Anonymized analytics: May be retained indefinitely for service improvemen
 msgstr "Análisis anonimizados: Pueden conservarse indefinidamente para mejorar el servicio"
 
 #: src/components/landing/index.tsx:249
-#: src/components/landing/try-on-demo/index.tsx:603
+#: src/components/landing/try-on-demo/index.tsx:614
 msgid "Any Garment"
 msgstr "Cualquier Prenda"
 
@@ -532,7 +532,7 @@ msgid "Available"
 msgstr "Disponible"
 
 #: src/screens/garment/garment-id.tsx:81
-#: src/screens/garment/new.tsx:138
+#: src/screens/garment/new.tsx:183
 #: src/screens/lookbooks/lookbook-id.tsx:135
 #: src/screens/profile/new.tsx:133
 #: src/screens/profile/profile-id.tsx:78
@@ -540,7 +540,7 @@ msgstr "Disponible"
 msgid "Back"
 msgstr "Atrás"
 
-#: src/screens/garment/new.tsx:173
+#: src/screens/garment/new.tsx:304
 msgid "Basic Information"
 msgstr "Información Básica"
 
@@ -548,7 +548,7 @@ msgstr "Información Básica"
 msgid "Body photos you upload for virtual try-on"
 msgstr "Fotos del cuerpo que carga para prueba virtual"
 
-#: src/components/try-on/try-on-form.tsx:126
+#: src/components/try-on/try-on-form.tsx:132
 #: src/screens/try-on/try-on-id.tsx:212
 msgid "Body Profile"
 msgstr "Perfil Corporal"
@@ -573,7 +573,7 @@ msgstr "Perfiles corporales y fotos: Conservados hasta que los elimine o elimine
 
 #: src/components/garment/garment-form.tsx:273
 #: src/screens/garment/garment-id.tsx:168
-#: src/screens/garment/new.tsx:253
+#: src/screens/garment/new.tsx:384
 msgid "Brand"
 msgstr "Marca"
 
@@ -619,14 +619,14 @@ msgstr "¿Puedo guardar y compartir mis probadores?"
 #: src/components/style-tip/style-tip-delete.tsx:65
 #: src/components/todo/todo-delete.tsx:98
 #: src/components/try-on/try-on-delete.tsx:110
-#: src/components/try-on/try-on-form.tsx:232
+#: src/components/try-on/try-on-form.tsx:238
 msgid "Cancel"
 msgstr "Cancelar"
 
 #: src/components/garment/garment-form.tsx:243
 #: src/components/style-tip/style-tip-form.tsx:153
 #: src/screens/garment/garment-id.tsx:158
-#: src/screens/garment/new.tsx:223
+#: src/screens/garment/new.tsx:354
 msgid "Category"
 msgstr "Categoría"
 
@@ -665,8 +665,8 @@ msgstr "Colores"
 msgid "Communicating with you about updates or support"
 msgstr "Comunicarse con usted sobre actualizaciones o soporte"
 
-#: src/components/try-on/try-on-progress.tsx:75
-#: src/components/try-on/try-on-progress.tsx:80
+#: src/components/try-on/try-on-progress.tsx:83
+#: src/components/try-on/try-on-progress.tsx:88
 msgid "Complete"
 msgstr "Completado"
 
@@ -809,7 +809,7 @@ msgid "Curate and share your favorite try-on looks"
 msgstr "Cura y comparte tus looks de probador favoritos"
 
 #: src/components/garment/garment-form.tsx:322
-#: src/screens/garment/new.tsx:311
+#: src/screens/garment/new.tsx:442
 msgid "Currency"
 msgstr "Moneda"
 
@@ -830,7 +830,7 @@ msgstr "Los datos en reposo se cifran en nuestra base de datos PostgreSQL"
 
 #: src/components/profile/profile-card.tsx:211
 #: src/components/profile/profile-card.tsx:310
-#: src/components/try-on/try-on-form.tsx:153
+#: src/components/try-on/try-on-form.tsx:159
 #: src/screens/try-on/try-on-id.tsx:217
 msgid "Default"
 msgstr "Predeterminado"
@@ -902,7 +902,7 @@ msgstr "Dependiendo de su ubicación, puede tener los siguientes derechos con re
 #: src/components/todo/todo-detail.tsx:94
 #: src/components/todo/todo-form.tsx:232
 #: src/screens/garment/garment-id.tsx:202
-#: src/screens/garment/new.tsx:202
+#: src/screens/garment/new.tsx:333
 msgid "Description"
 msgstr "Descripción"
 
@@ -947,11 +947,11 @@ msgid "Drezzi uses a credit-based system for AI virtual try-on features. Credits
 msgstr "Drezzi utiliza un sistema basado en créditos para funciones de prueba virtual de IA. Los créditos se pueden comprar a través de nuestro sistema de pago seguro impulsado por Stripe."
 
 #: src/components/garment/garment-form.tsx:193
-#: src/screens/garment/new.tsx:164
+#: src/screens/garment/new.tsx:295
 msgid "Drop garment image here or click to upload"
 msgstr "Arrastra la imagen de la prenda aquí o haz clic para subir"
 
-#: src/components/custom/image-upload.tsx:109
+#: src/components/custom/image-upload.tsx:115
 msgid "Drop image here or click to upload"
 msgstr "Arrastra la imagen aquí o haz clic para subir"
 
@@ -962,7 +962,7 @@ msgid "Drop photo here or click to upload"
 msgstr "Arrastra la foto aquí o haz clic para subir"
 
 #: src/components/garment/garment-form.tsx:207
-#: src/screens/garment/new.tsx:187
+#: src/screens/garment/new.tsx:318
 msgid "e.g., Blue Oxford Shirt"
 msgstr "ej., Camisa Oxford Azul"
 
@@ -973,7 +973,7 @@ msgid "e.g., Default, Casual, Formal"
 msgstr "ej. : Predeterminado, Casual, Formal"
 
 #: src/components/garment/garment-form.tsx:277
-#: src/screens/garment/new.tsx:257
+#: src/screens/garment/new.tsx:388
 msgid "e.g., Nike"
 msgstr "ej., Nike"
 
@@ -1039,7 +1039,7 @@ msgstr "Soporte por correo"
 msgid "Enhancing and upscaling your photos for better results"
 msgstr "Mejorar y aumentar la resolución de sus fotos para mejores resultados"
 
-#: src/screens/garment/new.tsx:420
+#: src/screens/garment/new.tsx:207
 msgid "Ensure good lighting"
 msgstr "Asegura buena iluminación"
 
@@ -1072,7 +1072,7 @@ msgid "Enter your style tip..."
 msgstr "Ingresa tu consejo de estilo..."
 
 #. placeholder {0}: err.message
-#: src/screens/garment/new.tsx:127
+#: src/screens/garment/new.tsx:172
 msgid "Error adding garment: {0}"
 msgstr "Error añadiendo prenda: {0}"
 
@@ -1205,7 +1205,7 @@ msgstr "Todo lo que necesitas para la experiencia perfecta de probador virtual"
 msgid "Face the camera directly"
 msgstr "Mira directamente a la cámara"
 
-#: src/components/try-on/try-on-progress.tsx:85
+#: src/components/try-on/try-on-progress.tsx:93
 msgid "Failed"
 msgstr "Fallido"
 
@@ -1213,6 +1213,11 @@ msgstr "Fallido"
 #: src/components/settings/account-delete.tsx:36
 msgid "Failed to delete account: {0}"
 msgstr "Error al eliminar la cuenta: {0}"
+
+#. placeholder {0}: err.message
+#: src/screens/garment/new.tsx:117
+msgid "Failed to import: {0}"
+msgstr "Error al importar: {0}"
 
 #. placeholder {0}: err.message
 #: src/components/style-tip/style-tip-card.tsx:73
@@ -1230,7 +1235,7 @@ msgid "Failed to retry: {0}"
 msgstr "Error al reintentar: {0}"
 
 #. placeholder {0}: err.message
-#: src/components/try-on/try-on-form.tsx:106
+#: src/components/try-on/try-on-form.tsx:111
 msgid "Failed to start try-on: {0}"
 msgstr "Error al iniciar probador: {0}"
 
@@ -1255,11 +1260,11 @@ msgstr "Favorito"
 msgid "Features"
 msgstr "Características"
 
-#: src/components/try-on/try-on-progress.tsx:51
+#: src/components/try-on/try-on-progress.tsx:53
 msgid "Fetching images..."
 msgstr "Obteniendo imágenes..."
 
-#: src/components/custom/image-upload.tsx:40
+#: src/components/custom/image-upload.tsx:46
 msgid "File size must be less than 10MB"
 msgstr "El tamaño del archivo debe ser menor a 10MB"
 
@@ -1274,7 +1279,7 @@ msgstr "Preferencia de Ajuste"
 msgid "Fit preferences"
 msgstr "Preferencias de ajuste"
 
-#: src/screens/garment/new.tsx:423
+#: src/screens/garment/new.tsx:210
 msgid "Flat lay or hanger shots work best"
 msgstr "Las fotos en plano o con gancho funcionan mejor"
 
@@ -1307,7 +1312,7 @@ msgid "Full Name"
 msgstr "Nombre Completo"
 
 #: src/components/try-on/try-on-card.tsx:208
-#: src/components/try-on/try-on-form.tsx:181
+#: src/components/try-on/try-on-form.tsx:187
 #: src/screens/try-on/try-on-id.tsx:233
 msgid "Garment"
 msgstr "Prenda"
@@ -1364,7 +1369,11 @@ msgstr "Generar imágenes de prueba virtual impulsadas por IA que muestren prend
 msgid "Generating share link..."
 msgstr "Generando enlace de compartir..."
 
-#: src/components/try-on/try-on-progress.tsx:57
+#: src/components/try-on/try-on-progress.tsx:71
+msgid "Generating style tips..."
+msgstr "Generando consejos de estilo..."
+
+#: src/components/try-on/try-on-progress.tsx:59
 msgid "Generating try-on..."
 msgstr "Generando probador..."
 
@@ -1437,9 +1446,13 @@ msgid "How long does a try-on take to process?"
 msgstr "¿Cuánto tiempo tarda en procesarse un probador?"
 
 #: src/components/garment/garment-form.tsx:359
-#: src/screens/garment/new.tsx:346
+#: src/screens/garment/new.tsx:477
 msgid "https://..."
 msgstr "https://..."
+
+#: src/screens/garment/new.tsx:258
+msgid "https://www.zara.com/us/en/..."
+msgstr "https://www.zara.com/us/en/..."
 
 #: src/routes/terms-of-service.tsx:241
 msgid "If a virtual try-on generation fails due to technical issues:"
@@ -1461,13 +1474,29 @@ msgstr "Si tiene preguntas sobre estos Términos de Servicio, contáctenos en:"
 msgid "If you have any questions about this Privacy Policy or our data practices, please contact us at:"
 msgstr "Si tiene preguntas sobre esta Política de privacidad o nuestras prácticas de datos, contáctenos en:"
 
-#: src/screens/garment/new.tsx:153
+#: src/screens/garment/new.tsx:283
 msgid "Image"
 msgstr "Imagen"
 
-#: src/screens/garment/new.tsx:409
+#: src/screens/garment/new.tsx:196
 msgid "Image Tips"
 msgstr "Consejos para Imágenes"
+
+#: src/screens/garment/new.tsx:273
+msgid "Import"
+msgstr "Importar"
+
+#: src/screens/garment/new.tsx:237
+msgid "Import from URL"
+msgstr "Importar desde URL"
+
+#: src/screens/garment/new.tsx:115
+msgid "Importing product details..."
+msgstr "Importando detalles del producto..."
+
+#: src/screens/garment/new.tsx:270
+msgid "Importing..."
+msgstr "Importando..."
 
 #: src/routes/privacy-policy.tsx:189
 msgid "Improving our Service and AI models (using anonymized data)"
@@ -1529,7 +1558,7 @@ msgstr "Juan Pérez"
 msgid "Join thousands of fashion enthusiasts who trust Drezzi"
 msgstr "Únete a miles de entusiastas de la moda que confían en Drezzi"
 
-#: src/components/custom/image-upload.tsx:112
+#: src/components/custom/image-upload.tsx:118
 msgid "JPEG, PNG, or WebP up to 10MB"
 msgstr "JPEG, PNG o WebP hasta 10MB"
 
@@ -1734,7 +1763,7 @@ msgstr "Mis Perfiles"
 
 #: src/components/garment/garment-form.tsx:203
 #: src/components/lookbook/lookbook-form.tsx:215
-#: src/screens/garment/new.tsx:183
+#: src/screens/garment/new.tsx:314
 #: src/screens/settings/index.tsx:31
 msgid "Name"
 msgstr "Nombre"
@@ -1747,7 +1776,7 @@ msgstr "Nueva contraseña"
 msgid "New Profile"
 msgstr "Nuevo Perfil"
 
-#: src/components/try-on/try-on-form.tsx:113
+#: src/components/try-on/try-on-form.tsx:119
 #: src/screens/try-on/index.tsx:36
 #: src/screens/try-on/index.tsx:43
 msgid "New Try-On"
@@ -1769,11 +1798,11 @@ msgstr "No se requiere tarjeta de crédito"
 msgid "No credits will be deducted from your account"
 msgstr "No se deducirán créditos de su cuenta"
 
-#: src/components/try-on/try-on-form.tsx:184
+#: src/components/try-on/try-on-form.tsx:190
 msgid "No garment found."
 msgstr "No se encontró ninguna prenda."
 
-#: src/components/try-on/try-on-form.tsx:215
+#: src/components/try-on/try-on-form.tsx:221
 msgid "No garments found. Please add a garment to your wardrobe first."
 msgstr "No se encontraron prendas. Por favor añade una prenda a tu guardarropa primero."
 
@@ -1798,11 +1827,11 @@ msgstr "Aún no hay lookbooks"
 msgid "No matching try-ons"
 msgstr "No hay probadores coincidentes"
 
-#: src/components/try-on/try-on-form.tsx:129
+#: src/components/try-on/try-on-form.tsx:135
 msgid "No profile found."
 msgstr "No se encontró ningún perfil."
 
-#: src/components/try-on/try-on-form.tsx:165
+#: src/components/try-on/try-on-form.tsx:171
 msgid "No profiles found. Please create a body profile first."
 msgstr "No se encontraron perfiles. Por favor crea un perfil corporal primero."
 
@@ -1849,7 +1878,7 @@ msgstr "Medidas corporales opcionales (altura, cintura, cadera, entrepierna, pec
 
 #: src/components/garment/garment-form.tsx:226
 #: src/components/lookbook/lookbook-form.tsx:238
-#: src/screens/garment/new.tsx:206
+#: src/screens/garment/new.tsx:337
 msgid "Optional description..."
 msgstr "Descripción opcional..."
 
@@ -1874,6 +1903,10 @@ msgstr "Contraseña"
 #: src/routes/auth/reset-password.tsx:167
 msgid "Password reset successfully"
 msgstr "Contraseña restablecida con éxito"
+
+#: src/screens/garment/new.tsx:240
+msgid "Paste a product URL to auto-fill details from retailers like Zara, H&M, ASOS"
+msgstr "Pega una URL de producto para completar automáticamente los detalles de tiendas como Zara, H&M, ASOS"
 
 #: src/screens/dashboard/index.tsx:104
 msgid "pending"
@@ -1907,7 +1940,7 @@ msgstr "Las fotos se almacenan en almacenamiento en la nube seguro (AWS S3)"
 msgid "Platform"
 msgstr "Plataforma"
 
-#: src/components/custom/image-upload.tsx:35
+#: src/components/custom/image-upload.tsx:41
 msgid "Please select a valid image file (JPEG, PNG, or WebP)"
 msgstr "Por favor selecciona un archivo de imagen válido (JPEG, PNG o WebP)"
 
@@ -1917,17 +1950,17 @@ msgid "Please upload a photo first"
 msgstr "Por favor sube una foto primero"
 
 #: src/components/garment/garment-form.tsx:147
-#: src/screens/garment/new.tsx:118
+#: src/screens/garment/new.tsx:163
 msgid "Please upload an image first"
 msgstr "Por favor sube una imagen primero"
 
 #: src/components/garment/garment-form.tsx:295
 #: src/screens/garment/garment-id.tsx:176
-#: src/screens/garment/new.tsx:284
+#: src/screens/garment/new.tsx:415
 msgid "Price"
 msgstr "Precio"
 
-#: src/screens/garment/new.tsx:273
+#: src/screens/garment/new.tsx:404
 msgid "Pricing (Optional)"
 msgstr "Precio (Opcional)"
 
@@ -1958,9 +1991,13 @@ msgstr "Procesando"
 msgid "Processing Time"
 msgstr "Tiempo de Procesamiento"
 
-#: src/components/try-on/try-on-progress.tsx:69
+#: src/components/try-on/try-on-progress.tsx:77
 msgid "Processing..."
 msgstr "Procesando..."
+
+#: src/screens/garment/new.tsx:116
+msgid "Product imported successfully"
+msgstr "Producto importado correctamente"
 
 #: src/components/profile/profile-card.tsx:277
 #: src/screens/profile/profile-id.tsx:129
@@ -1995,7 +2032,7 @@ msgstr "Proporcionar y mantener el Servicio"
 #: src/components/lookbook/lookbook-form.tsx:255
 #: src/screens/garment/garment-id.tsx:136
 #: src/screens/garment/index.tsx:66
-#: src/screens/garment/new.tsx:373
+#: src/screens/garment/new.tsx:504
 #: src/screens/lookbooks/lookbook-id.tsx:168
 msgid "Public"
 msgstr "Público"
@@ -2004,13 +2041,17 @@ msgstr "Público"
 msgid "Public Access"
 msgstr "Acceso Público"
 
-#: src/screens/garment/new.tsx:435
+#: src/screens/garment/new.tsx:222
 msgid "Public garments can be seen and tried on by other users. Keep garments private if you want them for personal use only."
 msgstr "Las prendas públicas pueden ser vistas y probadas por otros usuarios. Mantén las prendas privadas si solo quieres usarlas personalmente."
 
-#: src/components/try-on/try-on-progress.tsx:46
+#: src/components/try-on/try-on-progress.tsx:48
 msgid "Queued"
 msgstr "En cola"
+
+#: src/components/try-on/try-on-form.tsx:105
+msgid "Queued - waiting to start..."
+msgstr "En cola - esperando a comenzar..."
 
 #: src/screens/dashboard/index.tsx:120
 msgid "Recent Activity"
@@ -2092,7 +2133,7 @@ msgid "Result"
 msgstr "Resultado"
 
 #: src/components/garment/garment-form.tsx:355
-#: src/screens/garment/new.tsx:342
+#: src/screens/garment/new.tsx:473
 msgid "Retail URL"
 msgstr "URL del Minorista"
 
@@ -2116,11 +2157,11 @@ msgid "Saving note..."
 msgstr "Guardando nota..."
 
 #: src/components/lookbook/add-tryon-dialog.tsx:100
-#: src/components/try-on/try-on-form.tsx:210
+#: src/components/try-on/try-on-form.tsx:216
 msgid "Search garments..."
 msgstr "Buscar prendas..."
 
-#: src/components/try-on/try-on-form.tsx:160
+#: src/components/try-on/try-on-form.tsx:166
 msgid "Search profiles..."
 msgstr "Buscar perfiles..."
 
@@ -2140,7 +2181,7 @@ msgstr "Ver Cómo Funciona"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/components/try-on/try-on-form.tsx:264
+#: src/components/try-on/try-on-form.tsx:270
 msgid "Select a body profile and a garment to see how it looks on you."
 msgstr "Selecciona un perfil corporal y una prenda para ver cómo te queda."
 
@@ -2148,17 +2189,17 @@ msgstr "Selecciona un perfil corporal y una prenda para ver cómo te queda."
 msgid "Select a completed try-on to add to this lookbook"
 msgstr "Selecciona un probador completado para añadir a este lookbook"
 
-#: src/components/try-on/try-on-form.tsx:191
+#: src/components/try-on/try-on-form.tsx:197
 msgid "Select a garment"
 msgstr "Selecciona una prenda"
 
-#: src/components/try-on/try-on-form.tsx:136
+#: src/components/try-on/try-on-form.tsx:142
 msgid "Select a profile"
 msgstr "Selecciona un perfil"
 
 #: src/components/garment/garment-form.tsx:251
 #: src/components/style-tip/style-tip-form.tsx:158
-#: src/screens/garment/new.tsx:231
+#: src/screens/garment/new.tsx:362
 msgid "Select category"
 msgstr "Selecciona categoría"
 
@@ -2230,7 +2271,7 @@ msgstr "Compartido desde Drezzi - Probador Virtual"
 msgid "shared publicly"
 msgstr "compartido públicamente"
 
-#: src/screens/garment/new.tsx:417
+#: src/screens/garment/new.tsx:204
 msgid "Show the full garment clearly"
 msgstr "Muestra la prenda completa claramente"
 
@@ -2277,7 +2318,7 @@ msgstr "Párate frente a un fondo liso"
 msgid "Start a try-on to see your activity here"
 msgstr "Inicia un probador para ver tu actividad aquí"
 
-#: src/components/try-on/try-on-form.tsx:246
+#: src/components/try-on/try-on-form.tsx:252
 msgid "Start Try-On"
 msgstr "Iniciar Probador"
 
@@ -2289,11 +2330,7 @@ msgstr "Inicia Tu Primer Probador"
 msgid "Start your first virtual try-on to see how clothes look on you."
 msgstr "Inicia tu primer probador virtual para ver cómo te queda la ropa."
 
-#: src/components/try-on/try-on-form.tsx:104
-msgid "Starting try-on..."
-msgstr "Iniciando probador..."
-
-#: src/components/try-on/try-on-form.tsx:241
+#: src/components/try-on/try-on-form.tsx:247
 msgid "Starting..."
 msgstr "Iniciando..."
 
@@ -2471,7 +2508,7 @@ msgstr "Prueba cualquier prenda virtualmente. Impulsado por Google Gemini 3 Pro 
 msgid "Try-On"
 msgstr "Probador"
 
-#: src/components/landing/try-on-demo/index.tsx:504
+#: src/components/landing/try-on-demo/index.tsx:515
 msgid "Try-on complete!"
 msgstr "¡Probador completado!"
 
@@ -2493,10 +2530,6 @@ msgstr "Probador reiniciado"
 #: src/screens/try-on/try-on-id.tsx:181
 msgid "Try-on result for {0}"
 msgstr "Resultado de probador para {0}"
-
-#: src/components/try-on/try-on-form.tsx:105
-msgid "Try-on started! It will be ready in a few moments."
-msgstr "¡Probador iniciado! Estará listo en unos momentos."
 
 #: src/screens/dashboard/index.tsx:100
 msgid "try-ons in progress"
@@ -2579,7 +2612,7 @@ msgstr "Actualizando tarea..."
 msgid "Upload"
 msgstr "Subir"
 
-#: src/screens/garment/new.tsx:156
+#: src/screens/garment/new.tsx:286
 msgid "Upload a clear image of the garment"
 msgstr "Sube una imagen clara de la prenda"
 
@@ -2599,7 +2632,7 @@ msgstr "Cargar contenido que infrinja derechos de propiedad intelectual"
 msgid "Upload inappropriate, offensive, or harmful content"
 msgstr "Cargar contenido inapropiado, ofensivo o dañino"
 
-#: src/components/try-on/try-on-progress.tsx:63
+#: src/components/try-on/try-on-progress.tsx:65
 msgid "Uploading result..."
 msgstr "Subiendo resultado..."
 
@@ -2607,7 +2640,7 @@ msgstr "Subiendo resultado..."
 msgid "Usage Data"
 msgstr "Datos de uso"
 
-#: src/screens/garment/new.tsx:414
+#: src/screens/garment/new.tsx:201
 msgid "Use a plain, light background"
 msgstr "Usa un fondo liso y claro"
 
@@ -2659,12 +2692,12 @@ msgid "View your virtual try-on result"
 msgstr "Ver tu resultado de probador virtual"
 
 #: src/components/app-sidebar.tsx:37
-#: src/components/try-on/try-on-form.tsx:261
+#: src/components/try-on/try-on-form.tsx:267
 #: src/screens/try-on/index.tsx:49
 msgid "Virtual Try-On"
 msgstr "Probador Virtual"
 
-#: src/screens/garment/new.tsx:362
+#: src/screens/garment/new.tsx:493
 msgid "Visibility"
 msgstr "Visibilidad"
 
@@ -2679,7 +2712,7 @@ msgstr "Cintura"
 msgid "Waist (cm)"
 msgstr "Cintura (cm)"
 
-#: src/components/try-on/try-on-progress.tsx:41
+#: src/components/try-on/try-on-progress.tsx:43
 msgid "Waiting in queue..."
 msgstr "Esperando en cola..."
 
@@ -2823,7 +2856,7 @@ msgstr "Detalles de tu cuenta"
 msgid "Your Body Profile"
 msgstr "Tu Perfil Corporal"
 
-#: src/components/landing/try-on-demo/index.tsx:574
+#: src/components/landing/try-on-demo/index.tsx:585
 msgid "Your Photo"
 msgstr "Tu Foto"
 
