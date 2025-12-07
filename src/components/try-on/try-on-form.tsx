@@ -104,7 +104,7 @@ const TryOnForm = ({
       onSuccess: (result) => {
         toast.loading(t`Queued - waiting to start...`, {
           id: result.id,
-          duration: 300000, // 5 minutes - matches Lambda timeout
+          duration: 30000, // 30 seconds
         });
       },
       onError: (err) => {
