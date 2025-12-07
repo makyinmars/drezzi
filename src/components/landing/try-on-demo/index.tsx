@@ -514,7 +514,7 @@ const ProcessingBadge = ({ phase, reducedMotion }: ProcessingBadgeProps) => {
       case "complete":
         return <Trans>Try-on complete!</Trans>;
       default:
-        return <Trans>~20s processing with Gemini 3.0</Trans>;
+        return <Trans>~25s processing with Gemini 3.0</Trans>;
     }
   };
 

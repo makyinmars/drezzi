@@ -142,8 +142,8 @@ msgid "<0>Restriction:</0> Request restriction of processing in certain circumst
 msgstr "<0>Restricción:</0> Solicitar restricción del procesamiento en ciertas circunstancias"
 
 #: src/components/landing/try-on-demo/index.tsx:517
-msgid "~20s processing with Gemini 3.0"
-msgstr "~20s de procesamiento con Gemini 3.0"
+msgid "~25s processing with Gemini 3.0"
+msgstr "~25s de procesamiento con Gemini 3.0"
 
 #: src/routes/terms-of-service.tsx:59
 msgid "1. Acceptance of Terms"
@@ -181,6 +181,10 @@ msgstr "12. Ley aplicable"
 msgid "13. Contact Us"
 msgstr "13. Contáctenos"
 
+#: src/components/landing/index.tsx:534
+msgid "18 virtual try-ons"
+msgstr "18 probadores virtuales"
+
 #: src/routes/terms-of-service.tsx:76
 msgid "2. Description of Service"
 msgstr "2. Descripción del Servicio"
@@ -188,6 +192,10 @@ msgstr "2. Descripción del Servicio"
 #: src/routes/privacy-policy.tsx:79
 msgid "2. Information We Collect"
 msgstr "2. Información que recopilamos"
+
+#: src/components/landing/index.tsx:600
+msgid "3 free credits on signup"
+msgstr "3 créditos gratis al registrarte"
 
 #: src/routes/privacy-policy.tsx:161
 msgid "3. How We Use Your Information"
@@ -197,6 +205,10 @@ msgstr "3. Cómo usamos su información"
 msgid "3. User Accounts"
 msgstr "3. Cuentas de usuario"
 
+#: src/components/landing/index.tsx:547
+msgid "30 virtual try-ons"
+msgstr "30 probadores virtuales"
+
 #: src/routes/privacy-policy.tsx:202
 msgid "4. Data Storage and Security"
 msgstr "4. Almacenamiento y seguridad de datos"
@@ -205,7 +217,7 @@ msgstr "4. Almacenamiento y seguridad de datos"
 msgid "4. User Content"
 msgstr "4. Contenido del usuario"
 
-#: src/components/landing/index.tsx:402
+#: src/components/landing/index.tsx:404
 msgid "4K Quality"
 msgstr "Calidad 4K"
 
@@ -232,6 +244,10 @@ msgstr "7. Usos prohibidos"
 #: src/routes/privacy-policy.tsx:326
 msgid "7. Your Rights"
 msgstr "7. Sus derechos"
+
+#: src/components/landing/index.tsx:521
+msgid "8 virtual try-ons"
+msgstr "8 probadores virtuales"
 
 #: src/routes/privacy-policy.tsx:379
 msgid "8. GDPR Compliance"
@@ -282,7 +298,7 @@ msgstr "Cuenta eliminada con éxito"
 msgid "Account Information"
 msgstr "Información de la cuenta"
 
-#: src/components/landing/index.tsx:514
+#: src/components/landing/index.tsx:732
 msgid "Accuracy"
 msgstr "Precisión"
 
@@ -327,7 +343,7 @@ msgstr "Añadir una nota..."
 
 #: src/components/garment/garment-form.tsx:174
 #: src/components/garment/garment-form.tsx:405
-#: src/config/navigation.tsx:36
+#: src/config/navigation.tsx:37
 #: src/screens/garment/index.tsx:46
 #: src/screens/garment/new.tsx:188
 #: src/screens/garment/new.tsx:530
@@ -399,11 +415,11 @@ msgstr "Añadir medidas ayuda a mejorar la precisión del probador"
 msgid "Adding to favorites..."
 msgstr "Añadiendo a favoritos..."
 
-#: src/components/landing/index.tsx:388
+#: src/components/landing/index.tsx:390
 msgid "Advanced physics and lighting analysis."
 msgstr "Análisis avanzado de física e iluminación."
 
-#: src/components/landing/index.tsx:611
+#: src/components/landing/index.tsx:829
 msgid "AI Core"
 msgstr "Núcleo IA"
 
@@ -411,11 +427,11 @@ msgstr "Núcleo IA"
 msgid "AI generating try-on..."
 msgstr "IA generando probador..."
 
-#: src/components/landing/index.tsx:261
+#: src/components/landing/index.tsx:263
 msgid "AI Magic"
 msgstr "Magia de la IA"
 
-#: src/components/landing/index.tsx:662
+#: src/components/landing/index.tsx:880
 msgid "AI Models"
 msgstr "Modelos de IA"
 
@@ -423,11 +439,11 @@ msgstr "Modelos de IA"
 msgid "AI Result"
 msgstr "Resultado de IA"
 
-#: src/components/landing/index.tsx:387
+#: src/components/landing/index.tsx:389
 msgid "AI Try-On"
 msgstr "Probador IA"
 
-#: src/components/landing/index.tsx:107
+#: src/components/landing/index.tsx:109
 msgid "AI-Powered Virtual Try-On"
 msgstr "Probador Virtual Impulsado por IA"
 
@@ -451,15 +467,15 @@ msgstr "Todas las compras de créditos son finales e irreembolsables. Esta polí
 msgid "All data is encrypted in transit using SSL/TLS"
 msgstr "Todos los datos se cifran en tránsito utilizando SSL/TLS"
 
-#: src/config/navigation.tsx:32
+#: src/config/navigation.tsx:33
 msgid "All Garments"
 msgstr "Todas las Prendas"
 
-#: src/config/navigation.tsx:62
+#: src/config/navigation.tsx:63
 msgid "All Lookbooks"
 msgstr "Todos los Lookbooks"
 
-#: src/config/navigation.tsx:47
+#: src/config/navigation.tsx:48
 msgid "All Profiles"
 msgstr "Todos los Perfiles"
 
@@ -497,7 +513,7 @@ msgstr "y"
 msgid "Anonymized analytics: May be retained indefinitely for service improvement"
 msgstr "Análisis anonimizados: Pueden conservarse indefinidamente para mejorar el servicio"
 
-#: src/components/landing/index.tsx:249
+#: src/components/landing/index.tsx:251
 #: src/components/landing/try-on-demo/index.tsx:614
 msgid "Any Garment"
 msgstr "Cualquier Prenda"
@@ -527,7 +543,7 @@ msgstr "Atributos"
 msgid "Authenticating your identity and managing your account"
 msgstr "Autenticar su identidad y gestionar su cuenta"
 
-#: src/components/landing/index.tsx:515
+#: src/components/landing/index.tsx:733
 msgid "Available"
 msgstr "Disponible"
 
@@ -540,9 +556,17 @@ msgstr "Disponible"
 msgid "Back"
 msgstr "Atrás"
 
+#: src/components/landing/index.tsx:528
+msgid "Basic"
+msgstr "Básico"
+
 #: src/screens/garment/new.tsx:304
 msgid "Basic Information"
 msgstr "Información Básica"
+
+#: src/components/landing/index.tsx:537
+msgid "Best value"
+msgstr "Mejor valor"
 
 #: src/routes/privacy-policy.tsx:115
 msgid "Body photos you upload for virtual try-on"
@@ -561,7 +585,7 @@ msgstr "Creación y gestión del perfil corporal"
 msgid "Body Profile Data"
 msgstr "Datos del perfil corporal"
 
-#: src/components/landing/index.tsx:367
+#: src/components/landing/index.tsx:369
 #: src/screens/dashboard/index.tsx:82
 #: src/screens/profile/index.tsx:38
 msgid "Body Profiles"
@@ -571,23 +595,37 @@ msgstr "Perfiles Corporales"
 msgid "Body profiles and photos: Retained until you delete them or your account"
 msgstr "Perfiles corporales y fotos: Conservados hasta que los elimine o elimine su cuenta"
 
+#. placeholder {0}: balance.totalBonus
+#: src/screens/credits/index.tsx:155
+msgid "Bonus: {0}"
+msgstr "Bonificación: {0}"
+
 #: src/components/garment/garment-form.tsx:273
 #: src/screens/garment/garment-id.tsx:168
 #: src/screens/garment/new.tsx:384
 msgid "Brand"
 msgstr "Marca"
 
-#: src/components/landing/index.tsx:251
+#: src/components/landing/index.tsx:253
 msgid "Browse our catalog or upload your own clothing items. Any style, any brand."
 msgstr "Explora nuestro catálogo o sube tus propias prendas. Cualquier estilo, cualquier marca."
 
-#: src/components/landing/index.tsx:379
+#: src/components/landing/index.tsx:381
 msgid "Browse our curated collections or upload your own clothing items. Any style, any brand, any occasion."
 msgstr "Explora nuestras colecciones curadas o sube tus propias prendas. Cualquier estilo, cualquier marca, cualquier ocasión."
 
-#: src/components/landing/index.tsx:666
+#: src/components/landing/index.tsx:884
 msgid "Built on Gemini 3 Pro's multi-image fusion capabilities. The model reasons through complex prompts to understand pose, lighting, and fabric physics for photorealistic results."
 msgstr "Construido sobre las capacidades de fusión multi-imagen de Gemini 3 Pro. El modelo razona a través de indicaciones complejas para entender la pose, iluminación y física de la tela para resultados fotorrealistas."
+
+#: src/screens/credits/index.tsx:164
+msgid "Buy Credits"
+msgstr "Comprar Créditos"
+
+#: src/components/landing/index.tsx:692
+#: src/screens/credits/index.tsx:212
+msgid "Buy Now"
+msgstr "Comprar Ahora"
 
 #. placeholder {0}: lookbook.user.name ?? "Anonymous"
 #: src/screens/share/share-slug.tsx:57
@@ -649,6 +687,10 @@ msgstr "Pecho"
 msgid "Chest (cm)"
 msgstr "Pecho (cm)"
 
+#: src/components/landing/index.tsx:583
+msgid "Choose Your Plan"
+msgstr "Elige Tu Plan"
+
 #: src/routes/privacy-policy.tsx:277
 msgid "Cloud Infrastructure"
 msgstr "Infraestructura en la nube"
@@ -696,7 +738,7 @@ msgstr "Contáctanos"
 msgid "Content"
 msgstr "Contenido"
 
-#: src/components/landing/index.tsx:239
+#: src/components/landing/index.tsx:241
 msgid "Create a body profile with your reference photo. Your images are stored securely and never shared."
 msgstr "Crea un perfil corporal con tu foto de referencia. Tus imágenes se almacenan de forma segura y nunca se comparten."
 
@@ -796,11 +838,26 @@ msgstr "Creando tu cuenta..."
 msgid "Credit Expiration"
 msgstr "Expiración del crédito"
 
+#: src/components/landing/index.tsx:639
+#: src/screens/credits/index.tsx:141
+#: src/screens/credits/index.tsx:185
+msgid "credits"
+msgstr "créditos"
+
+#: src/config/navigation.tsx:69
+#: src/screens/credits/index.tsx:124
+msgid "Credits"
+msgstr "Créditos"
+
 #: src/routes/terms-of-service.tsx:231
 msgid "Credits do not expire. Once purchased, credits remain in your account until used."
 msgstr "Los créditos no expiran. Una vez comprados, los créditos permanecen en su cuenta hasta que se usen."
 
-#: src/components/landing/index.tsx:403
+#: src/components/landing/index.tsx:721
+msgid "Credits never expire. Use them whenever you want."
+msgstr "Los créditos nunca expiran. Úsalos cuando quieras."
+
+#: src/components/landing/index.tsx:405
 msgid "Crystal clear photorealistic results."
 msgstr "Resultados fotorrealistas de cristalina claridad."
 
@@ -819,7 +876,7 @@ msgid "Danger Zone"
 msgstr "Zona de peligro"
 
 #: src/components/common/content-layout.tsx:35
-#: src/config/navigation.tsx:16
+#: src/config/navigation.tsx:17
 #: src/screens/dashboard/index.tsx:31
 msgid "Dashboard"
 msgstr "Panel"
@@ -918,7 +975,7 @@ msgstr "Detectar y prevenir fraude o abuso"
 msgid "Device information (browser type, IP address)"
 msgstr "Información del dispositivo (tipo de navegador, dirección IP)"
 
-#: src/components/landing/index.tsx:217
+#: src/components/landing/index.tsx:219
 msgid "Discover"
 msgstr "Descubrir"
 
@@ -980,6 +1037,10 @@ msgstr "ej., Nike"
 #: src/components/lookbook/lookbook-form.tsx:219
 msgid "e.g., Summer Outfits 2025"
 msgstr "ej. : Conjuntos de Verano 2025"
+
+#: src/screens/credits/index.tsx:145
+msgid "Each try-on uses {TRY_ON_COST} credit"
+msgstr "Cada probador usa {TRY_ON_COST} crédito"
 
 #: src/components/garment/garment-card.tsx:139
 #: src/components/lookbook/lookbook-actions-menu.tsx:56
@@ -1197,7 +1258,7 @@ msgstr "Error actualizando visibilidad: {0}"
 msgid "Error updating: {0}"
 msgstr "Error actualizando: {0}"
 
-#: src/components/landing/index.tsx:440
+#: src/components/landing/index.tsx:442
 msgid "Everything you need for the perfect virtual try-on experience"
 msgstr "Todo lo que necesitas para la experiencia perfecta de probador virtual"
 
@@ -1209,6 +1270,10 @@ msgstr "Mira directamente a la cámara"
 msgid "Failed"
 msgstr "Fallido"
 
+#: src/screens/credits/index.tsx:110
+msgid "Failed to create checkout session"
+msgstr "Error al crear la sesión de pago"
+
 #. placeholder {0}: err.message
 #: src/components/settings/account-delete.tsx:36
 msgid "Failed to delete account: {0}"
@@ -1218,6 +1283,10 @@ msgstr "Error al eliminar la cuenta: {0}"
 #: src/screens/garment/new.tsx:117
 msgid "Failed to import: {0}"
 msgstr "Error al importar: {0}"
+
+#: src/screens/credits/index.tsx:70
+msgid "Failed to process payment. Please contact support."
+msgstr "Error al procesar el pago. Por favor contacta soporte."
 
 #. placeholder {0}: err.message
 #: src/components/style-tip/style-tip-card.tsx:73
@@ -1256,7 +1325,7 @@ msgstr "FAL AI"
 msgid "Favorite"
 msgstr "Favorito"
 
-#: src/components/landing/index.tsx:436
+#: src/components/landing/index.tsx:438
 msgid "Features"
 msgstr "Características"
 
@@ -1303,7 +1372,7 @@ msgstr "¿Olvidaste tu contraseña?"
 msgid "Frequently Asked Questions"
 msgstr "Preguntas frecuentes"
 
-#: src/components/landing/index.tsx:314
+#: src/components/landing/index.tsx:316
 msgid "From upload to try-on in four simple steps"
 msgstr "De la carga al probador en cuatro pasos simples"
 
@@ -1317,7 +1386,7 @@ msgstr "Nombre Completo"
 msgid "Garment"
 msgstr "Prenda"
 
-#: src/components/landing/index.tsx:377
+#: src/components/landing/index.tsx:379
 msgid "Garment Catalog"
 msgstr "Catálogo de Prendas"
 
@@ -1337,11 +1406,11 @@ msgstr "Prendas"
 msgid "Garments and try-on results: Retained until you delete them or your account"
 msgstr "Prendas y resultados de prueba: Conservados hasta que los elimine o elimine su cuenta"
 
-#: src/components/landing/index.tsx:608
+#: src/components/landing/index.tsx:826
 msgid "Gemini 3 Pro"
 msgstr "Gemini 3 Pro"
 
-#: src/components/landing/index.tsx:263
+#: src/components/landing/index.tsx:265
 msgid "Gemini 3 Pro analyzes pose, lighting, and fabric physics to create your try-on."
 msgstr "Gemini 3 Pro analiza la pose, iluminación y física de la tela para crear tu probador."
 
@@ -1377,7 +1446,7 @@ msgstr "Generando consejos de estilo..."
 msgid "Generating try-on..."
 msgstr "Generando probador..."
 
-#: src/components/landing/index.tsx:393
+#: src/components/landing/index.tsx:395
 msgid "Get AI-generated fashion advice."
 msgstr "Obtén consejos de moda generados por IA."
 
@@ -1385,17 +1454,21 @@ msgstr "Obtén consejos de moda generados por IA."
 msgid "Get help, access documentation, and find answers to common questions about Drezzi."
 msgstr "Obtén ayuda, accede a la documentación y encuentra respuestas a preguntas comunes sobre Drezzi."
 
-#: src/components/landing/index.tsx:275
+#: src/components/landing/index.tsx:277
 msgid "Get photorealistic 4K results in seconds. Save favorites to your lookbook."
 msgstr "Obtén resultados fotorrealistas en 4K en segundos. Guarda favoritos en tu lookbook."
 
-#: src/components/landing/index.tsx:167
-#: src/components/landing/index.tsx:746
+#: src/components/landing/index.tsx:694
+msgid "Get Started"
+msgstr "Comenzar"
+
+#: src/components/landing/index.tsx:169
+#: src/components/landing/index.tsx:964
 msgid "Get Started Free"
 msgstr "Comenzar Gratis"
 
-#: src/components/landing/index.tsx:165
-#: src/components/landing/index.tsx:744
+#: src/components/landing/index.tsx:167
+#: src/components/landing/index.tsx:962
 msgid "Go to Dashboard"
 msgstr "Ir al Panel"
 
@@ -1437,7 +1510,7 @@ msgstr "¿Cómo obtengo los mejores resultados de probador?"
 msgid "How does virtual try-on work?"
 msgstr "¿Cómo funciona el probador virtual?"
 
-#: src/components/landing/index.tsx:310
+#: src/components/landing/index.tsx:312
 msgid "How It Works"
 msgstr "Cómo Funciona"
 
@@ -1554,7 +1627,7 @@ msgstr "elementos"
 msgid "John Doe"
 msgstr "Juan Pérez"
 
-#: src/components/landing/index.tsx:730
+#: src/components/landing/index.tsx:948
 msgid "Join thousands of fashion enthusiasts who trust Drezzi"
 msgstr "Únete a miles de entusiastas de la moda que confían en Drezzi"
 
@@ -1574,6 +1647,10 @@ msgstr "Última actualización: diciembre de 2025"
 #: src/components/lookbook/share-dialog.tsx:115
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"
+
+#: src/routes/(authed)/credits/index.tsx:38
+msgid "Loading credits..."
+msgstr "Cargando créditos..."
 
 #: src/routes/(authed)/dashboard/index.tsx:24
 msgid "Loading dashboard..."
@@ -1649,7 +1726,7 @@ msgstr "Iniciar sesión con Google"
 msgid "Login with your Google account"
 msgstr "Inicia sesión con tu cuenta de Google"
 
-#: src/components/landing/index.tsx:132
+#: src/components/landing/index.tsx:134
 msgid "Look On You"
 msgstr "Luce en Ti"
 
@@ -1661,8 +1738,8 @@ msgstr "Colecciones de lookbooks que crea"
 msgid "Lookbook creation and sharing"
 msgstr "Creación y uso compartido de lookbooks"
 
-#: src/components/landing/index.tsx:397
-#: src/config/navigation.tsx:57
+#: src/components/landing/index.tsx:399
+#: src/config/navigation.tsx:58
 #: src/screens/dashboard/index.tsx:53
 #: src/screens/lookbooks/index.tsx:38
 msgid "Lookbooks"
@@ -1677,6 +1754,10 @@ msgstr "Lookbooks: Conservados hasta que los elimine o elimine su cuenta"
 #: src/screens/profile/new.tsx:223
 msgid "Loose"
 msgstr "Holgado"
+
+#: src/components/landing/index.tsx:550
+msgid "Lowest per-credit cost"
+msgstr "Menor costo por crédito"
 
 #: src/routes/auth/index.tsx:190
 #: src/routes/auth/reset-password.tsx:220
@@ -1747,17 +1828,22 @@ msgstr "Medidas (Opcional)"
 msgid "Measurements are optional but help improve the accuracy of virtual try-ons. You can always add them later."
 msgstr "Las medidas son opcionales pero ayudan a mejorar la precisión de los probadores virtuales. Siempre puedes añadirlas después."
 
+#: src/components/landing/index.tsx:627
+#: src/screens/credits/index.tsx:179
+msgid "Most Popular"
+msgstr "Más Popular"
+
 #: src/screens/support/index.tsx:41
 msgid "Most try-ons complete within 30 seconds to a minute. Processing time may vary depending on image complexity. You'll receive a notification when your try-on is ready to view."
 msgstr "La mayoría de los probadores se completan en 30 segundos a un minuto. El tiempo de procesamiento puede variar según la complejidad de la imagen. Recibirás una notificación cuando tu probador esté listo para ver."
 
-#: src/config/navigation.tsx:27
+#: src/config/navigation.tsx:28
 #: src/screens/garment/index.tsx:51
 #: src/screens/garment/index.tsx:63
 msgid "My Garments"
 msgstr "Mis Prendas"
 
-#: src/config/navigation.tsx:42
+#: src/config/navigation.tsx:43
 msgid "My Profiles"
 msgstr "Mis Perfiles"
 
@@ -1772,7 +1858,7 @@ msgstr "Nombre"
 msgid "New Password"
 msgstr "Nueva contraseña"
 
-#: src/config/navigation.tsx:51
+#: src/config/navigation.tsx:52
 msgid "New Profile"
 msgstr "Nuevo Perfil"
 
@@ -1782,7 +1868,7 @@ msgstr "Nuevo Perfil"
 msgid "New Try-On"
 msgstr "Nuevo Probador"
 
-#: src/components/landing/index.tsx:659
+#: src/components/landing/index.tsx:877
 msgid "Next Gen"
 msgstr "Nueva Generación"
 
@@ -1790,7 +1876,7 @@ msgstr "Nueva Generación"
 msgid "No completed try-ons available"
 msgstr "No hay probadores completados disponibles"
 
-#: src/components/landing/index.tsx:756
+#: src/components/landing/index.tsx:974
 msgid "No credit card required"
 msgstr "No se requiere tarjeta de crédito"
 
@@ -1847,6 +1933,10 @@ msgstr "No hay actividad reciente"
 msgid "No style tips available yet."
 msgstr "Aún no hay consejos de estilo disponibles."
 
+#: src/screens/credits/index.tsx:231
+msgid "No transactions yet"
+msgstr "Aún no hay transacciones"
+
 #: src/screens/try-on/index.tsx:59
 msgid "No try-ons yet"
 msgstr "Aún no hay probadores"
@@ -1887,7 +1977,7 @@ msgstr "Descripción opcional..."
 msgid "Or continue with"
 msgstr "O continúa con"
 
-#: src/components/landing/index.tsx:398
+#: src/components/landing/index.tsx:400
 msgid "Organize and share your favorite outfits."
 msgstr "Organiza y comparte tus conjuntos favoritos."
 
@@ -1908,9 +1998,23 @@ msgstr "Contraseña restablecida con éxito"
 msgid "Paste a product URL to auto-fill details from retailers like Zara, H&M, ASOS"
 msgstr "Pega una URL de producto para completar automáticamente los detalles de tiendas como Zara, H&M, ASOS"
 
+#: src/components/landing/index.tsx:587
+msgid "Pay only for what you use. No subscriptions."
+msgstr "Paga solo por lo que usas. Sin suscripciones."
+
+#. placeholder {0}: data.creditsGranted
+#: src/screens/credits/index.tsx:62
+msgid "Payment successful! {0} credits added."
+msgstr "¡Pago exitoso! {0} créditos añadidos."
+
 #: src/screens/dashboard/index.tsx:104
 msgid "pending"
 msgstr "pendiente"
+
+#: src/components/landing/index.tsx:652
+#: src/screens/credits/index.tsx:197
+msgid "per credit"
+msgstr "por crédito"
 
 #: src/components/try-on/try-on-card.tsx:318
 msgid "Personalized recommendations for this look"
@@ -1928,7 +2032,7 @@ msgstr "Contenido de foto"
 msgid "Photo Tips"
 msgstr "Consejos para Fotos"
 
-#: src/components/landing/index.tsx:273
+#: src/components/landing/index.tsx:275
 msgid "Photorealistic"
 msgstr "Fotorrealista"
 
@@ -1936,7 +2040,7 @@ msgstr "Fotorrealista"
 msgid "Photos are stored in secure cloud storage (AWS S3)"
 msgstr "Las fotos se almacenan en almacenamiento en la nube seguro (AWS S3)"
 
-#: src/components/landing/index.tsx:433
+#: src/components/landing/index.tsx:435
 msgid "Platform"
 msgstr "Plataforma"
 
@@ -1964,6 +2068,11 @@ msgstr "Precio"
 msgid "Pricing (Optional)"
 msgstr "Precio (Opcional)"
 
+#: src/components/landing/index.tsx:535
+#: src/components/landing/index.tsx:548
+msgid "Priority processing"
+msgstr "Procesamiento prioritario"
+
 #: src/components/common/content-layout.tsx:63
 #: src/routes/auth/index.tsx:252
 #: src/routes/auth/signup.tsx:244
@@ -1975,7 +2084,11 @@ msgstr "Política de Privacidad"
 msgid "Private"
 msgstr "Privado"
 
-#: src/components/landing/index.tsx:260
+#: src/components/landing/index.tsx:542
+msgid "Pro"
+msgstr "Pro"
+
+#: src/components/landing/index.tsx:262
 msgid "Process"
 msgstr "Proceso"
 
@@ -1983,13 +2096,17 @@ msgstr "Proceso"
 msgid "processing"
 msgstr "procesando"
 
-#: src/components/landing/index.tsx:512
+#: src/components/landing/index.tsx:730
 msgid "Processing"
 msgstr "Procesando"
 
 #: src/screens/try-on/try-on-id.tsx:269
 msgid "Processing Time"
 msgstr "Tiempo de Procesamiento"
+
+#: src/screens/credits/index.tsx:302
+msgid "Processing your payment..."
+msgstr "Procesando tu pago..."
 
 #: src/components/try-on/try-on-progress.tsx:77
 msgid "Processing..."
@@ -2045,6 +2162,19 @@ msgstr "Acceso Público"
 msgid "Public garments can be seen and tried on by other users. Keep garments private if you want them for personal use only."
 msgstr "Las prendas públicas pueden ser vistas y probadas por otros usuarios. Mantén las prendas privadas si solo quieres usarlas personalmente."
 
+#: src/screens/credits/index.tsx:81
+msgid "Purchase cancelled"
+msgstr "Compra cancelada"
+
+#: src/screens/credits/index.tsx:123
+msgid "Purchase credits to use virtual try-ons"
+msgstr "Compra créditos para usar probadores virtuales"
+
+#. placeholder {0}: balance.totalPurchased
+#: src/screens/credits/index.tsx:149
+msgid "Purchased: {0}"
+msgstr "Comprados: {0}"
+
 #: src/components/try-on/try-on-progress.tsx:48
 msgid "Queued"
 msgstr "En cola"
@@ -2056,6 +2186,10 @@ msgstr "En cola - esperando a comenzar..."
 #: src/screens/dashboard/index.tsx:120
 msgid "Recent Activity"
 msgstr "Actividad Reciente"
+
+#: src/screens/credits/index.tsx:226
+msgid "Recent Transactions"
+msgstr "Transacciones Recientes"
 
 #: src/components/style-tip/style-tip-card.tsx:101
 msgid "Regenerate"
@@ -2079,7 +2213,7 @@ msgstr "Regular"
 msgid "Regular security audits and monitoring"
 msgstr "Auditorías de seguridad periódicas y monitoreo"
 
-#: src/components/landing/index.tsx:725
+#: src/components/landing/index.tsx:943
 msgid "Reimagined"
 msgstr "Reimaginado"
 
@@ -2124,11 +2258,11 @@ msgstr "Restablecer contraseña"
 msgid "Resetting password..."
 msgstr "Restableciendo contraseña..."
 
-#: src/components/landing/index.tsx:513
+#: src/components/landing/index.tsx:731
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/landing/index.tsx:272
+#: src/components/landing/index.tsx:274
 msgid "Result"
 msgstr "Resultado"
 
@@ -2152,6 +2286,12 @@ msgstr "Reintentando probador..."
 msgid "Save"
 msgstr "Guardar"
 
+#: src/components/landing/index.tsx:523
+#: src/components/landing/index.tsx:536
+#: src/components/landing/index.tsx:549
+msgid "Save to lookbook"
+msgstr "Guardar en lookbook"
+
 #: src/components/lookbook/lookbook-item.tsx:111
 msgid "Saving note..."
 msgstr "Guardando nota..."
@@ -2165,7 +2305,7 @@ msgstr "Buscar prendas..."
 msgid "Search profiles..."
 msgstr "Buscar perfiles..."
 
-#: src/components/landing/index.tsx:121
+#: src/components/landing/index.tsx:123
 msgid "See How Clothes"
 msgstr "Ver Cómo la Ropa"
 
@@ -2173,11 +2313,11 @@ msgstr "Ver Cómo la Ropa"
 msgid "See how clothes look on you with AI-powered virtual try-on"
 msgstr "Ve cómo te queda la ropa con probador virtual impulsado por IA"
 
-#: src/components/landing/index.tsx:181
+#: src/components/landing/index.tsx:183
 msgid "See How It Works"
 msgstr "Ver Cómo Funciona"
 
-#: src/components/landing/index.tsx:248
+#: src/components/landing/index.tsx:250
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -2231,7 +2371,7 @@ msgstr "Establecer si esta tarea está activa"
 msgid "Setting as default..."
 msgstr "Estableciendo como predeterminado..."
 
-#: src/config/navigation.tsx:70
+#: src/config/navigation.tsx:76
 #: src/screens/settings/index.tsx:73
 msgid "Settings"
 msgstr "Configuración"
@@ -2296,7 +2436,11 @@ msgstr "Registrarse con Google"
 msgid "Sign up with your Google account or email"
 msgstr "Regístrate con tu cuenta de Google o correo"
 
-#: src/components/landing/index.tsx:306
+#: src/components/landing/index.tsx:579
+msgid "Simple Pricing"
+msgstr "Precios Simples"
+
+#: src/components/landing/index.tsx:308
 msgid "Simple Process"
 msgstr "Proceso Simple"
 
@@ -2314,6 +2458,10 @@ msgstr "Ajustado"
 msgid "Stand in front of a plain background"
 msgstr "Párate frente a un fondo liso"
 
+#: src/components/landing/index.tsx:522
+msgid "Standard processing"
+msgstr "Procesamiento estándar"
+
 #: src/components/dashboard/recent-activity.tsx:181
 msgid "Start a try-on to see your activity here"
 msgstr "Inicia un probador para ver tu actividad aquí"
@@ -2330,6 +2478,10 @@ msgstr "Inicia Tu Primer Probador"
 msgid "Start your first virtual try-on to see how clothes look on you."
 msgstr "Inicia tu primer probador virtual para ver cómo te queda la ropa."
 
+#: src/components/landing/index.tsx:516
+msgid "Starter"
+msgstr "Inicial"
+
 #: src/components/try-on/try-on-form.tsx:247
 msgid "Starting..."
 msgstr "Iniciando..."
@@ -2344,7 +2496,7 @@ msgstr "Estado"
 msgid "Store and process your content to provide the Service"
 msgstr "Almacenar y procesar su contenido para proporcionar el Servicio"
 
-#: src/components/landing/index.tsx:369
+#: src/components/landing/index.tsx:371
 msgid "Store multiple profiles for different poses and body types. Perfect for seeing how clothes fit in various scenarios."
 msgstr "Almacena múltiples perfiles para diferentes poses y tipos de cuerpo. Perfecto para ver cómo te queda la ropa en varios escenarios."
 
@@ -2360,7 +2512,7 @@ msgstr "Consejo de estilo eliminado"
 msgid "Style tip updated"
 msgstr "Consejo de estilo actualizado"
 
-#: src/components/landing/index.tsx:392
+#: src/components/landing/index.tsx:394
 #: src/components/style-tip/style-tip-card.tsx:81
 #: src/components/try-on/try-on-card.tsx:213
 #: src/components/try-on/try-on-card.tsx:315
@@ -2379,7 +2531,7 @@ msgstr "Consejos de estilo regenerados"
 msgid "Success Rate"
 msgstr "Tasa de Éxito"
 
-#: src/config/navigation.tsx:75
+#: src/config/navigation.tsx:81
 #: src/screens/support/index.tsx:49
 msgid "Support"
 msgstr "Soporte"
@@ -2415,7 +2567,7 @@ msgstr "El Servicio se proporciona \"tal cual\" sin garantías de ningún tipo, 
 msgid "The Service, including its design, features, and content (excluding User Content), is owned by Maky Software Inc. and is protected by copyright, trademark, and other intellectual property laws."
 msgstr "El Servicio, incluyendo su diseño, características y contenido (excluyendo Contenido del usuario), es propiedad de Maky Software Inc. y está protegido por derechos de autor, marca registrada y otras leyes de propiedad intelectual."
 
-#: src/components/landing/index.tsx:538
+#: src/components/landing/index.tsx:756
 msgid "The Technology"
 msgstr "La Tecnología"
 
@@ -2500,11 +2652,11 @@ msgstr "Total de Probadores"
 msgid "Try Another Garment"
 msgstr "Probar Otra Prenda"
 
-#: src/components/landing/index.tsx:144
+#: src/components/landing/index.tsx:146
 msgid "Try on any garment virtually. Powered by Google Gemini 3 Pro for photorealistic results."
 msgstr "Prueba cualquier prenda virtualmente. Impulsado por Google Gemini 3 Pro para resultados fotorrealistas."
 
-#: src/config/navigation.tsx:22
+#: src/config/navigation.tsx:23
 msgid "Try-On"
 msgstr "Probador"
 
@@ -2608,7 +2760,7 @@ msgstr "Actualizando consejo de estilo..."
 msgid "Updating todo..."
 msgstr "Actualizando tarea..."
 
-#: src/components/landing/index.tsx:236
+#: src/components/landing/index.tsx:238
 msgid "Upload"
 msgstr "Subir"
 
@@ -2657,6 +2809,11 @@ msgstr "Usar el Servicio para cualquier propósito ilegal o no autorizado"
 #: src/screens/profile/new.tsx:242
 msgid "Use this profile as your default for try-ons"
 msgstr "Usa este perfil como predeterminado para probadores"
+
+#. placeholder {0}: balance.totalUsed
+#: src/screens/credits/index.tsx:152
+msgid "Used: {0}"
+msgstr "Usados: {0}"
 
 #: src/routes/auth/reset-password.tsx:269
 msgid "Verify Code"
@@ -2852,7 +3009,11 @@ msgstr "Usted retiene la propiedad de todo el contenido que envía al Servicio, 
 msgid "Your account details"
 msgstr "Detalles de tu cuenta"
 
-#: src/components/landing/index.tsx:237
+#: src/screens/credits/index.tsx:132
+msgid "Your Balance"
+msgstr "Tu Saldo"
+
+#: src/components/landing/index.tsx:239
 msgid "Your Body Profile"
 msgstr "Tu Perfil Corporal"
 
@@ -2860,7 +3021,7 @@ msgstr "Tu Perfil Corporal"
 msgid "Your Photo"
 msgstr "Tu Foto"
 
-#: src/components/landing/index.tsx:714
+#: src/components/landing/index.tsx:932
 msgid "Your Style,"
 msgstr "Tu Estilo,"
 

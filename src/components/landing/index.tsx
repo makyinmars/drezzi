@@ -5,10 +5,12 @@ import {
   ArrowRight,
   ArrowUpRight,
   Book,
+  Check,
   CheckCircle,
   Clock,
   Cpu,
   Eye,
+  Gift,
   Layers,
   Maximize2,
   Shirt,
@@ -507,10 +509,226 @@ const FeaturesSection = () => {
   );
 };
 
+const PricingSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+  const packages = [
+    {
+      id: "starter",
+      name: <Trans>Starter</Trans>,
+      credits: 8,
+      price: 5,
+      pricePerCredit: 0.63,
+      features: [
+        <Trans key="starter-1">8 virtual try-ons</Trans>,
+        <Trans key="starter-2">Standard processing</Trans>,
+        <Trans key="starter-3">Save to lookbook</Trans>,
+      ],
+    },
+    {
+      id: "basic",
+      name: <Trans>Basic</Trans>,
+      credits: 18,
+      price: 10,
+      pricePerCredit: 0.56,
+      popular: true,
+      features: [
+        <Trans key="basic-1">18 virtual try-ons</Trans>,
+        <Trans key="basic-2">Priority processing</Trans>,
+        <Trans key="basic-3">Save to lookbook</Trans>,
+        <Trans key="basic-4">Best value</Trans>,
+      ],
+    },
+    {
+      id: "pro",
+      name: <Trans>Pro</Trans>,
+      credits: 30,
+      price: 15,
+      pricePerCredit: 0.5,
+      features: [
+        <Trans key="pro-1">30 virtual try-ons</Trans>,
+        <Trans key="pro-2">Priority processing</Trans>,
+        <Trans key="pro-3">Save to lookbook</Trans>,
+        <Trans key="pro-4">Lowest per-credit cost</Trans>,
+      ],
+    },
+  ];
+
+  return (
+    <section className="relative bg-muted/20 px-6 py-24 md:py-32" id="pricing">
+      {/* Background decorative element */}
+      <div className="pointer-events-none absolute top-0 left-0 h-80 w-80 opacity-15">
+        <div className="h-full w-full rounded-full bg-gradient-to-br from-primary/40 to-transparent blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-6xl">
+        {/* Section header */}
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 1, ease: easing }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
+        >
+          {/* Decorative line */}
+          <div className="mx-auto mb-6 flex items-center justify-center gap-3">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary/40" />
+            <div className="h-1.5 w-1.5 rotate-45 bg-primary/50" />
+            <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
+          </div>
+
+          <span className="mb-4 block font-medium font-sans text-[11px] text-muted-foreground uppercase tracking-[0.3em]">
+            <Trans>Simple Pricing</Trans>
+          </span>
+
+          <h2 className="mb-4 font-serif text-4xl text-foreground tracking-tight md:text-5xl">
+            <Trans>Choose Your Plan</Trans>
+          </h2>
+
+          <p className="mx-auto max-w-md font-serif text-base text-muted-foreground italic md:text-lg">
+            <Trans>Pay only for what you use. No subscriptions.</Trans>
+          </p>
+
+          {/* Free credits badge */}
+          <motion.div
+            className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2"
+            initial={{ opacity: 0, scale: 0.9 }}
+            transition={{ delay: 0.3, duration: 0.8, ease: easing }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, scale: 1 }}
+          >
+            <Gift className="h-4 w-4 text-primary" />
+            <span className="font-medium text-primary text-sm">
+              <Trans>3 free credits on signup</Trans>
+            </span>
+          </motion.div>
+        </motion.div>
+
+        {/* Pricing cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {packages.map((pkg, index) => (
+            <motion.div
+              className={`group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card/80 to-muted/30 transition-all duration-500 hover:shadow-xl ${
+                pkg.popular
+                  ? "border-primary shadow-lg shadow-primary/10 ring-1 ring-primary"
+                  : "border-border/60 hover:border-primary/30 hover:shadow-primary/5"
+              }`}
+              initial={{ opacity: 0, y: 30 }}
+              key={pkg.id}
+              transition={{
+                delay: index * 0.12,
+                duration: 0.8,
+                ease: easing,
+              }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
+            >
+              {/* Popular badge */}
+              {pkg.popular && (
+                <div className="absolute top-4 right-4 z-20 inline-flex items-center rounded-full bg-primary px-3 py-1 font-medium text-primary-foreground text-xs shadow-sm">
+                  <Trans>Most Popular</Trans>
+                </div>
+              )}
+
+              <div className="relative z-10 p-7 md:p-8">
+                {/* Package name */}
+                <h3 className="mb-2 font-serif text-2xl text-foreground md:text-3xl">
+                  {pkg.name}
+                </h3>
+
+                {/* Credits count */}
+                <p className="mb-6 text-muted-foreground text-sm">
+                  {pkg.credits} <Trans>credits</Trans>
+                </p>
+
+                {/* Price */}
+                <div className="mb-2 flex items-baseline gap-1">
+                  <span className="font-serif text-4xl text-foreground italic md:text-5xl">
+                    ${pkg.price}
+                  </span>
+                  <span className="text-muted-foreground text-sm">USD</span>
+                </div>
+
+                {/* Per credit price */}
+                <p className="mb-6 text-muted-foreground text-sm">
+                  ${pkg.pricePerCredit.toFixed(2)} <Trans>per credit</Trans>
+                </p>
+
+                {/* Features list */}
+                <ul className="mb-8 space-y-3">
+                  {pkg.features.map((feature, featureIndex) => (
+                    <li
+                      className="flex items-center gap-2.5 text-sm"
+                      key={featureIndex}
+                    >
+                      <Check
+                        className={`h-4 w-4 flex-shrink-0 ${
+                          pkg.popular ? "text-primary" : "text-muted-foreground"
+                        }`}
+                        strokeWidth={2}
+                      />
+                      <span className="text-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <Button
+                  asChild
+                  className={`group/btn relative w-full overflow-hidden ${
+                    pkg.popular
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/35 hover:shadow-xl"
+                      : "border-border/80 bg-background/50 text-foreground hover:border-primary/40 hover:bg-primary/5"
+                  }`}
+                  variant={pkg.popular ? "default" : "outline"}
+                >
+                  <Link
+                    search={
+                      isAuthenticated ? undefined : { redirect: "/credits" }
+                    }
+                    to={isAuthenticated ? "/credits" : "/auth"}
+                  >
+                    <div className="-translate-x-full absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 ease-out group-hover/btn:translate-x-full" />
+                    <span className="relative">
+                      {isAuthenticated ? (
+                        <Trans>Buy Now</Trans>
+                      ) : (
+                        <Trans>Get Started</Trans>
+                      )}
+                    </span>
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Decorative corner */}
+              <div
+                className={`pointer-events-none absolute top-0 right-0 z-0 h-20 w-20 bg-gradient-to-bl to-transparent transition-opacity duration-500 ${
+                  pkg.popular
+                    ? "from-primary/15 opacity-100"
+                    : "from-primary/8 opacity-0 group-hover:opacity-100"
+                }`}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom note */}
+        <motion.p
+          className="mt-10 text-center text-muted-foreground text-sm"
+          initial={{ opacity: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1 }}
+        >
+          <Trans>Credits never expire. Use them whenever you want.</Trans>
+        </motion.p>
+      </div>
+    </section>
+  );
+};
+
 const TechSection = () => {
   const stats = [
-    { value: "10s", label: <Trans>Processing</Trans>, icon: Zap },
-    { value: "4K", label: <Trans>Resolution</Trans>, icon: Maximize2 },
+    { value: "25s", label: <Trans>Processing</Trans>, icon: Zap },
+    { value: "1K", label: <Trans>Resolution</Trans>, icon: Maximize2 },
     { value: "99%", label: <Trans>Accuracy</Trans>, icon: Target },
     { value: "24/7", label: <Trans>Available</Trans>, icon: Clock },
   ];
@@ -771,6 +989,7 @@ const Landing = () => {
       <HeroSection isAuthenticated={isAuthenticated} />
       <HowItWorksSection />
       <FeaturesSection />
+      <PricingSection isAuthenticated={isAuthenticated} />
       <TechSection />
       <CTASection isAuthenticated={isAuthenticated} />
     </div>

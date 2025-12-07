@@ -30,6 +30,7 @@ export type TryOnEvent = {
   timestamp: number;
   error?: string;
   resultUrl?: string;
+  balance?: number;
 };
 
 export type UpscaleStage =
@@ -122,6 +123,7 @@ export async function publish(event: {
   timestamp: number;
   error?: string;
   resultUrl?: string;
+  balance?: number;
 }) {
   await publishToUser(event.userId, {
     ...event,

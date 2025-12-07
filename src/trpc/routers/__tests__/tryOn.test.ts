@@ -20,6 +20,7 @@ mock.module("@/env/server", () => ({
     BETTER_AUTH_SECRET: "test-secret",
     GOOGLE_CLIENT_ID: "test-client-id",
     GOOGLE_CLIENT_SECRET: "test-client-secret",
+    STRIPE_SECRET_KEY: "sk_test_123",
   },
 }));
 

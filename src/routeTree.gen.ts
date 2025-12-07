@@ -25,6 +25,7 @@ import { Route as authedProfileIndexRouteImport } from './routes/(authed)/profil
 import { Route as authedLookbooksIndexRouteImport } from './routes/(authed)/lookbooks/index'
 import { Route as authedGarmentIndexRouteImport } from './routes/(authed)/garment/index'
 import { Route as authedDashboardIndexRouteImport } from './routes/(authed)/dashboard/index'
+import { Route as authedCreditsIndexRouteImport } from './routes/(authed)/credits/index'
 import { Route as SharedLookbookSlugRouteImport } from './routes/shared/lookbook/$slug'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -114,6 +115,11 @@ const authedDashboardIndexRoute = authedDashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => authedDashboardRouteRoute,
 } as any)
+const authedCreditsIndexRoute = authedCreditsIndexRouteImport.update({
+  id: '/credits/',
+  path: '/credits/',
+  getParentRoute: () => authedRouteRoute,
+} as any)
 const SharedLookbookSlugRoute = SharedLookbookSlugRouteImport.update({
   id: '/shared/lookbook/$slug',
   path: '/shared/lookbook/$slug',
@@ -180,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
+  '/credits': typeof authedCreditsIndexRoute
   '/dashboard/': typeof authedDashboardIndexRoute
   '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
+  '/credits': typeof authedCreditsIndexRoute
   '/dashboard': typeof authedDashboardIndexRoute
   '/garment': typeof authedGarmentIndexRoute
   '/lookbooks': typeof authedLookbooksIndexRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
+  '/(authed)/credits/': typeof authedCreditsIndexRoute
   '/(authed)/dashboard/': typeof authedDashboardIndexRoute
   '/(authed)/garment/': typeof authedGarmentIndexRoute
   '/(authed)/lookbooks/': typeof authedLookbooksIndexRoute
@@ -261,6 +270,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
+    | '/credits'
     | '/dashboard/'
     | '/garment'
     | '/lookbooks'
@@ -286,6 +296,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
+    | '/credits'
     | '/dashboard'
     | '/garment'
     | '/lookbooks'
@@ -313,6 +324,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
+    | '/(authed)/credits/'
     | '/(authed)/dashboard/'
     | '/(authed)/garment/'
     | '/(authed)/lookbooks/'
@@ -449,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedDashboardIndexRouteImport
       parentRoute: typeof authedDashboardRouteRoute
     }
+    '/(authed)/credits/': {
+      id: '/(authed)/credits/'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof authedCreditsIndexRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
     '/shared/lookbook/$slug': {
       id: '/shared/lookbook/$slug'
       path: '/shared/lookbook/$slug'
@@ -535,6 +554,7 @@ interface authedRouteRouteChildren {
   authedProfileProfileIdRoute: typeof authedProfileProfileIdRoute
   authedProfileNewRoute: typeof authedProfileNewRoute
   authedTryOnTryOnIdRoute: typeof authedTryOnTryOnIdRoute
+  authedCreditsIndexRoute: typeof authedCreditsIndexRoute
   authedGarmentIndexRoute: typeof authedGarmentIndexRoute
   authedLookbooksIndexRoute: typeof authedLookbooksIndexRoute
   authedProfileIndexRoute: typeof authedProfileIndexRoute
@@ -551,6 +571,7 @@ const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedProfileProfileIdRoute: authedProfileProfileIdRoute,
   authedProfileNewRoute: authedProfileNewRoute,
   authedTryOnTryOnIdRoute: authedTryOnTryOnIdRoute,
+  authedCreditsIndexRoute: authedCreditsIndexRoute,
   authedGarmentIndexRoute: authedGarmentIndexRoute,
   authedLookbooksIndexRoute: authedLookbooksIndexRoute,
   authedProfileIndexRoute: authedProfileIndexRoute,

@@ -2,6 +2,7 @@ import { Trans } from "@lingui/react/macro";
 import {
   Archive,
   BookImage,
+  CreditCard,
   LayoutDashboard,
   LifeBuoy,
   Settings2,
@@ -63,6 +64,11 @@ export const navigationConfig: NavConfig = {
           url: "/lookbooks",
         },
       ],
+    },
+    {
+      title: <Trans>Credits</Trans>,
+      url: "/credits",
+      icon: CreditCard,
     },
   ],
   secondary: [

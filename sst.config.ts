@@ -34,6 +34,12 @@ export default $config({
       dns: sst.cloudflare.dns(),
     });
 
+    // ==========================================
+    // STRIPE - Payment Processing
+    // ==========================================
+    const stripeSecretKey = new sst.Secret("StripeSecretKey");
+    const stripeWebhookSecret = new sst.Secret("StripeWebhookSecret");
+
 
     const rootDomain = "getdrezzi.app";
     const isLocalDev = $app.stage === "franklin";
@@ -231,8 +237,23 @@ export default $config({
 
     upscaleQueue.subscribe(upscaleWorker.arn);
 
+    // ==========================================
+    // STRIPE WEBHOOK - Payment Event Handler
+    // ==========================================
+    const stripeWebhook = new sst.aws.Function("StripeWebhook", {
+      handler: "src/workers/stripe-webhook.handler",
+      runtime: "nodejs20.x",
+      timeout: "30 seconds",
+      memory: "512 MB",
+      link: [stripeSecretKey, stripeWebhookSecret],
+      environment: {
+        DATABASE_URL: process.env.DATABASE_URL as string,
+      },
+      url: true,
+    });
+
     const web = new sst.aws.TanStackStart("MyWeb", {
-      link: [bucket, queue, upscaleQueue, email],
+      link: [bucket, queue, upscaleQueue, email, stripeSecretKey],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
         REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
@@ -245,6 +266,7 @@ export default $config({
         GOOGLE_GENERATIVE_AI_API_KEY:
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
         AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
+        STRIPE_SECRET_KEY: stripeSecretKey.value,
       },
       ...(domain && {
         domain: {
@@ -265,6 +287,7 @@ export default $config({
       emailSender: email.sender,
       websocket: websocket.url,
       connectionsTable: connectionsTable.name,
+      stripeWebhook: stripeWebhook.url,
     };
   },
 });

@@ -8,7 +8,10 @@ import { generateText } from "ai";
 import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { Resource } from "sst";
 
+import { prisma } from "@/lib/prisma";
 import { publish } from "@/lib/websocket-publisher";
+import { TRY_ON_COST } from "@/services/credits/constants";
+import { chargeCreditsForTryOn } from "@/services/credits/wallet";
 import {
   generateStyleTips,
   getTryOnForTipGeneration,
@@ -154,6 +157,27 @@ The result should look like a professional fashion photo.`,
     processingMs,
   });
 
+  // 5.5 Charge credits (idempotent)
+  let newBalance = 0;
+  const chargeResult = await chargeCreditsForTryOn(
+    prisma,
+    userId,
+    tryOnId,
+    "Virtual try-on"
+  ).catch((err) => {
+    console.error(`Failed to charge credits for try-on ${tryOnId}:`, err);
+    return null;
+  });
+
+  if (chargeResult) {
+    newBalance = chargeResult.newBalance;
+    if (!chargeResult.alreadyCharged) {
+      console.log(
+        `Charged ${TRY_ON_COST} credit for try-on ${tryOnId}, new balance: ${newBalance}`
+      );
+    }
+  }
+
   // 6. Generate style tips
   const tryOnData = await getTryOnForTipGeneration(tryOnId).catch(() => null);
 
@@ -179,13 +203,14 @@ The result should look like a professional fashion photo.`,
     console.log(`Style tips generated for try-on ${tryOnId}`);
   }
 
-  // Publish complete event after tips
+  // Publish complete event after tips (include balance for frontend update)
   await publish({
     type: "progress",
     tryOnId,
     userId,
     stage: "complete",
     timestamp: Date.now(),
+    balance: newBalance,
   });
 }
 

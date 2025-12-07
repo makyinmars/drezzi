@@ -7,6 +7,7 @@ import { PasswordResetOTPEmail } from "@/emails/password-reset-otp";
 import { sendEmail, sendWelcomeEmail } from "@/emails/send-email";
 import { serverEnv } from "@/env/server";
 import { prisma } from "@/lib/prisma";
+import { getOrCreateWallet } from "@/services/credits/wallet";
 
 export const auth = betterAuth({
   baseURL: serverEnv.PUBLIC_URL,
@@ -71,6 +72,8 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
+          // Grant 3 free credits to new users (non-blocking)
+          getOrCreateWallet(prisma, user.id).catch(console.error);
           // Send welcome email (non-blocking)
           sendWelcomeEmail(user.email, user.name ?? "there").catch(
             console.error

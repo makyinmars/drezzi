@@ -23,6 +23,19 @@ declare module "sst" {
       "type": "sst.aws.ApiGatewayWebSocket"
       "url": string
     }
+    "StripeSecretKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "StripeWebhook": {
+      "name": string
+      "type": "sst.aws.Function"
+      "url": string
+    }
+    "StripeWebhookSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "TryOnQueue": {
       "type": "sst.aws.Queue"
       "url": string

@@ -10,6 +10,7 @@ export const serverEnv = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
     AI_GATEWAY_API_KEY: z.string().optional(),
+    STRIPE_SECRET_KEY: z.string(),
     FAL_API_KEY: z.string().optional(),
   },
   runtimeEnv: process.env,

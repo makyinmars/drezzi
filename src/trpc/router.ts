@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "./init";
 import { authRouter } from "./routers/auth";
+import { creditsRouter } from "./routers/credits";
 import { dashboardRouter } from "./routers/dashboard";
 import { garmentRouter } from "./routers/garment";
 import { lookbookRouter } from "./routers/lookbook";
@@ -12,6 +13,7 @@ import { userRouter } from "./routers/user";
 
 export const trpcRouter = createTRPCRouter({
   auth: authRouter,
+  credits: creditsRouter,
   dashboard: dashboardRouter,
   garment: garmentRouter,
   lookbook: lookbookRouter,
