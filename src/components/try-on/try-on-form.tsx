@@ -100,10 +100,16 @@ const TryOnForm = ({
     formData.append("bodyProfileId", data.bodyProfileId);
     formData.append("garmentId", data.garmentId);
 
-    toast.promise(createMutation.mutateAsync(formData), {
-      loading: t`Starting try-on...`,
-      success: t`Try-on started! It will be ready in a few moments.`,
-      error: (err) => t`Failed to start try-on: ${err.message}`,
+    createMutation.mutate(formData, {
+      onSuccess: (result) => {
+        toast.loading(t`Queued - waiting to start...`, {
+          id: result.id,
+          duration: Number.POSITIVE_INFINITY,
+        });
+      },
+      onError: (err) => {
+        toast.error(t`Failed to start try-on: ${err.message}`);
+      },
     });
   };
 

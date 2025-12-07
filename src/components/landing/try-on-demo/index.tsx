@@ -138,11 +138,11 @@ const IconCard = ({
       >
         {/* Card */}
         <div
-          className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-gradient-to-b from-muted/80 via-card to-card/95 shadow-xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 dark:from-muted/80 dark:via-card dark:to-card/90 ${showGlow ? "border-accent/60 dark:border-accent/60" : "border-border/80 shadow-md dark:border-border/60"}
+          className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-gradient-to-b from-muted/80 via-card to-card/95 shadow-xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 dark:from-muted/80 dark:via-card dark:to-card/90 ${showGlow ? "border-accent-foreground/50 dark:border-accent/60" : "border-border/80 shadow-md dark:border-border/60"}
           `}
           style={{
             boxShadow: showGlow
-              ? "0 0 30px -5px var(--accent), 0 20px 40px -15px rgba(0,0,0,0.3)"
+              ? "0 0 30px -5px var(--accent-glow), 0 20px 40px -15px rgba(0,0,0,0.3)"
               : "0 20px 40px -15px rgba(0,0,0,0.3)",
           }}
         >
@@ -152,7 +152,7 @@ const IconCard = ({
               className="pointer-events-none absolute inset-0 z-10"
               style={{
                 background:
-                  "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent) 15%, transparent) 50%, transparent 100%)",
+                  "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent-glow) 25%, transparent) 50%, transparent 100%)",
                 backgroundSize: "200% 100%",
                 animation: "demo-shimmer 2s linear infinite",
               }}
@@ -165,8 +165,8 @@ const IconCard = ({
               className="pointer-events-none absolute inset-x-0 z-20 h-1"
               style={{
                 background:
-                  "linear-gradient(180deg, transparent 0%, var(--accent) 50%, transparent 100%)",
-                boxShadow: "0 0 20px 5px var(--accent)",
+                  "linear-gradient(180deg, transparent 0%, var(--accent-glow) 50%, transparent 100%)",
+                boxShadow: "0 0 20px 5px var(--accent-glow)",
                 animation: "demo-scan-line 2s ease-in-out infinite",
               }}
             />
@@ -222,7 +222,7 @@ const IconCard = ({
               ? {}
               : { scale: [1, 1.1, 1], rotate: showGlow ? [0, 5, 0] : 0 }
           }
-          className={`-top-3 -right-3 absolute flex h-10 w-10 items-center justify-center rounded-xl border bg-card/95 shadow-lg backdrop-blur-sm transition-colors duration-500 dark:bg-card/95 ${showGlow ? "border-accent/50" : "border-border dark:border-border"}
+          className={`-top-3 -right-3 absolute flex h-10 w-10 items-center justify-center rounded-xl border bg-card/95 shadow-lg backdrop-blur-sm transition-colors duration-500 dark:bg-card/95 ${showGlow ? "border-accent-foreground/40 dark:border-accent/50" : "border-border dark:border-border"}
           `}
           transition={{
             duration: 2,
@@ -231,9 +231,15 @@ const IconCard = ({
           }}
         >
           {isUser ? (
-            <ImageIcon className="h-4 w-4 text-accent" strokeWidth={1.5} />
+            <ImageIcon
+              className="h-4 w-4 text-accent-foreground dark:text-accent"
+              strokeWidth={1.5}
+            />
           ) : (
-            <Shirt className="h-4 w-4 text-accent" strokeWidth={1.5} />
+            <Shirt
+              className="h-4 w-4 text-accent-foreground dark:text-accent"
+              strokeWidth={1.5}
+            />
           )}
         </motion.div>
       </motion.div>
@@ -278,11 +284,11 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
       {/* Wand container */}
       <motion.div
         animate={{ scale: getScale() }}
-        className={`relative flex h-14 w-14 items-center justify-center rounded-xl border bg-linear-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent/50" : "border-border/80 dark:border-border/50"}
+        className={`relative flex h-14 w-14 items-center justify-center rounded-xl border bg-linear-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent-foreground/40 dark:border-accent/50" : "border-border/80 dark:border-border/50"}
         `}
         style={{
           boxShadow: isActive
-            ? "0 0 40px -10px var(--accent), 0 10px 30px -10px rgba(0,0,0,0.3)"
+            ? "0 0 40px -10px var(--accent-glow), 0 10px 30px -10px rgba(0,0,0,0.3)"
             : "0 10px 30px -10px rgba(0,0,0,0.3)",
         }}
         transition={{ duration: 0.5, ease: easing }}
@@ -291,19 +297,19 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
         {isProcessing && !reducedMotion && (
           <>
             <div
-              className="absolute h-2 w-2 rounded-full bg-accent"
+              className="absolute h-2 w-2 rounded-full bg-accent-foreground dark:bg-accent"
               style={{
                 animation: "demo-particle-orbit 1.5s linear infinite",
               }}
             />
             <div
-              className="absolute h-1.5 w-1.5 rounded-full bg-accent/70"
+              className="absolute h-1.5 w-1.5 rounded-full bg-accent-foreground/70 dark:bg-accent/70"
               style={{
                 animation: "demo-particle-orbit 1.5s linear infinite 0.5s",
               }}
             />
             <div
-              className="absolute h-1 w-1 rounded-full bg-accent/50"
+              className="absolute h-1 w-1 rounded-full bg-accent-foreground/50 dark:bg-accent/50"
               style={{
                 animation: "demo-particle-orbit 1.5s linear infinite 1s",
               }}
@@ -326,7 +332,9 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
         >
           <Wand2
             className={`h-6 w-6 transition-colors duration-500 ${
-              isActive ? "text-accent" : "text-muted-foreground"
+              isActive
+                ? "text-accent-foreground dark:text-accent"
+                : "text-muted-foreground"
             }`}
             strokeWidth={1.5}
           />
@@ -374,9 +382,9 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
         <motion.div
           animate={{
             boxShadow: [
-              "0 0 30px 0px var(--accent), 0 0 60px -10px var(--accent)",
-              "0 0 50px 10px var(--accent), 0 0 100px 0px var(--accent)",
-              "0 0 30px 0px var(--accent), 0 0 60px -10px var(--accent)",
+              "0 0 30px 0px var(--accent-glow), 0 0 60px -10px var(--accent-glow)",
+              "0 0 50px 10px var(--accent-glow), 0 0 100px 0px var(--accent-glow)",
+              "0 0 30px 0px var(--accent-glow), 0 0 60px -10px var(--accent-glow)",
             ],
           }}
           className="-m-3 absolute inset-0 rounded-xl"
@@ -386,7 +394,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
 
       {/* Card */}
       <div
-        className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-linear-to-b from-accent/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 ${isComplete ? "border-accent" : "border-accent/60 dark:border-accent/40"}
+        className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-linear-to-b from-accent-foreground/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 dark:from-accent/20 ${isComplete ? "border-accent-foreground dark:border-accent" : "border-accent-foreground/50 dark:border-accent/40"}
         `}
       >
         {/* Success sparkles background */}
@@ -398,7 +406,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
                   scale: [0, 1.5, 0],
                   opacity: [0, 1, 0],
                 }}
-                className="absolute h-1 w-1 rounded-full bg-accent"
+                className="absolute h-1 w-1 rounded-full bg-accent-foreground dark:bg-accent"
                 key={i}
                 style={{
                   left: `${20 + Math.random() * 60}%`,
@@ -441,7 +449,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
                   transition={{ duration: 0.6, ease: easing, delay: 0.2 }}
                 >
                   <CheckCircle
-                    className="h-20 w-20 text-accent md:h-24 md:w-24"
+                    className="h-20 w-20 text-accent-foreground md:h-24 md:w-24 dark:text-accent"
                     strokeWidth={1}
                   />
                 </motion.div>
@@ -457,7 +465,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
                 }}
               >
                 <Sparkles
-                  className="h-20 w-20 text-accent/70 md:h-24 md:w-24"
+                  className="h-20 w-20 text-accent-foreground/70 md:h-24 md:w-24 dark:text-accent/70"
                   strokeWidth={1}
                 />
               </motion.div>
@@ -467,7 +475,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
 
         {/* Bottom label */}
         <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-card via-card/80 to-transparent p-4 backdrop-blur-sm">
-          <p className="font-semibold text-accent text-xs uppercase tracking-widest">
+          <p className="font-semibold text-accent-foreground text-xs uppercase tracking-widest dark:text-accent">
             <Trans>AI Result</Trans>
           </p>
         </div>
@@ -476,11 +484,14 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
         {isComplete && (
           <motion.div
             animate={{ scale: 1, rotate: 0 }}
-            className="-top-3 -right-3 absolute flex h-10 w-10 items-center justify-center rounded-xl border border-accent bg-accent/20 shadow-lg backdrop-blur-sm"
+            className="-top-3 -right-3 absolute flex h-10 w-10 items-center justify-center rounded-xl border border-accent-foreground bg-accent-foreground/20 shadow-lg backdrop-blur-sm dark:border-accent dark:bg-accent/20"
             initial={{ scale: 0, rotate: -180 }}
             transition={{ duration: 0.5, ease: easing, delay: 0.4 }}
           >
-            <CheckCircle className="h-5 w-5 text-accent" strokeWidth={2} />
+            <CheckCircle
+              className="h-5 w-5 text-accent-foreground dark:text-accent"
+              strokeWidth={2}
+            />
           </motion.div>
         )}
       </div>
@@ -517,7 +528,7 @@ const ProcessingBadge = ({ phase, reducedMotion }: ProcessingBadgeProps) => {
           ? { scale: [1, 1.02, 1], opacity: [0.9, 1, 0.9] }
           : { scale: 1, opacity: isActive ? 1 : 0.6 }
       }
-      className={`mt-4 flex items-center justify-center gap-2 rounded-full px-4 py-2 transition-all duration-500 ${isActive ? "text-accent" : "text-muted-foreground"}
+      className={`mt-4 flex items-center justify-center gap-2 rounded-full px-4 py-2 transition-all duration-500 ${isActive ? "text-accent-foreground dark:text-accent" : "text-muted-foreground"}
       `}
       transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
     >
@@ -578,7 +589,7 @@ export const TryOnDemo = () => {
             type="user"
           >
             <User
-              className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
+              className="h-20 w-20 text-foreground/50 md:h-24 md:w-24 dark:text-muted-foreground"
               strokeWidth={0.75}
             />
           </IconCard>
@@ -590,7 +601,7 @@ export const TryOnDemo = () => {
                 ? {}
                 : { scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }
             }
-            className={`flex h-10 w-10 items-center justify-center rounded-full border bg-muted/80 font-light text-2xl shadow-md backdrop-blur-sm transition-colors duration-500 dark:bg-card/80 ${phase === "scanning" || phase === "processing" ? "border-accent/50 text-accent" : "border-border/80 text-muted-foreground dark:border-border"}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border bg-muted/80 font-light text-2xl shadow-md backdrop-blur-sm transition-colors duration-500 dark:bg-card/80 ${phase === "scanning" || phase === "processing" ? "border-accent-foreground/40 text-accent-foreground dark:border-accent/50 dark:text-accent" : "border-border/80 text-muted-foreground dark:border-border"}
             `}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           >
@@ -607,7 +618,7 @@ export const TryOnDemo = () => {
             type="shirt"
           >
             <Shirt
-              className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
+              className="h-20 w-20 text-foreground/50 md:h-24 md:w-24 dark:text-muted-foreground"
               strokeWidth={0.75}
             />
           </IconCard>

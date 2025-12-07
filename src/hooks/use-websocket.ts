@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 import { authClient } from "@/auth/client";
 import { clientEnv } from "@/env/client";
@@ -39,6 +40,25 @@ function mapStageToStatus(stage?: TryOnStage): string {
   return "processing";
 }
 
+function getStageMessage(stage: TryOnStage): string {
+  switch (stage) {
+    case "queued":
+      return "Queued - waiting to start...";
+    case "fetching_images":
+      return "Fetching your images...";
+    case "generating":
+      return "Generating your try-on...";
+    case "uploading":
+      return "Uploading result...";
+    case "complete":
+      return "Try-on complete!";
+    case "failed":
+      return "Try-on failed";
+    default:
+      return "Processing...";
+  }
+}
+
 const MAX_RECONNECT_ATTEMPTS = 5;
 
 export function useRealtimeUpdates() {
@@ -56,8 +76,17 @@ export function useRealtimeUpdates() {
       if (data.type === "pong") return;
 
       if (data.type === "tryon_progress") {
-        const { tryOnId, stage } = data;
+        const { tryOnId, stage, error } = data;
         const status = mapStageToStatus(stage);
+
+        // Update toast based on stage
+        if (stage === "complete") {
+          toast.success("Try-on complete!", { id: tryOnId });
+        } else if (stage === "failed") {
+          toast.error(error ?? "Try-on failed", { id: tryOnId });
+        } else {
+          toast.loading(getStageMessage(stage), { id: tryOnId });
+        }
 
         // Update React Query cache optimistically
         client.setQueryData(

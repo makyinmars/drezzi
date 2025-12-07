@@ -130,6 +130,9 @@ export default $config({
     websocket.route("$default", {
       handler: "src/websocket/default.handler",
       link: [connectionsTable],
+      environment: {
+        WEBSOCKET_API_ENDPOINT: websocket.managementEndpoint,
+      },
       permissions: [
         {
           actions: ["execute-api:ManageConnections", "execute-api:Invoke"],
