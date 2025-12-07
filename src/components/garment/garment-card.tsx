@@ -115,7 +115,7 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
           </Badge>
         )}
         {!isOwner && (
-          <Badge variant="outline">
+          <Badge variant="secondary">
             <Trans>Shared</Trans>
           </Badge>
         )}
