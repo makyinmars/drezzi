@@ -269,7 +269,7 @@ msgstr "9. Limitation de responsabilité"
 msgid "A lookbook is a curated collection of outfits and styles. You can create lookbooks to organize your favorite try-on results, plan outfits for different occasions, or save inspiration for future styling ideas."
 msgstr "Un lookbook est une collection organisée de tenues et de styles. Vous pouvez créer des lookbooks pour organiser vos résultats d'essayage préférés, planifier des tenues pour différentes occasions ou sauvegarder des inspirations pour de futures idées de style."
 
-#: src/screens/profile/new.tsx:447
+#: src/screens/profile/new.tsx:172
 msgid "About Measurements"
 msgstr "À propos des mesures"
 
@@ -406,7 +406,7 @@ msgstr "Ajout de {0} élément(s) au lookbook..."
 msgid "Adding garment..."
 msgstr "Ajout du vêtement..."
 
-#: src/screens/profile/new.tsx:265
+#: src/screens/profile/new.tsx:305
 msgid "Adding measurements helps improve try-on accuracy"
 msgstr "L'ajout de mesures aide à améliorer la précision de l'essayage"
 
@@ -683,7 +683,7 @@ msgstr "Poitrine"
 
 #: src/components/profile/profile-card.tsx:419
 #: src/components/profile/profile-form.tsx:252
-#: src/screens/profile/new.tsx:304
+#: src/screens/profile/new.tsx:344
 msgid "Chest (cm)"
 msgstr "Poitrine (cm)"
 
@@ -771,7 +771,7 @@ msgstr "Créer une nouvelle tâche"
 
 #: src/components/profile/profile-form.tsx:422
 #: src/screens/profile/index.tsx:33
-#: src/screens/profile/new.tsx:411
+#: src/screens/profile/new.tsx:451
 msgid "Create Profile"
 msgstr "Créer un profil"
 
@@ -894,7 +894,7 @@ msgstr "Par défaut"
 
 #: src/components/profile/profile-card.tsx:574
 #: src/components/profile/profile-form.tsx:394
-#: src/screens/profile/new.tsx:239
+#: src/screens/profile/new.tsx:279
 #: src/screens/profile/profile-id.tsx:119
 msgid "Default Profile"
 msgstr "Profil par défaut"
@@ -1014,7 +1014,7 @@ msgstr "Déposez l'image ici ou cliquez pour télécharger"
 
 #: src/components/profile/profile-card.tsx:361
 #: src/components/profile/profile-form.tsx:196
-#: src/screens/profile/new.tsx:161
+#: src/screens/profile/new.tsx:201
 msgid "Drop photo here or click to upload"
 msgstr "Déposez la photo ici ou cliquez pour télécharger"
 
@@ -1025,7 +1025,7 @@ msgstr "ex. : Chemise Oxford bleue"
 
 #: src/components/profile/profile-card.tsx:375
 #: src/components/profile/profile-form.tsx:210
-#: src/screens/profile/new.tsx:184
+#: src/screens/profile/new.tsx:224
 msgid "e.g., Default, Casual, Formal"
 msgstr "ex. : Par défaut, Décontracté, Formel"
 
@@ -1104,7 +1104,7 @@ msgstr "Améliorer et upscaler vos photos pour de meilleurs résultats"
 msgid "Ensure good lighting"
 msgstr "Assurez un bon éclairage"
 
-#: src/screens/profile/new.tsx:432
+#: src/screens/profile/new.tsx:157
 msgid "Ensure good, even lighting"
 msgstr "Assurez-vous d'avoir un éclairage bon et uniforme"
 
@@ -1262,7 +1262,7 @@ msgstr "Erreur lors de la mise à jour : {0}"
 msgid "Everything you need for the perfect virtual try-on experience"
 msgstr "Tout ce dont vous avez besoin pour une expérience d'essayage virtuel parfaite"
 
-#: src/screens/profile/new.tsx:435
+#: src/screens/profile/new.tsx:160
 msgid "Face the camera directly"
 msgstr "Facez directement la caméra"
 
@@ -1340,7 +1340,7 @@ msgstr "La taille du fichier doit être inférieure à 10 Mo"
 
 #: src/components/profile/profile-card.tsx:534
 #: src/components/profile/profile-form.tsx:359
-#: src/screens/profile/new.tsx:199
+#: src/screens/profile/new.tsx:239
 #: src/screens/profile/profile-id.tsx:135
 msgid "Fit Preference"
 msgstr "Préférence d'ajustement"
@@ -1488,7 +1488,7 @@ msgstr "Taille"
 
 #: src/components/profile/profile-card.tsx:391
 #: src/components/profile/profile-form.tsx:226
-#: src/screens/profile/new.tsx:278
+#: src/screens/profile/new.tsx:318
 msgid "Height (cm)"
 msgstr "Taille (cm)"
 
@@ -1499,7 +1499,7 @@ msgstr "Hanches"
 
 #: src/components/profile/profile-card.tsx:475
 #: src/components/profile/profile-form.tsx:304
-#: src/screens/profile/new.tsx:356
+#: src/screens/profile/new.tsx:396
 msgid "Hip (cm)"
 msgstr "Hanches (cm)"
 
@@ -1595,7 +1595,7 @@ msgstr "En cours"
 msgid "Inactive"
 msgstr "Inactif"
 
-#: src/screens/profile/new.tsx:438
+#: src/screens/profile/new.tsx:163
 msgid "Include your full body in the frame"
 msgstr "Incluez tout votre corps dans le cadre"
 
@@ -1606,7 +1606,7 @@ msgstr "Entrejambe"
 
 #: src/components/profile/profile-card.tsx:503
 #: src/components/profile/profile-form.tsx:330
-#: src/screens/profile/new.tsx:382
+#: src/screens/profile/new.tsx:422
 msgid "Inseam (cm)"
 msgstr "Entrejambe (cm)"
 
@@ -1762,7 +1762,7 @@ msgstr "Lookbooks : Conservés jusqu'à ce que vous les supprimiez ou supprimiez
 
 #: src/components/profile/profile-card.tsx:558
 #: src/components/profile/profile-form.tsx:378
-#: src/screens/profile/new.tsx:223
+#: src/screens/profile/new.tsx:263
 msgid "Loose"
 msgstr "Ample"
 
@@ -1831,11 +1831,11 @@ msgstr "Gérez votre lookbook"
 msgid "Measurements"
 msgstr "Mesures"
 
-#: src/screens/profile/new.tsx:262
+#: src/screens/profile/new.tsx:302
 msgid "Measurements (Optional)"
 msgstr "Mesures (optionnel)"
 
-#: src/screens/profile/new.tsx:450
+#: src/screens/profile/new.tsx:175
 msgid "Measurements are optional but help improve the accuracy of virtual try-ons. You can always add them later."
 msgstr "Les mesures sont optionnelles mais aident à améliorer la précision des essayages virtuels. Vous pouvez toujours les ajouter plus tard."
 
@@ -2007,7 +2007,7 @@ msgstr "Mot de passe réinitialisé avec succès"
 
 #: src/components/garment/garment-form.tsx:248
 msgid "Paste a product URL to auto-fill details from retailers"
-msgstr ""
+msgstr "Collez l'URL d'un produit pour remplir automatiquement les détails depuis les détaillants"
 
 #: src/screens/garment/new.tsx:260
 msgid "Paste a product URL to auto-fill details from retailers like Zara, H&M, ASOS"
@@ -2035,7 +2035,7 @@ msgstr "par crédit"
 msgid "Personalized recommendations for this look"
 msgstr "Recommandations personnalisées pour ce look"
 
-#: src/screens/profile/new.tsx:148
+#: src/screens/profile/new.tsx:188
 msgid "Photo"
 msgstr "Photo"
 
@@ -2043,7 +2043,7 @@ msgstr "Photo"
 msgid "Photo Content"
 msgstr "Contenu photo"
 
-#: src/screens/profile/new.tsx:421
+#: src/screens/profile/new.tsx:146
 msgid "Photo Tips"
 msgstr "Conseils pour les photos"
 
@@ -2130,7 +2130,7 @@ msgstr "Traitement..."
 #: src/components/garment/garment-form.tsx:293
 #: src/screens/garment/new.tsx:242
 msgid "Product images may not always import automatically. If the image doesn't appear, please upload one manually."
-msgstr ""
+msgstr "Les images des produits peuvent ne pas toujours s'importer automatiquement. Si l'image n'apparaît pas, veuillez en télécharger une manuellement."
 
 #: src/components/garment/garment-form.tsx:151
 #: src/screens/garment/new.tsx:123
@@ -2142,13 +2142,13 @@ msgstr "Produit importé avec succès"
 msgid "Profile Details"
 msgstr "Détails du profil"
 
-#: src/screens/profile/new.tsx:170
+#: src/screens/profile/new.tsx:210
 msgid "Profile Information"
 msgstr "Informations du profil"
 
 #: src/components/profile/profile-card.tsx:371
 #: src/components/profile/profile-form.tsx:206
-#: src/screens/profile/new.tsx:180
+#: src/screens/profile/new.tsx:220
 msgid "Profile Name"
 msgstr "Nom du profil"
 
@@ -2226,7 +2226,7 @@ msgstr "Échec de l'inscription : Veuillez réessayer"
 
 #: src/components/profile/profile-card.tsx:552
 #: src/components/profile/profile-form.tsx:372
-#: src/screens/profile/new.tsx:217
+#: src/screens/profile/new.tsx:257
 msgid "Regular"
 msgstr "Régulier"
 
@@ -2240,7 +2240,7 @@ msgstr "Réinventée"
 
 #: src/components/profile/profile-card.tsx:555
 #: src/components/profile/profile-form.tsx:375
-#: src/screens/profile/new.tsx:220
+#: src/screens/profile/new.tsx:260
 msgid "Relaxed"
 msgstr "Décontracté"
 
@@ -2366,7 +2366,7 @@ msgstr "Sélectionnez une catégorie"
 
 #: src/components/profile/profile-card.tsx:543
 #: src/components/profile/profile-form.tsx:364
-#: src/screens/profile/new.tsx:208
+#: src/screens/profile/new.tsx:248
 msgid "Select fit preference"
 msgstr "Sélectionner la préférence d'ajustement"
 
@@ -2471,11 +2471,11 @@ msgstr "Tailles"
 
 #: src/components/profile/profile-card.tsx:549
 #: src/components/profile/profile-form.tsx:369
-#: src/screens/profile/new.tsx:214
+#: src/screens/profile/new.tsx:254
 msgid "Slim"
 msgstr "Slim"
 
-#: src/screens/profile/new.tsx:426
+#: src/screens/profile/new.tsx:151
 msgid "Stand in front of a plain background"
 msgstr "Tenez-vous devant un fond uni"
 
@@ -2789,7 +2789,7 @@ msgstr "Télécharger"
 msgid "Upload a clear image of the garment"
 msgstr "Téléchargez une image claire du vêtement"
 
-#: src/screens/profile/new.tsx:151
+#: src/screens/profile/new.tsx:191
 msgid "Upload a full-body photo for the best try-on results"
 msgstr "Téléchargez une photo de tout le corps pour les meilleurs résultats d'essayage"
 
@@ -2827,7 +2827,7 @@ msgstr "Utiliser le Service à des fins illégales ou non autorisées"
 
 #: src/components/profile/profile-card.tsx:577
 #: src/components/profile/profile-form.tsx:397
-#: src/screens/profile/new.tsx:242
+#: src/screens/profile/new.tsx:282
 msgid "Use this profile as your default for try-ons"
 msgstr "Utilisez ce profil comme défaut pour les essayages"
 
@@ -2886,7 +2886,7 @@ msgstr "Taille"
 
 #: src/components/profile/profile-card.tsx:447
 #: src/components/profile/profile-form.tsx:278
-#: src/screens/profile/new.tsx:330
+#: src/screens/profile/new.tsx:370
 msgid "Waist (cm)"
 msgstr "Taille (cm)"
 
@@ -2962,7 +2962,7 @@ msgstr "Nous utilisons les types de cookies suivants :"
 msgid "We will never sell your personal content or share identifiable photos with third parties without your explicit consent."
 msgstr "Nous ne vendrons jamais votre contenu personnel ni ne partagerons de photos identifiables avec des tiers sans votre consentement explicite."
 
-#: src/screens/profile/new.tsx:429
+#: src/screens/profile/new.tsx:154
 msgid "Wear fitted clothing for best results"
 msgstr "Portez des vêtements ajustés pour de meilleurs résultats"
 
