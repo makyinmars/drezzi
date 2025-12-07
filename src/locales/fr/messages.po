@@ -89,13 +89,165 @@ msgstr "{0} éléments"
 msgid "{0} measurements"
 msgstr "{0} mesures"
 
+#: src/routes/privacy-policy.tsx:335
+msgid "<0>Access:</0> Request a copy of your personal data"
+msgstr "<0>Accès :</0> Demander une copie de vos données personnelles"
+
+#: src/routes/privacy-policy.tsx:394
+msgid "<0>Consent:</0> Processing based on your explicit consent (e.g., photo uploads for try-on)"
+msgstr "<0>Consentement :</0> Traitement basé sur votre consentement explicite (par ex., téléchargements de photos pour l'essayage)"
+
+#: src/routes/privacy-policy.tsx:388
+msgid "<0>Contract:</0> Processing necessary to provide the Service you requested"
+msgstr "<0>Contrat :</0> Traitement nécessaire pour fournir le Service que vous avez demandé"
+
+#: src/routes/privacy-policy.tsx:341
+msgid "<0>Correction:</0> Request correction of inaccurate data"
+msgstr "<0>Correction :</0> Demander la correction de données inexactes"
+
+#: src/routes/privacy-policy.tsx:347
+msgid "<0>Deletion:</0> Request deletion of your account and data"
+msgstr "<0>Suppression :</0> Demander la suppression de votre compte et de vos données"
+
+#: src/routes/terms-of-service.tsx:212
+msgid "<0>Digital Goods:</0> Credits are digital goods that are delivered immediately upon purchase and cannot be \"returned.\""
+msgstr "<0>Biens numériques :</0> Les crédits sont des biens numériques livrés immédiatement après l'achat et ne peuvent pas être \"retournés\"."
+
+#: src/routes/privacy-policy.tsx:427
+msgid "<0>Essential cookies:</0> Required for authentication and core functionality"
+msgstr "<0>Cookies essentiels :</0> Requis pour l'authentification et les fonctionnalités principales"
+
+#: src/routes/privacy-policy.tsx:353
+msgid "<0>Export:</0> Request a copy of your data in a portable format"
+msgstr "<0>Export :</0> Demander une copie de vos données dans un format portable"
+
+#: src/routes/terms-of-service.tsx:219
+msgid "<0>Fair Use:</0> This policy prevents abuse of the refund system while ensuring you only pay for successful try-ons."
+msgstr "<0>Utilisation équitable :</0> Cette politique prévient l'abus du système de remboursement tout en s'assurant que vous ne payez que pour les essayages réussis."
+
+#: src/routes/privacy-policy.tsx:400
+msgid "<0>Legitimate Interest:</0> Processing for service improvement and security"
+msgstr "<0>Intérêt légitime :</0> Traitement pour l'amélioration du service et la sécurité"
+
+#: src/routes/terms-of-service.tsx:204
+msgid "<0>Pay-for-Success Model:</0> Credits are only deducted from your account after a successful virtual try-on is generated. If a try-on fails for any reason, no credits are charged."
+msgstr "<0>Modèle de paiement au succès :</0> Les crédits ne sont déduits de votre compte qu'après la génération réussie d'un essayage virtuel. Si un essayage échoue pour une raison quelconque, aucun crédit n'est facturé."
+
+#: src/routes/privacy-policy.tsx:433
+msgid "<0>Preference cookies:</0> Remember your settings (language, theme)"
+msgstr "<0>Cookies de préférence :</0> Mémoriser vos paramètres (langue, thème)"
+
+#: src/routes/privacy-policy.tsx:359
+msgid "<0>Restriction:</0> Request restriction of processing in certain circumstances"
+msgstr "<0>Restriction :</0> Demander la restriction du traitement dans certaines circonstances"
+
 #: src/components/landing/try-on-demo/index.tsx:506
 msgid "~20s processing with Gemini 3.0"
 msgstr "~20s de traitement avec Gemini 3.0"
 
+#: src/routes/terms-of-service.tsx:59
+msgid "1. Acceptance of Terms"
+msgstr "1. Acceptation des conditions"
+
+#: src/routes/privacy-policy.tsx:60
+msgid "1. Introduction"
+msgstr "1. Introduction"
+
+#: src/routes/privacy-policy.tsx:421
+msgid "10. Cookies and Tracking"
+msgstr "10. Cookies et suivi"
+
+#: src/routes/terms-of-service.tsx:351
+msgid "10. Termination"
+msgstr "10. Résiliation"
+
+#: src/routes/terms-of-service.tsx:368
+msgid "11. Changes to Terms"
+msgstr "11. Modifications des conditions"
+
+#: src/routes/privacy-policy.tsx:446
+msgid "11. Changes to This Policy"
+msgstr "11. Modifications de cette politique"
+
+#: src/routes/privacy-policy.tsx:457
+msgid "12. Contact Us"
+msgstr "12. Nous contacter"
+
+#: src/routes/terms-of-service.tsx:379
+msgid "12. Governing Law"
+msgstr "12. Loi applicable"
+
+#: src/routes/terms-of-service.tsx:390
+msgid "13. Contact Us"
+msgstr "13. Nous contacter"
+
+#: src/routes/terms-of-service.tsx:76
+msgid "2. Description of Service"
+msgstr "2. Description du Service"
+
+#: src/routes/privacy-policy.tsx:79
+msgid "2. Information We Collect"
+msgstr "2. Informations que nous collectons"
+
+#: src/routes/privacy-policy.tsx:161
+msgid "3. How We Use Your Information"
+msgstr "3. Comment nous utilisons vos informations"
+
+#: src/routes/terms-of-service.tsx:103
+msgid "3. User Accounts"
+msgstr "3. Comptes d'utilisateur"
+
+#: src/routes/privacy-policy.tsx:202
+msgid "4. Data Storage and Security"
+msgstr "4. Stockage et sécurité des données"
+
+#: src/routes/terms-of-service.tsx:132
+msgid "4. User Content"
+msgstr "4. Contenu utilisateur"
+
 #: src/components/landing/index.tsx:402
 msgid "4K Quality"
 msgstr "Qualité 4K"
+
+#: src/routes/terms-of-service.tsx:165
+msgid "5. AI Virtual Try-On Disclaimer"
+msgstr "5. Avertissement concernant l'essayage virtuel IA"
+
+#: src/routes/privacy-policy.tsx:236
+msgid "5. Third-Party Services"
+msgstr "5. Services tiers"
+
+#: src/routes/terms-of-service.tsx:184
+msgid "6. Credit Purchases and Refund Policy"
+msgstr "6. Achats de crédits et politique de remboursement"
+
+#: src/routes/privacy-policy.tsx:287
+msgid "6. Data Retention"
+msgstr "6. Rétention des données"
+
+#: src/routes/terms-of-service.tsx:281
+msgid "7. Prohibited Uses"
+msgstr "7. Utilisations interdites"
+
+#: src/routes/privacy-policy.tsx:326
+msgid "7. Your Rights"
+msgstr "7. Vos droits"
+
+#: src/routes/privacy-policy.tsx:379
+msgid "8. GDPR Compliance"
+msgstr "8. Conformité au RGPD"
+
+#: src/routes/terms-of-service.tsx:316
+msgid "8. Intellectual Property"
+msgstr "8. Propriété intellectuelle"
+
+#: src/routes/privacy-policy.tsx:410
+msgid "9. Children's Privacy"
+msgstr "9. Confidentialité des enfants"
+
+#: src/routes/terms-of-service.tsx:333
+msgid "9. Limitation of Liability"
+msgstr "9. Limitation de responsabilité"
 
 #: src/screens/support/index.tsx:25
 msgid "A lookbook is a curated collection of outfits and styles. You can create lookbooks to organize your favorite try-on results, plan outfits for different occasions, or save inspiration for future styling ideas."
@@ -117,10 +269,15 @@ msgstr "Compte"
 msgid "Account created successfully!"
 msgstr "Compte créé avec succès !"
 
+#: src/routes/privacy-policy.tsx:296
+msgid "Account data: Retained until you delete your account"
+msgstr "Données du compte : Conservées jusqu'à ce que vous supprimiez votre compte"
+
 #: src/components/settings/account-delete.tsx:33
 msgid "Account deleted successfully"
 msgstr "Compte supprimé avec succès"
 
+#: src/routes/privacy-policy.tsx:88
 #: src/screens/settings/index.tsx:22
 msgid "Account Information"
 msgstr "Informations du compte"
@@ -137,6 +294,10 @@ msgstr "Actif"
 #: src/components/todo/todo-detail.tsx:117
 msgid "Active State"
 msgstr "État actif"
+
+#: src/routes/terms-of-service.tsx:175
+msgid "Actual garment fit, color, and texture may vary from AI-generated images due to factors including lighting, fabric properties, body measurements, and manufacturing variations. We make no guarantees about the accuracy of AI-generated try-on results."
+msgstr "L'ajustement, la couleur et la texture réels des vêtements peuvent différer des images générées par l'IA en raison de facteurs tels que l'éclairage, les propriétés des tissus, les mesures du corps et les variations de fabrication. Nous ne garantissons pas la précision des résultats d'essayage générés par l'IA."
 
 #: src/components/style-tip/style-tip-card.tsx:89
 msgid "Add"
@@ -270,9 +431,25 @@ msgstr "Essayage IA"
 msgid "AI-Powered Virtual Try-On"
 msgstr "Essayage Virtuel Propulsé par l'IA"
 
+#: src/routes/terms-of-service.tsx:92
+msgid "AI-powered virtual try-on generation"
+msgstr "Génération d'essayage virtuel alimentée par l'IA"
+
 #: src/screens/garment/index.tsx:60
 msgid "All"
 msgstr "Tout"
+
+#: src/routes/terms-of-service.tsx:118
+msgid "All activities that occur under your account"
+msgstr "Toutes les activités qui se produisent sous votre compte"
+
+#: src/routes/terms-of-service.tsx:197
+msgid "All credit purchases are final and non-refundable. This policy exists because:"
+msgstr "Tous les achats de crédits sont définitifs et non remboursables. Cette politique existe parce que :"
+
+#: src/routes/privacy-policy.tsx:211
+msgid "All data is encrypted in transit using SSL/TLS"
+msgstr "Toutes les données sont chiffrées en transit à l'aide de SSL/TLS"
 
 #: src/config/navigation.tsx:32
 msgid "All Garments"
@@ -316,6 +493,10 @@ msgstr "Analyse des images..."
 msgid "and"
 msgstr "et"
 
+#: src/routes/privacy-policy.tsx:318
+msgid "Anonymized analytics: May be retained indefinitely for service improvement"
+msgstr "Analyses anonymisées : Peuvent être conservées indéfiniment pour l'amélioration du service"
+
 #: src/components/landing/index.tsx:249
 #: src/components/landing/try-on-demo/index.tsx:603
 msgid "Any Garment"
@@ -334,9 +515,17 @@ msgstr "Toute personne avec le lien peut voir"
 msgid "Are you absolutely sure?"
 msgstr "Êtes-vous absolument sûr ?"
 
+#: src/routes/terms-of-service.tsx:300
+msgid "Attempt to gain unauthorized access to the Service or other users' accounts"
+msgstr "Tenter d'accéder sans autorisation au Service ou aux comptes d'autres utilisateurs"
+
 #: src/screens/garment/garment-id.tsx:217
 msgid "Attributes"
 msgstr "Attributs"
+
+#: src/routes/privacy-policy.tsx:170
+msgid "Authenticating your identity and managing your account"
+msgstr "Authentifier votre identité et gérer votre compte"
 
 #: src/components/landing/index.tsx:515
 msgid "Available"
@@ -355,16 +544,32 @@ msgstr "Retour"
 msgid "Basic Information"
 msgstr "Informations de base"
 
-#: src/components/try-on/try-on-form.tsx:125
+#: src/routes/privacy-policy.tsx:115
+msgid "Body photos you upload for virtual try-on"
+msgstr "Photos du corps que vous téléchargez pour l'essayage virtuel"
+
+#: src/components/try-on/try-on-form.tsx:126
 #: src/screens/try-on/try-on-id.tsx:212
 msgid "Body Profile"
 msgstr "Profil corporel"
+
+#: src/routes/terms-of-service.tsx:86
+msgid "Body profile creation and management"
+msgstr "Création et gestion du profil corporel"
+
+#: src/routes/privacy-policy.tsx:108
+msgid "Body Profile Data"
+msgstr "Données du profil corporel"
 
 #: src/components/landing/index.tsx:367
 #: src/screens/dashboard/index.tsx:82
 #: src/screens/profile/index.tsx:38
 msgid "Body Profiles"
 msgstr "Profils corporels"
+
+#: src/routes/privacy-policy.tsx:301
+msgid "Body profiles and photos: Retained until you delete them or your account"
+msgstr "Profils corporels et photos : Conservés jusqu'à ce que vous les supprimiez ou supprimiez votre compte"
 
 #: src/components/garment/garment-form.tsx:273
 #: src/screens/garment/garment-id.tsx:168
@@ -389,10 +594,18 @@ msgstr "Construit sur les capacités de fusion multi-images de Gemini 3 Pro. Le 
 msgid "by {0}"
 msgstr "par {0}"
 
+#: src/routes/terms-of-service.tsx:61
+msgid "By accessing or using Drezzi (\"the Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use the Service."
+msgstr "En accédant ou en utilisant Drezzi (« le Service »), vous acceptez d'être lié par ces Conditions de service. Si vous n'acceptez pas ces conditions, vous ne pouvez pas utiliser le Service."
+
 #: src/routes/auth/index.tsx:246
 #: src/routes/auth/signup.tsx:238
 msgid "By clicking continue, you agree to our"
 msgstr "En cliquant sur continuer, vous acceptez nos"
+
+#: src/routes/privacy-policy.tsx:70
+msgid "By using the Service, you agree to the collection and use of information in accordance with this policy. We are committed to protecting your privacy and ensuring transparency about our data practices."
+msgstr "En utilisant le Service, vous acceptez la collecte et l'utilisation d'informations conformément à cette politique. Nous nous engageons à protéger votre confidentialité et à assurer la transparence concernant nos pratiques en matière de données."
 
 #: src/screens/support/index.tsx:32
 msgid "Can I save and share my try-ons?"
@@ -406,7 +619,7 @@ msgstr "Puis-je enregistrer et partager mes essayages ?"
 #: src/components/style-tip/style-tip-delete.tsx:65
 #: src/components/todo/todo-delete.tsx:98
 #: src/components/try-on/try-on-delete.tsx:110
-#: src/components/try-on/try-on-form.tsx:223
+#: src/components/try-on/try-on-form.tsx:232
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -416,6 +629,10 @@ msgstr "Annuler"
 #: src/screens/garment/new.tsx:223
 msgid "Category"
 msgstr "Catégorie"
+
+#: src/routes/terms-of-service.tsx:271
+msgid "Changes to Pricing"
+msgstr "Modifications de la tarification"
 
 #: src/routes/auth/reset-password.tsx:92
 msgid "Check your email for the verification code"
@@ -432,6 +649,10 @@ msgstr "Poitrine"
 msgid "Chest (cm)"
 msgstr "Poitrine (cm)"
 
+#: src/routes/privacy-policy.tsx:277
+msgid "Cloud Infrastructure"
+msgstr "Infrastructure cloud"
+
 #: src/screens/lookbooks/lookbook-id.tsx:191
 msgid "Collection"
 msgstr "Collection"
@@ -439,6 +660,10 @@ msgstr "Collection"
 #: src/screens/garment/garment-id.tsx:224
 msgid "Colors"
 msgstr "Couleurs"
+
+#: src/routes/privacy-policy.tsx:194
+msgid "Communicating with you about updates or support"
+msgstr "Communiquer avec vous au sujet des mises à jour ou du support"
 
 #: src/components/try-on/try-on-progress.tsx:75
 #: src/components/try-on/try-on-progress.tsx:80
@@ -538,6 +763,10 @@ msgstr "Créé"
 msgid "Created At"
 msgstr "Créé le"
 
+#: src/routes/privacy-policy.tsx:186
+msgid "Creating and managing your lookbook collections"
+msgstr "Créer et gérer vos collections de lookbooks"
+
 #: src/components/garment/garment-form.tsx:159
 msgid "Creating garment..."
 msgstr "Création du vêtement..."
@@ -563,6 +792,14 @@ msgstr "Création de la tâche..."
 msgid "Creating your account..."
 msgstr "Création de votre compte..."
 
+#: src/routes/terms-of-service.tsx:228
+msgid "Credit Expiration"
+msgstr "Expiration du crédit"
+
+#: src/routes/terms-of-service.tsx:231
+msgid "Credits do not expire. Once purchased, credits remain in your account until used."
+msgstr "Les crédits n'expirent pas. Une fois achetés, les crédits restent dans votre compte jusqu'à utilisation."
+
 #: src/components/landing/index.tsx:403
 msgid "Crystal clear photorealistic results."
 msgstr "Résultats photoréalistes d'une clarté cristalline."
@@ -587,9 +824,13 @@ msgstr "Zone de danger"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
+#: src/routes/privacy-policy.tsx:214
+msgid "Data at rest is encrypted in our PostgreSQL database"
+msgstr "Les données au repos sont chiffrées dans notre base de données PostgreSQL"
+
 #: src/components/profile/profile-card.tsx:211
 #: src/components/profile/profile-card.tsx:310
-#: src/components/try-on/try-on-form.tsx:148
+#: src/components/try-on/try-on-form.tsx:153
 #: src/screens/try-on/try-on-id.tsx:217
 msgid "Default"
 msgstr "Par défaut"
@@ -610,7 +851,7 @@ msgstr "Profil par défaut"
 #: src/components/style-tip/style-tip-delete.tsx:68
 #: src/components/todo/todo-delete.tsx:101
 #: src/components/todo/todo-detail.tsx:79
-#: src/components/try-on/try-on-card.tsx:224
+#: src/components/try-on/try-on-card.tsx:223
 #: src/components/try-on/try-on-delete.tsx:113
 #: src/screens/garment/garment-id.tsx:113
 #: src/screens/lookbooks/lookbook-id.tsx:153
@@ -652,6 +893,10 @@ msgstr "Suppression de la tâche..."
 msgid "Deleting try-on..."
 msgstr "Suppression de l'essayage..."
 
+#: src/routes/privacy-policy.tsx:328
+msgid "Depending on your location, you may have the following rights regarding your personal data:"
+msgstr "Selon votre localisation, vous pouvez avoir les droits suivants concernant vos données personnelles :"
+
 #: src/components/garment/garment-form.tsx:222
 #: src/components/lookbook/lookbook-form.tsx:234
 #: src/components/todo/todo-detail.tsx:94
@@ -665,17 +910,41 @@ msgstr "Description"
 msgid "Details"
 msgstr "Détails"
 
+#: src/routes/privacy-policy.tsx:197
+msgid "Detecting and preventing fraud or abuse"
+msgstr "Détecter et prévenir la fraude ou les abus"
+
+#: src/routes/privacy-policy.tsx:144
+msgid "Device information (browser type, IP address)"
+msgstr "Informations sur l'appareil (type de navigateur, adresse IP)"
+
 #: src/components/landing/index.tsx:217
 msgid "Discover"
 msgstr "Découvrir"
+
+#: src/routes/privacy-policy.tsx:100
+msgid "Display name (for personalization)"
+msgstr "Nom d'affichage (pour la personnalisation)"
+
+#: src/routes/terms-of-service.tsx:260
+msgid "Disputes"
+msgstr "Litiges"
 
 #: src/routes/auth/index.tsx:235
 msgid "Don't have an account?"
 msgstr "Vous n'avez pas de compte ?"
 
+#: src/routes/terms-of-service.tsx:78
+msgid "Drezzi is an AI-powered virtual try-on platform designed to help users visualize how clothing looks on them before purchasing. The Service includes:"
+msgstr "Drezzi est une plateforme d'essayage virtuel alimentée par l'IA conçue pour aider les utilisateurs à visualiser comment les vêtements leur conviennent avant d'acheter. Le Service comprend :"
+
 #: src/screens/support/index.tsx:37
 msgid "Drezzi supports a wide variety of clothing including tops, dresses, jackets, and more. You can upload images of garments from any source or browse our curated collection to find pieces to virtually try on."
 msgstr "Drezzi prend en charge une grande variété de vêtements, notamment les hauts, les robes, les vestes et plus encore. Vous pouvez télécharger des images de vêtements de n'importe quelle source ou parcourir notre collection sélectionnée pour trouver des pièces à essayer virtuellement."
+
+#: src/routes/terms-of-service.tsx:186
+msgid "Drezzi uses a credit-based system for AI virtual try-on features. Credits can be purchased through our secure payment system powered by Stripe."
+msgstr "Drezzi utilise un système basé sur les crédits pour les fonctionnalités d'essayage virtuel IA. Les crédits peuvent être achetés via notre système de paiement sécurisé alimenté par Stripe."
 
 #: src/components/garment/garment-form.tsx:193
 #: src/screens/garment/new.tsx:164
@@ -758,9 +1027,17 @@ msgstr "Modifier la tâche"
 msgid "Email"
 msgstr "Email"
 
+#: src/routes/privacy-policy.tsx:97
+msgid "Email address (for account identification)"
+msgstr "Adresse e-mail (pour l'identification du compte)"
+
 #: src/screens/support/index.tsx:75
 msgid "Email Support"
 msgstr "Support par email"
+
+#: src/routes/privacy-policy.tsx:181
+msgid "Enhancing and upscaling your photos for better results"
+msgstr "Améliorer et upscaler vos photos pour de meilleurs résultats"
 
 #: src/screens/garment/new.tsx:420
 msgid "Ensure good lighting"
@@ -953,7 +1230,7 @@ msgid "Failed to retry: {0}"
 msgstr "Échec de la nouvelle tentative : {0}"
 
 #. placeholder {0}: err.message
-#: src/components/try-on/try-on-form.tsx:105
+#: src/components/try-on/try-on-form.tsx:106
 msgid "Failed to start try-on: {0}"
 msgstr "Échec du démarrage de l'essayage : {0}"
 
@@ -961,7 +1238,15 @@ msgstr "Échec du démarrage de l'essayage : {0}"
 msgid "failed try-ons"
 msgstr "essayages échoués"
 
-#: src/components/try-on/try-on-card.tsx:188
+#: src/routes/terms-of-service.tsx:238
+msgid "Failed Try-Ons"
+msgstr "Essayages échoués"
+
+#: src/routes/privacy-policy.tsx:266
+msgid "FAL AI"
+msgstr "FAL AI"
+
+#: src/components/try-on/try-on-card.tsx:187
 #: src/screens/try-on/try-on-id.tsx:145
 msgid "Favorite"
 msgstr "Favori"
@@ -985,13 +1270,25 @@ msgstr "La taille du fichier doit être inférieure à 10 Mo"
 msgid "Fit Preference"
 msgstr "Préférence d'ajustement"
 
+#: src/routes/privacy-policy.tsx:123
+msgid "Fit preferences"
+msgstr "Préférences d'ajustement"
+
 #: src/screens/garment/new.tsx:423
 msgid "Flat lay or hanger shots work best"
 msgstr "Les photos à plat ou sur cintre fonctionnent le mieux"
 
+#: src/routes/privacy-policy.tsx:475
+msgid "For GDPR-related inquiries, you may also contact your local data protection authority."
+msgstr "Pour les demandes liées au RGPD, vous pouvez également contacter votre autorité locale de protection des données."
+
 #: src/screens/support/index.tsx:29
 msgid "For optimal results, use a well-lit photo where you're facing the camera directly. Wear form-fitting clothes and ensure your full body is visible. Avoid busy backgrounds and make sure the garment image is clear and high-quality."
 msgstr "Pour des résultats optimaux, utilisez une photo bien éclairée où vous faites face à la caméra. Portez des vêtements ajustés et assurez-vous que tout votre corps est visible. Évitez les arrière-plans chargés et assurez-vous que l'image du vêtement est claire et de haute qualité."
+
+#: src/routes/privacy-policy.tsx:381
+msgid "For users in the European Economic Area (EEA), we process your data based on the following legal bases:"
+msgstr "Pour les utilisateurs de l'Espace économique européen (EEE), nous traitons vos données sur la base des fondements juridiques suivants :"
 
 #: src/routes/auth/index.tsx:212
 msgid "Forgot your password?"
@@ -1009,8 +1306,8 @@ msgstr "Du téléchargement à l'essayage en quatre étapes simples"
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: src/components/try-on/try-on-card.tsx:209
-#: src/components/try-on/try-on-form.tsx:176
+#: src/components/try-on/try-on-card.tsx:208
+#: src/components/try-on/try-on-form.tsx:181
 #: src/screens/try-on/try-on-id.tsx:233
 msgid "Garment"
 msgstr "Vêtement"
@@ -1019,9 +1316,21 @@ msgstr "Vêtement"
 msgid "Garment Catalog"
 msgstr "Catalogue de vêtements"
 
+#: src/routes/privacy-policy.tsx:135
+msgid "Garment data (images, names, categories, brands)"
+msgstr "Données de vêtements (images, noms, catégories, marques)"
+
+#: src/routes/terms-of-service.tsx:89
+msgid "Garment wardrobe organization"
+msgstr "Organisation de la garde-robe des vêtements"
+
 #: src/screens/dashboard/index.tsx:62
 msgid "Garments"
 msgstr "Vêtements"
+
+#: src/routes/privacy-policy.tsx:307
+msgid "Garments and try-on results: Retained until you delete them or your account"
+msgstr "Vêtements et résultats d'essayage : Conservés jusqu'à ce que vous les supprimiez ou supprimiez votre compte"
 
 #: src/components/landing/index.tsx:608
 msgid "Gemini 3 Pro"
@@ -1035,9 +1344,21 @@ msgstr "Gemini 3 Pro analyse la pose, l'éclairage et la physique des tissus pou
 msgid "Generate a share link to let others view this lookbook."
 msgstr "Générez un lien de partage pour permettre à d'autres de voir ce lookbook."
 
+#: src/routes/terms-of-service.tsx:151
+msgid "Generate anonymized, aggregated insights to improve our AI models"
+msgstr "Générer des insights anonymisés et agrégés pour améliorer nos modèles d'IA"
+
 #: src/components/lookbook/share-dialog.tsx:199
 msgid "Generate Share Link"
 msgstr "Générer un lien de partage"
+
+#: src/routes/terms-of-service.tsx:148
+msgid "Generate virtual try-on images using AI technology"
+msgstr "Générer des images d'essayage virtuel en utilisant la technologie IA"
+
+#: src/routes/privacy-policy.tsx:175
+msgid "Generating AI-powered virtual try-on images showing garments on your body"
+msgstr "Générer des images d'essayage virtuel alimentées par l'IA montrant des vêtements sur votre corps"
 
 #: src/components/lookbook/share-dialog.tsx:94
 msgid "Generating share link..."
@@ -1068,6 +1389,14 @@ msgstr "Commencer gratuitement"
 #: src/components/landing/index.tsx:744
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
+
+#: src/routes/privacy-policy.tsx:254
+msgid "Google Gemini AI"
+msgstr "Google Gemini AI"
+
+#: src/routes/privacy-policy.tsx:242
+msgid "Google OAuth"
+msgstr "Google OAuth"
 
 #: src/components/profile/profile-card.tsx:201
 #: src/screens/profile/profile-id.tsx:57
@@ -1112,9 +1441,25 @@ msgstr "Combien de temps prend le traitement d'un essayage ?"
 msgid "https://..."
 msgstr "https://..."
 
+#: src/routes/terms-of-service.tsx:241
+msgid "If a virtual try-on generation fails due to technical issues:"
+msgstr "Si la génération d'un essayage virtuel échoue en raison de problèmes techniques :"
+
 #: src/routes/auth/reset-password.tsx:97
 msgid "If an account exists, we've sent a verification code"
 msgstr "Si un compte existe, nous avons envoyé un code de vérification"
+
+#: src/routes/terms-of-service.tsx:263
+msgid "If you believe there has been an error with your credit purchase or usage, please contact our support team. We will investigate and resolve any legitimate billing issues."
+msgstr "Si vous croyez qu'il y a eu une erreur avec votre achat ou votre utilisation de crédits, veuillez contacter notre équipe d'assistance. Nous enquêterons et résoudrons tout problème de facturation légitime."
+
+#: src/routes/terms-of-service.tsx:392
+msgid "If you have any questions about these Terms of Service, please contact us at:"
+msgstr "Si vous avez des questions sur ces Conditions de service, veuillez nous contacter à :"
+
+#: src/routes/privacy-policy.tsx:459
+msgid "If you have any questions about this Privacy Policy or our data practices, please contact us at:"
+msgstr "Si vous avez des questions sur cette Politique de confidentialité ou sur nos pratiques en matière de données, veuillez nous contacter à :"
 
 #: src/screens/garment/new.tsx:153
 msgid "Image"
@@ -1123,6 +1468,10 @@ msgstr "Image"
 #: src/screens/garment/new.tsx:409
 msgid "Image Tips"
 msgstr "Conseils pour les images"
+
+#: src/routes/privacy-policy.tsx:189
+msgid "Improving our Service and AI models (using anonymized data)"
+msgstr "Améliorer notre Service et nos modèles d'IA (en utilisant des données anonymisées)"
 
 #: src/components/todo/todo-detail.tsx:54
 #: src/components/todo/todo-form.tsx:264
@@ -1147,6 +1496,10 @@ msgstr "Entrejambe"
 #: src/screens/profile/new.tsx:382
 msgid "Inseam (cm)"
 msgstr "Entrejambe (cm)"
+
+#: src/routes/terms-of-service.tsx:311
+msgid "Interfere with or disrupt the Service"
+msgstr "Interférer avec ou perturber le Service"
 
 #: src/routes/auth/reset-password.tsx:153
 msgid "Invalid or expired code. Please try again."
@@ -1183,6 +1536,11 @@ msgstr "JPEG, PNG ou WebP jusqu'à 10 Mo"
 #: src/components/todo/todo-detail.tsx:145
 msgid "Last Updated"
 msgstr "Dernière mise à jour"
+
+#: src/routes/privacy-policy.tsx:55
+#: src/routes/terms-of-service.tsx:54
+msgid "Last updated: December 2025"
+msgstr "Dernière mise à jour : décembre 2025"
 
 #: src/components/lookbook/share-dialog.tsx:115
 msgid "Link copied to clipboard"
@@ -1266,12 +1624,24 @@ msgstr "Connectez-vous avec votre compte Google"
 msgid "Look On You"
 msgstr "sur vous"
 
+#: src/routes/privacy-policy.tsx:141
+msgid "Lookbook collections you create"
+msgstr "Collections de lookbooks que vous créez"
+
+#: src/routes/terms-of-service.tsx:95
+msgid "Lookbook creation and sharing"
+msgstr "Création et partage de lookbooks"
+
 #: src/components/landing/index.tsx:397
 #: src/config/navigation.tsx:57
 #: src/screens/dashboard/index.tsx:53
 #: src/screens/lookbooks/index.tsx:38
 msgid "Lookbooks"
 msgstr "Lookbooks"
+
+#: src/routes/privacy-policy.tsx:313
+msgid "Lookbooks: Retained until you delete them or your account"
+msgstr "Lookbooks : Conservés jusqu'à ce que vous les supprimiez ou supprimiez votre compte"
 
 #: src/components/profile/profile-card.tsx:558
 #: src/components/profile/profile-form.tsx:361
@@ -1284,6 +1654,10 @@ msgstr "Ample"
 #: src/routes/auth/signup.tsx:190
 msgid "m@example.com"
 msgstr "m@exemple.com"
+
+#: src/routes/terms-of-service.tsx:113
+msgid "Maintaining the confidentiality of your account credentials"
+msgstr "Maintenir la confidentialité de vos identifiants de compte"
 
 #: src/components/todo/todo-form.tsx:203
 msgid "Make changes to your todo item"
@@ -1310,6 +1684,10 @@ msgstr "Rendre privé..."
 #: src/screens/garment/garment-id.tsx:56
 msgid "Making public..."
 msgstr "Rendre public..."
+
+#: src/routes/privacy-policy.tsx:62
+msgid "Maky Software Inc. (\"we\", \"us\", or \"our\") operates Drezzi (\"the Service\"). This Privacy Policy explains how we collect, use, disclose, and protect your personal information when you use our Service."
+msgstr "Maky Software Inc. (« nous » ou « notre ») exploite Drezzi (« le Service »). Cette Politique de confidentialité explique comment nous collectons, utilisons, divulguons et protégeons vos informations personnelles lorsque vous utilisez notre Service."
 
 #: src/screens/settings/index.tsx:72
 msgid "Manage your account settings and preferences"
@@ -1369,7 +1747,7 @@ msgstr "Nouveau mot de passe"
 msgid "New Profile"
 msgstr "Nouveau profil"
 
-#: src/components/try-on/try-on-form.tsx:112
+#: src/components/try-on/try-on-form.tsx:113
 #: src/screens/try-on/index.tsx:36
 #: src/screens/try-on/index.tsx:43
 msgid "New Try-On"
@@ -1387,11 +1765,15 @@ msgstr "Aucun essayage terminé disponible"
 msgid "No credit card required"
 msgstr "Aucune carte de crédit requise"
 
-#: src/components/try-on/try-on-form.tsx:179
+#: src/routes/terms-of-service.tsx:247
+msgid "No credits will be deducted from your account"
+msgstr "Aucun crédit ne sera déduit de votre compte"
+
+#: src/components/try-on/try-on-form.tsx:184
 msgid "No garment found."
 msgstr "Aucun vêtement trouvé."
 
-#: src/components/try-on/try-on-form.tsx:206
+#: src/components/try-on/try-on-form.tsx:215
 msgid "No garments found. Please add a garment to your wardrobe first."
 msgstr "Aucun vêtement trouvé. Veuillez d'abord ajouter un vêtement à votre garde-robe."
 
@@ -1416,11 +1798,11 @@ msgstr "Aucun lookbook pour le moment"
 msgid "No matching try-ons"
 msgstr "Aucun essayage correspondant"
 
-#: src/components/try-on/try-on-form.tsx:128
+#: src/components/try-on/try-on-form.tsx:129
 msgid "No profile found."
 msgstr "Aucun profil trouvé."
 
-#: src/components/try-on/try-on-form.tsx:160
+#: src/components/try-on/try-on-form.tsx:165
 msgid "No profiles found. Please create a body profile first."
 msgstr "Aucun profil trouvé. Veuillez d'abord créer un profil corporel."
 
@@ -1440,6 +1822,10 @@ msgstr "Aucun conseil de style disponible pour le moment."
 msgid "No try-ons yet"
 msgstr "Aucun essayage pour le moment"
 
+#: src/routes/terms-of-service.tsx:194
+msgid "Non-Refundable Purchases"
+msgstr "Achats non remboursables"
+
 #: src/screens/settings/index.tsx:34
 msgid "Not set"
 msgstr "Non défini"
@@ -1452,6 +1838,14 @@ msgstr "Non commencé"
 #: src/components/lookbook/lookbook-item.tsx:112
 msgid "Note saved"
 msgstr "Note enregistrée"
+
+#: src/routes/privacy-policy.tsx:219
+msgid "OAuth tokens are securely stored and never exposed"
+msgstr "Les jetons OAuth sont stockés de manière sécurisée et jamais exposés"
+
+#: src/routes/privacy-policy.tsx:118
+msgid "Optional body measurements (height, waist, hip, inseam, chest)"
+msgstr "Mesures corporelles optionnelles (hauteur, taille, hanche, entrejambe, poitrine)"
 
 #: src/components/garment/garment-form.tsx:226
 #: src/components/lookbook/lookbook-form.tsx:238
@@ -1468,6 +1862,10 @@ msgstr "Ou continuer avec"
 msgid "Organize and share your favorite outfits."
 msgstr "Organisez et partagez vos tenues préférées."
 
+#: src/routes/terms-of-service.tsx:253
+msgid "Our system automatically handles refunds for failed generations"
+msgstr "Notre système gère automatiquement les remboursements pour les générations échouées"
+
 #: src/routes/auth/index.tsx:206
 #: src/routes/auth/signup.tsx:205
 msgid "Password"
@@ -1481,13 +1879,17 @@ msgstr "Mot de passe réinitialisé avec succès"
 msgid "pending"
 msgstr "en attente"
 
-#: src/components/try-on/try-on-card.tsx:319
+#: src/components/try-on/try-on-card.tsx:318
 msgid "Personalized recommendations for this look"
 msgstr "Recommandations personnalisées pour ce look"
 
 #: src/screens/profile/new.tsx:148
 msgid "Photo"
 msgstr "Photo"
+
+#: src/routes/privacy-policy.tsx:149
+msgid "Photo Content"
+msgstr "Contenu photo"
 
 #: src/screens/profile/new.tsx:421
 msgid "Photo Tips"
@@ -1496,6 +1898,10 @@ msgstr "Conseils pour les photos"
 #: src/components/landing/index.tsx:273
 msgid "Photorealistic"
 msgstr "Photoréaliste"
+
+#: src/routes/privacy-policy.tsx:222
+msgid "Photos are stored in secure cloud storage (AWS S3)"
+msgstr "Les photos sont stockées dans un stockage cloud sécurisé (AWS S3)"
 
 #: src/components/landing/index.tsx:433
 msgid "Platform"
@@ -1528,6 +1934,7 @@ msgstr "Tarification (optionnel)"
 #: src/components/common/content-layout.tsx:63
 #: src/routes/auth/index.tsx:252
 #: src/routes/auth/signup.tsx:244
+#: src/routes/privacy-policy.tsx:56
 msgid "Privacy Policy"
 msgstr "Politique de confidentialité"
 
@@ -1569,6 +1976,18 @@ msgstr "Informations du profil"
 #: src/screens/profile/new.tsx:180
 msgid "Profile Name"
 msgstr "Nom du profil"
+
+#: src/routes/privacy-policy.tsx:103
+msgid "Profile picture URL (for your avatar)"
+msgstr "URL de la photo de profil (pour votre avatar)"
+
+#: src/routes/terms-of-service.tsx:121
+msgid "Providing accurate and complete information"
+msgstr "Fournir des informations exactes et complètes"
+
+#: src/routes/privacy-policy.tsx:167
+msgid "Providing and maintaining the Service"
+msgstr "Fournir et maintenir le Service"
 
 #: src/components/garment/garment-card.tsx:114
 #: src/components/garment/garment-form.tsx:377
@@ -1614,6 +2033,10 @@ msgstr "Échec de l'inscription : Veuillez réessayer"
 #: src/screens/profile/new.tsx:217
 msgid "Regular"
 msgstr "Régulier"
+
+#: src/routes/privacy-policy.tsx:225
+msgid "Regular security audits and monitoring"
+msgstr "Audits de sécurité réguliers et surveillance"
 
 #: src/components/landing/index.tsx:725
 msgid "Reimagined"
@@ -1673,7 +2096,7 @@ msgstr "Résultat"
 msgid "Retail URL"
 msgstr "URL du détaillant"
 
-#: src/components/try-on/try-on-card.tsx:202
+#: src/components/try-on/try-on-card.tsx:201
 #: src/screens/try-on/try-on-id.tsx:158
 #: src/screens/try-on/try-on-id.tsx:159
 msgid "Retry"
@@ -1693,11 +2116,11 @@ msgid "Saving note..."
 msgstr "Enregistrement de la note..."
 
 #: src/components/lookbook/add-tryon-dialog.tsx:100
-#: src/components/try-on/try-on-form.tsx:201
+#: src/components/try-on/try-on-form.tsx:210
 msgid "Search garments..."
 msgstr "Rechercher des vêtements..."
 
-#: src/components/try-on/try-on-form.tsx:155
+#: src/components/try-on/try-on-form.tsx:160
 msgid "Search profiles..."
 msgstr "Rechercher des profils..."
 
@@ -1717,7 +2140,7 @@ msgstr "Voir comment ça marche"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/components/try-on/try-on-form.tsx:255
+#: src/components/try-on/try-on-form.tsx:264
 msgid "Select a body profile and a garment to see how it looks on you."
 msgstr "Sélectionnez un profil corporel et un vêtement pour voir comment il vous va."
 
@@ -1725,11 +2148,11 @@ msgstr "Sélectionnez un profil corporel et un vêtement pour voir comment il vo
 msgid "Select a completed try-on to add to this lookbook"
 msgstr "Sélectionnez un essayage terminé à ajouter à ce lookbook"
 
-#: src/components/try-on/try-on-form.tsx:186
+#: src/components/try-on/try-on-form.tsx:191
 msgid "Select a garment"
 msgstr "Sélectionnez un vêtement"
 
-#: src/components/try-on/try-on-form.tsx:135
+#: src/components/try-on/try-on-form.tsx:136
 msgid "Select a profile"
 msgstr "Sélectionner un profil"
 
@@ -1854,7 +2277,7 @@ msgstr "Tenez-vous devant un fond uni"
 msgid "Start a try-on to see your activity here"
 msgstr "Démarrez un essayage pour voir votre activité ici"
 
-#: src/components/try-on/try-on-form.tsx:237
+#: src/components/try-on/try-on-form.tsx:246
 msgid "Start Try-On"
 msgstr "Démarrer l'essayage"
 
@@ -1866,11 +2289,11 @@ msgstr "Démarrez votre premier essayage"
 msgid "Start your first virtual try-on to see how clothes look on you."
 msgstr "Démarrez votre premier essayage virtuel pour voir comment les vêtements vous vont."
 
-#: src/components/try-on/try-on-form.tsx:103
+#: src/components/try-on/try-on-form.tsx:104
 msgid "Starting try-on..."
 msgstr "Démarrage de l'essayage..."
 
-#: src/components/try-on/try-on-form.tsx:232
+#: src/components/try-on/try-on-form.tsx:241
 msgid "Starting..."
 msgstr "Démarrage..."
 
@@ -1879,6 +2302,10 @@ msgstr "Démarrage..."
 #: src/screens/try-on/try-on-id.tsx:261
 msgid "Status"
 msgstr "Statut"
+
+#: src/routes/terms-of-service.tsx:143
+msgid "Store and process your content to provide the Service"
+msgstr "Stocker et traiter votre contenu pour fournir le Service"
 
 #: src/components/landing/index.tsx:369
 msgid "Store multiple profiles for different poses and body types. Perfect for seeing how clothes fit in various scenarios."
@@ -1898,10 +2325,14 @@ msgstr "Conseil de style mis à jour"
 
 #: src/components/landing/index.tsx:392
 #: src/components/style-tip/style-tip-card.tsx:81
-#: src/components/try-on/try-on-card.tsx:214
-#: src/components/try-on/try-on-card.tsx:316
+#: src/components/try-on/try-on-card.tsx:213
+#: src/components/try-on/try-on-card.tsx:315
 msgid "Style Tips"
 msgstr "Conseils de style"
+
+#: src/routes/terms-of-service.tsx:98
+msgid "Style tips and recommendations"
+msgstr "Conseils de style et recommandations"
 
 #: src/components/style-tip/style-tip-card.tsx:72
 msgid "Style tips regenerated"
@@ -1923,12 +2354,37 @@ msgstr "Tâche"
 #: src/components/common/content-layout.tsx:66
 #: src/routes/auth/index.tsx:248
 #: src/routes/auth/signup.tsx:240
+#: src/routes/terms-of-service.tsx:55
 msgid "Terms of Service"
 msgstr "Conditions d'utilisation"
+
+#: src/routes/terms-of-service.tsx:167
+msgid "The AI-powered virtual try-on visualizations provided by Drezzi are for informational and preview purposes only. They should not be considered an exact representation of how garments will fit or appear in real life."
+msgstr "Les visualisations d'essayage virtuel alimentées par l'IA fournies par Drezzi sont à des fins informationnelles et de prévisualisation uniquement. Elles ne doivent pas être considérées comme une représentation exacte de la façon dont les vêtements s'adapteront ou apparaîtront dans la vie réelle."
+
+#: src/routes/privacy-policy.tsx:412
+msgid "The Service is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal data, please contact us immediately."
+msgstr "Le Service n'est pas destiné aux enfants de moins de 13 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants de moins de 13 ans. Si vous vous rendez compte qu'un enfant nous a fourni des données personnelles, veuillez nous contacter immédiatement."
+
+#: src/routes/terms-of-service.tsx:68
+msgid "The Service is operated by Maky Software Inc. (\"we\", \"us\", or \"our\"). We reserve the right to update these terms at any time, and we will notify you of any material changes."
+msgstr "Le Service est exploité par Maky Software Inc. (« nous » ou « notre »). Nous nous réservons le droit de mettre à jour ces conditions à tout moment, et nous vous notifierons de tout changement matériel."
+
+#: src/routes/terms-of-service.tsx:343
+msgid "The Service is provided \"as is\" without warranties of any kind, either express or implied. We do not guarantee that the Service will be uninterrupted, secure, or error-free."
+msgstr "Le Service est fourni « tel quel » sans aucune garantie, explicite ou implicite. Nous ne garantissons pas que le Service sera ininterrompu, sûr ou sans erreur."
+
+#: src/routes/terms-of-service.tsx:318
+msgid "The Service, including its design, features, and content (excluding User Content), is owned by Maky Software Inc. and is protected by copyright, trademark, and other intellectual property laws."
+msgstr "Le Service, y compris sa conception, ses fonctionnalités et son contenu (à l'exclusion du Contenu utilisateur), est la propriété de Maky Software Inc. et est protégé par les lois sur le droit d'auteur, les marques de commerce et les autres lois sur la propriété intellectuelle."
 
 #: src/components/landing/index.tsx:538
 msgid "The Technology"
 msgstr "La technologie"
+
+#: src/routes/terms-of-service.tsx:381
+msgid "These Terms of Service shall be governed by and construed in accordance with the laws of the jurisdiction in which Maky Software Inc. operates, without regard to conflict of law principles."
+msgstr "Ces Conditions de service seront régies par et interprétées conformément aux lois de la juridiction dans laquelle Maky Software Inc. exerce ses activités, sans égard aux principes de conflit de lois."
 
 #. placeholder {0}: profile.name
 #: src/components/profile/profile-delete.tsx:96
@@ -1975,6 +2431,18 @@ msgstr "Ce lookbook est privé. Activez l'accès public pour partager."
 msgid "This lookbook is publicly accessible."
 msgstr "Ce lookbook est accessible publiquement."
 
+#: src/routes/privacy-policy.tsx:366
+msgid "To exercise these rights, please contact us at <0>{DREZZI_SUPPORT_EMAIL}</0>. We will respond within 30 days."
+msgstr "Pour exercer ces droits, veuillez nous contacter à <0>{DREZZI_SUPPORT_EMAIL}</0>. Nous répondrons dans les 30 jours."
+
+#: src/routes/terms-of-service.tsx:335
+msgid "To the maximum extent permitted by law, Maky Software Inc. shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the Service."
+msgstr "Dans la mesure maximale autorisée par la loi, Maky Software Inc. ne sera pas responsable de tout dommage indirect, accidentel, spécial, consécutif ou punitif résultant de votre utilisation ou de votre incapacité à utiliser le Service."
+
+#: src/routes/terms-of-service.tsx:105
+msgid "To use certain features of the Service, you must create an account. You may sign up using your email address or through Google OAuth. You are responsible for:"
+msgstr "Pour utiliser certaines fonctionnalités du Service, vous devez créer un compte. Vous pouvez vous inscrire en utilisant votre adresse e-mail ou via Google OAuth. Vous êtes responsable de :"
+
 #: src/components/todo/todo-detail.tsx:67
 msgid "Todo Details"
 msgstr "Détails de la tâche"
@@ -2011,18 +2479,22 @@ msgstr "Essayage terminé !"
 msgid "Try-on has been deleted"
 msgstr "L'essayage a été supprimé"
 
+#: src/routes/privacy-policy.tsx:138
+msgid "Try-on history and AI-generated results"
+msgstr "Historique d'essayage et résultats générés par l'IA"
+
 #: src/components/try-on/try-on-card.tsx:126
 #: src/screens/try-on/try-on-id.tsx:101
 msgid "Try-on restarted"
 msgstr "Essayage redémarré"
 
 #. placeholder {0}: tryOn.garment.name
-#: src/components/try-on/try-on-card.tsx:244
+#: src/components/try-on/try-on-card.tsx:243
 #: src/screens/try-on/try-on-id.tsx:181
 msgid "Try-on result for {0}"
 msgstr "Résultat d'essayage pour {0}"
 
-#: src/components/try-on/try-on-form.tsx:104
+#: src/components/try-on/try-on-form.tsx:105
 msgid "Try-on started! It will be ready in a few moments."
 msgstr "Essayage démarré ! Il sera prêt dans quelques instants."
 
@@ -2030,7 +2502,7 @@ msgstr "Essayage démarré ! Il sera prêt dans quelques instants."
 msgid "try-ons in progress"
 msgstr "essayages en cours"
 
-#: src/components/try-on/try-on-card.tsx:183
+#: src/components/try-on/try-on-card.tsx:182
 #: src/screens/try-on/try-on-id.tsx:140
 msgid "Unfavorite"
 msgstr "Retirer des favoris"
@@ -2119,13 +2591,33 @@ msgstr "Téléchargez une photo de tout le corps pour les meilleurs résultats d
 msgid "Upload a photo of yourself and select a garment you want to try on. Our AI will generate a realistic image of you wearing the clothing, helping you visualize how it looks before purchasing or styling."
 msgstr "Téléchargez une photo de vous et sélectionnez un vêtement que vous souhaitez essayer. Notre IA générera une image réaliste de vous portant le vêtement, vous aidant à visualiser son apparence avant d'acheter ou de styliser."
 
+#: src/routes/terms-of-service.tsx:292
+msgid "Upload content that infringes on intellectual property rights"
+msgstr "Télécharger du contenu qui viole les droits de propriété intellectuelle"
+
+#: src/routes/terms-of-service.tsx:297
+msgid "Upload inappropriate, offensive, or harmful content"
+msgstr "Télécharger du contenu inapproprié, offensant ou nuisible"
+
 #: src/components/try-on/try-on-progress.tsx:63
 msgid "Uploading result..."
 msgstr "Téléchargement du résultat..."
 
+#: src/routes/privacy-policy.tsx:128
+msgid "Usage Data"
+msgstr "Données d'utilisation"
+
 #: src/screens/garment/new.tsx:414
 msgid "Use a plain, light background"
 msgstr "Utilisez un fond uni et clair"
+
+#: src/routes/terms-of-service.tsx:306
+msgid "Use automated systems to access the Service without permission"
+msgstr "Utiliser des systèmes automatisés pour accéder au Service sans permission"
+
+#: src/routes/terms-of-service.tsx:287
+msgid "Use the Service for any illegal or unauthorized purpose"
+msgstr "Utiliser le Service à des fins illégales ou non autorisées"
 
 #: src/components/profile/profile-card.tsx:577
 #: src/components/profile/profile-form.tsx:380
@@ -2138,7 +2630,7 @@ msgid "Verify Code"
 msgstr "Vérifier le code"
 
 #: src/components/profile/profile-card.tsx:229
-#: src/components/try-on/try-on-card.tsx:173
+#: src/components/try-on/try-on-card.tsx:172
 msgid "View"
 msgstr "Voir"
 
@@ -2167,7 +2659,7 @@ msgid "View your virtual try-on result"
 msgstr "Voir votre résultat d'essayage virtuel"
 
 #: src/components/app-sidebar.tsx:37
-#: src/components/try-on/try-on-form.tsx:252
+#: src/components/try-on/try-on-form.tsx:261
 #: src/screens/try-on/index.tsx:49
 msgid "Virtual Try-On"
 msgstr "Essayage virtuel"
@@ -2191,6 +2683,74 @@ msgstr "Taille (cm)"
 msgid "Waiting in queue..."
 msgstr "En attente dans la file..."
 
+#: src/routes/privacy-policy.tsx:131
+msgid "We automatically collect:"
+msgstr "Nous collectons automatiquement :"
+
+#: src/routes/privacy-policy.tsx:81
+msgid "We collect different types of information to provide and improve our Service:"
+msgstr "Nous collectons différents types d'informations pour fournir et améliorer notre Service :"
+
+#: src/routes/privacy-policy.tsx:440
+msgid "We do not use third-party tracking cookies or advertising cookies."
+msgstr "Nous n'utilisons pas de cookies de suivi tiers ni de cookies publicitaires."
+
+#: src/routes/privacy-policy.tsx:204
+msgid "We implement industry-standard security measures to protect your data:"
+msgstr "Nous mettons en place des mesures de sécurité conformes aux normes de l'industrie pour protéger vos données :"
+
+#: src/routes/terms-of-service.tsx:370
+msgid "We may modify these Terms of Service at any time. We will notify you of significant changes by posting a notice on the Service or sending you an email. Your continued use of the Service after changes are posted constitutes acceptance of the modified terms."
+msgstr "Nous pouvons modifier ces Conditions de service à tout moment. Nous vous notifierons des modifications importantes en affichant un avis sur le Service ou en vous envoyant un e-mail. Votre utilisation continue du Service après l'affichage des modifications constitue l'acceptation des conditions modifiées."
+
+#: src/routes/privacy-policy.tsx:448
+msgid "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the \"Last updated\" date. We encourage you to review this policy periodically."
+msgstr "Nous pouvons mettre à jour cette Politique de confidentialité de temps à autre. Nous vous notifierons de tout changement matériel en affichant la nouvelle politique sur cette page et en mettant à jour la date de « Dernière mise à jour ». Nous vous encourageons à examiner cette politique régulièrement."
+
+#: src/routes/terms-of-service.tsx:274
+msgid "We reserve the right to modify credit package pricing at any time. Any changes will not affect credits already purchased."
+msgstr "Nous nous réservons le droit de modifier les tarifs des forfaits de crédit à tout moment. Tout changement n'affectera pas les crédits déjà achetés."
+
+#: src/routes/terms-of-service.tsx:353
+msgid "We reserve the right to suspend or terminate your account at any time for violation of these terms or for any other reason at our discretion."
+msgstr "Nous nous réservons le droit de suspendre ou de fermer votre compte à tout moment pour violation de ces conditions ou pour toute autre raison à notre discrétion."
+
+#: src/routes/privacy-policy.tsx:289
+msgid "We retain your personal data for as long as your account is active or as needed to provide you with our services:"
+msgstr "Nous conservons vos données personnelles aussi longtemps que votre compte est actif ou aussi longtemps que nécessaire pour vous fournir nos services :"
+
+#: src/routes/privacy-policy.tsx:280
+msgid "We use Amazon Web Services (AWS) for hosting, storage, and email services. Data is stored in secure, compliant data centers."
+msgstr "Nous utilisons Amazon Web Services (AWS) pour l'hébergement, le stockage et les services de messagerie. Les données sont stockées dans des centres de données sécurisés et conformes."
+
+#: src/routes/privacy-policy.tsx:269
+msgid "We use FAL AI's image upscaling service to enhance your body profile photos for better try-on results. Images are processed temporarily and not retained by FAL AI after processing."
+msgstr "Nous utilisons le service d'upscaling d'images de FAL AI pour améliorer vos photos de profil corporel pour de meilleurs résultats d'essayage. Les images sont traitées temporairement et ne sont pas conservées par FAL AI après le traitement."
+
+#: src/routes/privacy-policy.tsx:257
+msgid "We use Google Gemini 3 Pro to generate virtual try-on images. Your body photos and garment images are processed through this AI service to create realistic composite images showing how clothes would look on you."
+msgstr "Nous utilisons Google Gemini 3 Pro pour générer des images d'essayage virtuel. Vos photos du corps et vos images de vêtements sont traitées via ce service IA pour créer des images composites réalistes montrant comment les vêtements vous iraient."
+
+#: src/routes/privacy-policy.tsx:245
+msgid "We use Google OAuth for authentication. When you sign in with Google, we only request access to your basic profile information (email, name, profile picture). We do not access your Google Drive, Gmail, Calendar, or any other Google services."
+msgstr "Nous utilisons Google OAuth pour l'authentification. Lorsque vous vous connectez avec Google, nous demandons uniquement l'accès à vos informations de profil de base (e-mail, nom, photo de profil). Nous n'accédons pas à votre Google Drive, Gmail, Calendar ou à aucun autre service Google."
+
+#: src/routes/privacy-policy.tsx:163
+msgid "We use the collected information for:"
+msgstr "Nous utilisons les informations collectées pour :"
+
+#: src/routes/privacy-policy.tsx:238
+msgid "We use the following third-party services:"
+msgstr "Nous utilisons les services tiers suivants :"
+
+#: src/routes/privacy-policy.tsx:423
+msgid "We use the following types of cookies:"
+msgstr "Nous utilisons les types de cookies suivants :"
+
+#: src/routes/terms-of-service.tsx:158
+msgid "We will never sell your personal content or share identifiable photos with third parties without your explicit consent."
+msgstr "Nous ne vendrons jamais votre contenu personnel ni ne partagerons de photos identifiables avec des tiers sans votre consentement explicite."
+
 #: src/screens/profile/new.tsx:429
 msgid "Wear fitted clothing for best results"
 msgstr "Portez des vêtements ajustés pour de meilleurs résultats"
@@ -2211,9 +2771,49 @@ msgstr "Qu'est-ce qu'un lookbook ?"
 msgid "What types of garments can I try on?"
 msgstr "Quels types de vêtements puis-je essayer ?"
 
+#: src/routes/privacy-policy.tsx:91
+msgid "When you create an account via Google OAuth, we receive:"
+msgstr "Lorsque vous créez un compte via Google OAuth, nous recevons :"
+
+#: src/routes/privacy-policy.tsx:111
+msgid "When you create body profiles, we collect:"
+msgstr "Lorsque vous créez des profils corporels, nous collectons :"
+
+#: src/routes/privacy-policy.tsx:152
+msgid "When you upload photos for virtual try-on, we store and process these images to generate try-on results. Photo data is handled with strict security measures and processed through our AI services."
+msgstr "Lorsque vous téléchargez des photos pour l'essayage virtuel, nous stockons et traitons ces images pour générer des résultats d'essayage. Les données photo sont traitées avec des mesures de sécurité strictes et traitées via nos services IA."
+
+#: src/routes/privacy-policy.tsx:229
+msgid "While we strive to protect your data, no method of transmission or storage is 100% secure. We cannot guarantee absolute security."
+msgstr "Bien que nous nous efforcions de protéger vos données, aucune méthode de transmission ou de stockage n'est 100 % sécurisée. Nous ne pouvons pas garantir une sécurité absolue."
+
 #: src/screens/support/index.tsx:33
 msgid "Yes! All your try-on results are automatically saved to your profile. You can add them to lookbooks, download them, or share them directly with friends and family for feedback on your style choices."
 msgstr "Oui ! Tous vos résultats d'essayage sont automatiquement enregistrés dans votre profil. Vous pouvez les ajouter à des lookbooks, les télécharger ou les partager directement avec vos amis et votre famille pour obtenir des commentaires sur vos choix de style."
+
+#: src/routes/terms-of-service.tsx:283
+msgid "You agree not to:"
+msgstr "Vous acceptez de ne pas :"
+
+#: src/routes/terms-of-service.tsx:360
+msgid "You may delete your account at any time through the account settings. Upon deletion, your personal data will be removed in accordance with our Privacy Policy."
+msgstr "Vous pouvez supprimer votre compte à tout moment via les paramètres du compte. Lors de la suppression, vos données personnelles seront supprimées conformément à notre Politique de confidentialité."
+
+#: src/routes/terms-of-service.tsx:326
+msgid "You may not copy, modify, distribute, or create derivative works based on the Service without our prior written consent."
+msgstr "Vous ne pouvez pas copier, modifier, distribuer ni créer des travaux dérivés basés sur le Service sans notre consentement écrit préalable."
+
+#: src/routes/terms-of-service.tsx:250
+msgid "You may retry the try-on at no additional cost"
+msgstr "Vous pouvez réessayer l'essayage sans frais supplémentaires"
+
+#: src/routes/terms-of-service.tsx:125
+msgid "You must be at least 13 years old to create an account and use the Service."
+msgstr "Vous devez avoir au moins 13 ans pour créer un compte et utiliser le Service."
+
+#: src/routes/terms-of-service.tsx:134
+msgid "You retain ownership of all content you submit to the Service, including body profile photos, garment images, and other data (\"User Content\"). By submitting User Content, you grant us a non-exclusive, worldwide, royalty-free license to:"
+msgstr "Vous conservez la propriété de tout contenu que vous soumettez au Service, y compris les photos de profil corporel, les images de vêtements et d'autres données (« Contenu utilisateur »). En soumettant du Contenu utilisateur, vous nous accordez une licence non exclusive, mondiale et gratuite pour :"
 
 #: src/screens/settings/index.tsx:25
 msgid "Your account details"
