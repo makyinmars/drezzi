@@ -48,43 +48,38 @@ const IconCard = ({
   const getTransform = () => {
     if (reducedMotion) return {};
 
-    const baseRotateY = isUser ? 8 : -8;
+    const baseRotateY = isUser ? 6 : -6;
 
     switch (phase) {
       case "idle":
         return {
           rotateY: baseRotateY,
-          translateZ: 15,
-          translateX: 0,
+          translateZ: 10,
           scale: 1,
         };
       case "scanning":
         return {
-          rotateY: baseRotateY * 0.5,
-          translateZ: 20,
-          translateX: 0,
+          rotateY: baseRotateY * 0.3,
+          translateZ: 15,
           scale: 1.02,
         };
       case "processing":
         return {
           rotateY: 0,
           translateZ: 5,
-          translateX: isUser ? 30 : -30,
-          scale: 0.95,
+          scale: 0.98,
         };
       case "complete":
         return {
           rotateY: 0,
           translateZ: 0,
-          translateX: isUser ? 50 : -50,
-          scale: 0.9,
+          scale: 0.95,
         };
       case "reset":
         return {
           rotateY: baseRotateY * progress,
-          translateZ: 15 * progress,
-          translateX: (isUser ? 50 : -50) * (1 - progress),
-          scale: 0.9 + 0.1 * progress,
+          translateZ: 10 * progress,
+          scale: 0.95 + 0.05 * progress,
         };
       default:
         return {};
@@ -116,7 +111,6 @@ const IconCard = ({
       animate={{
         rotateY: transform.rotateY,
         z: transform.translateZ,
-        x: transform.translateX,
         scale: transform.scale,
       }}
       className="group relative"
@@ -270,14 +264,14 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
   };
 
   return (
-    <div className="relative flex items-center gap-2 md:gap-4">
-      {/* Left connector line */}
+    <div className="relative flex flex-col items-center gap-2">
+      {/* Top connector line */}
       <motion.div
         animate={{
-          scaleX: isActive ? 1 : 0.5,
+          scaleY: isActive ? 1 : 0.5,
           opacity: isActive ? 1 : 0.3,
         }}
-        className="hidden h-px w-8 origin-right bg-gradient-to-r from-transparent to-border md:block dark:to-border"
+        className="h-6 w-px origin-bottom bg-gradient-to-b from-transparent to-border dark:to-border"
         transition={{ duration: 0.5, ease: easing }}
       />
 
@@ -339,13 +333,13 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
         </motion.div>
       </motion.div>
 
-      {/* Right connector line */}
+      {/* Bottom connector line */}
       <motion.div
         animate={{
-          scaleX: isActive ? 1 : 0.5,
+          scaleY: isActive ? 1 : 0.5,
           opacity: isActive ? 1 : 0.3,
         }}
-        className="hidden h-px w-8 origin-left bg-gradient-to-r from-border to-transparent md:block dark:from-border"
+        className="h-6 w-px origin-top bg-gradient-to-b from-border to-transparent dark:from-border"
         transition={{ duration: 0.5, ease: easing }}
       />
     </div>
@@ -509,7 +503,7 @@ const ProcessingBadge = ({ phase, reducedMotion }: ProcessingBadgeProps) => {
       case "complete":
         return <Trans>Try-on complete!</Trans>;
       default:
-        return <Trans>~10s processing with Gemini 2.0</Trans>;
+        return <Trans>~20s processing with Gemini 3.0</Trans>;
     }
   };
 
@@ -520,26 +514,15 @@ const ProcessingBadge = ({ phase, reducedMotion }: ProcessingBadgeProps) => {
     <motion.div
       animate={
         !reducedMotion && isActive
-          ? { scale: [1, 1.02, 1], opacity: [0.8, 1, 0.8] }
-          : { scale: 1, opacity: isActive ? 1 : 0.7 }
+          ? { scale: [1, 1.02, 1], opacity: [0.9, 1, 0.9] }
+          : { scale: 1, opacity: isActive ? 1 : 0.6 }
       }
-      className={`mt-8 flex items-center justify-center gap-2 rounded-xl border px-4 py-2 backdrop-blur-sm transition-all duration-500 ${isActive ? "border-accent/30 bg-accent/10" : "border-border/80 bg-muted/80 dark:border-border/50 dark:bg-card/50"}
+      className={`mt-4 flex items-center justify-center gap-2 rounded-full px-4 py-2 transition-all duration-500 ${isActive ? "text-accent" : "text-muted-foreground"}
       `}
       transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
     >
-      <Clock
-        className={`h-4 w-4 transition-colors duration-500 ${
-          isActive ? "text-accent" : "text-muted-foreground"
-        }`}
-        strokeWidth={1.5}
-      />
-      <span
-        className={`font-medium text-xs tracking-wide transition-colors duration-500 ${
-          isActive ? "text-accent" : "text-muted-foreground"
-        }`}
-      >
-        {getMessage()}
-      </span>
+      <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
+      <span className="font-medium text-xs tracking-wide">{getMessage()}</span>
     </motion.div>
   );
 };
@@ -562,10 +545,7 @@ export const TryOnDemo = () => {
     : DEMO_TRY_ON_RESULT_1_URL;
 
   return (
-    <div
-      className="relative mx-auto w-full max-w-6xl"
-      style={{ perspective: "1200px" }}
-    >
+    <div className="relative mx-auto w-full" style={{ perspective: "1200px" }}>
       {/* Screen reader announcements */}
       <div aria-live="polite" className="sr-only">
         {phase === "scanning" && "Scanning photo and garment"}
@@ -573,113 +553,78 @@ export const TryOnDemo = () => {
         {phase === "complete" && "Virtual try-on complete"}
       </div>
 
-      {/* Main container with 3D scene */}
-      <div className="relative overflow-hidden rounded-xl border border-border/80 bg-gradient-to-br from-muted/50 via-background to-card/70 p-1.5 shadow-2xl dark:border-border/50 dark:from-muted/50 dark:via-background dark:to-card/30">
+      {/* Demo content - vertical flex column layout */}
+      <div
+        aria-label="Interactive demonstration showing how AI combines your photo with any garment to create a virtual try-on result"
+        className="relative flex flex-col items-center gap-4"
+        role="img"
+        style={{
+          transformStyle: "preserve-3d",
+          transform: reducedMotion ? "none" : "rotateX(2deg)",
+        }}
+      >
+        {/* Input cards row */}
         <div
-          className="relative overflow-hidden rounded-xl bg-background/80 p-8 backdrop-blur-sm md:p-12"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: reducedMotion ? "none" : "rotateX(2deg)",
-          }}
+          className="flex items-center justify-center gap-4"
+          style={{ transformStyle: "preserve-3d" }}
         >
-          {/* Animated grid background */}
-          <div className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
-            <motion.div
-              animate={
-                reducedMotion
-                  ? {}
-                  : { backgroundPosition: ["0px 0px", "40px 40px"] }
-              }
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `
-                  linear-gradient(var(--accent) 1px, transparent 1px),
-                  linear-gradient(90deg, var(--accent) 1px, transparent 1px)
-                `,
-                backgroundSize: "40px 40px",
-              }}
-              transition={{
-                duration: 20,
-                ease: "linear",
-                repeat: Number.POSITIVE_INFINITY,
-              }}
-            />
-          </div>
-
-          {/* Ambient glow */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 70%)",
-            }}
-          />
-
-          {/* Demo content */}
-          <div
-            aria-label="Interactive demonstration showing how AI combines your photo with any garment to create a virtual try-on result"
-            className="relative flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-8"
-            role="img"
-            style={{ transformStyle: "preserve-3d" }}
+          {/* User photo card */}
+          <IconCard
+            imageSrc={currentProfile}
+            label={<Trans>Your Photo</Trans>}
+            phase={phase}
+            progress={progress}
+            reducedMotion={reducedMotion}
+            type="user"
           >
-            {/* User photo card */}
-            <IconCard
-              imageSrc={currentProfile}
-              label={<Trans>Your Photo</Trans>}
-              phase={phase}
-              progress={progress}
-              reducedMotion={reducedMotion}
-              type="user"
-            >
-              <User
-                className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
-                strokeWidth={0.75}
-              />
-            </IconCard>
-
-            {/* Plus operator */}
-            <motion.div
-              animate={
-                reducedMotion
-                  ? {}
-                  : { scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }
-              }
-              className={`flex h-10 w-10 items-center justify-center rounded-full border bg-muted/80 font-light text-2xl shadow-md backdrop-blur-sm transition-colors duration-500 dark:bg-card/80 ${phase === "scanning" || phase === "processing" ? "border-accent/50 text-accent" : "border-border/80 text-muted-foreground dark:border-border"}
-              `}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            >
-              +
-            </motion.div>
-
-            {/* Garment card */}
-            <IconCard
-              imageSrc={GARMENT_DEMO_URL}
-              label={<Trans>Any Garment</Trans>}
-              phase={phase}
-              progress={progress}
-              reducedMotion={reducedMotion}
-              type="shirt"
-            >
-              <Shirt
-                className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
-                strokeWidth={0.75}
-              />
-            </IconCard>
-
-            {/* Wand connector */}
-            <WandConnector phase={phase} reducedMotion={reducedMotion} />
-
-            {/* Result card */}
-            <ResultCard
-              imageSrc={currentResult}
-              phase={phase}
-              reducedMotion={reducedMotion}
+            <User
+              className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
+              strokeWidth={0.75}
             />
-          </div>
+          </IconCard>
 
-          {/* Processing badge */}
-          <ProcessingBadge phase={phase} reducedMotion={reducedMotion} />
+          {/* Plus operator */}
+          <motion.div
+            animate={
+              reducedMotion
+                ? {}
+                : { scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }
+            }
+            className={`flex h-10 w-10 items-center justify-center rounded-full border bg-muted/80 font-light text-2xl shadow-md backdrop-blur-sm transition-colors duration-500 dark:bg-card/80 ${phase === "scanning" || phase === "processing" ? "border-accent/50 text-accent" : "border-border/80 text-muted-foreground dark:border-border"}
+            `}
+            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+          >
+            +
+          </motion.div>
+
+          {/* Garment card */}
+          <IconCard
+            imageSrc={GARMENT_DEMO_URL}
+            label={<Trans>Any Garment</Trans>}
+            phase={phase}
+            progress={progress}
+            reducedMotion={reducedMotion}
+            type="shirt"
+          >
+            <Shirt
+              className="h-20 w-20 text-muted-foreground md:h-24 md:w-24"
+              strokeWidth={0.75}
+            />
+          </IconCard>
         </div>
+
+        {/* Wand connector - centered below inputs */}
+        <WandConnector phase={phase} reducedMotion={reducedMotion} />
+
+        {/* Result card - below wand */}
+        <ResultCard
+          imageSrc={currentResult}
+          phase={phase}
+          reducedMotion={reducedMotion}
+        />
+
+        {/* Processing badge */}
+        <ProcessingBadge phase={phase} reducedMotion={reducedMotion} />
       </div>
     </div>
   );
