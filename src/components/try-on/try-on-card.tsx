@@ -143,7 +143,9 @@ const TryOnCard = ({ tryOn }: TryOnCardProps) => {
 
   const statusBadges = (
     <div className="flex gap-1">
-      <Badge variant={statusVariant}>{tryOn.status}</Badge>
+      {tryOn.status !== "completed" && (
+        <Badge variant={statusVariant}>{tryOn.status}</Badge>
+      )}
       {tryOn.isFavorite && (
         <Badge variant="secondary">
           <Heart className="h-3 w-3 fill-current" />
