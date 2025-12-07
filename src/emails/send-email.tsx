@@ -1,10 +1,10 @@
 import { SendEmailCommand } from "@aws-sdk/client-sesv2";
-// import { render } from "@react-email/components";
+import { render } from "@react-email/components";
 import { Resource } from "sst";
 import { APP_NAME } from "@/constants/app";
 import { EmailClient } from "@/services/email";
-// import { PasswordResetOTPEmail } from "./password-reset-otp";
-// import { WelcomeEmail } from "./welcome-email";
+import { PasswordResetOTPEmail } from "./password-reset-otp";
+import { WelcomeEmail } from "./welcome-email";
 
 export async function sendEmail(
   email: string,
@@ -42,12 +42,12 @@ export async function sendEmail(
   }
 }
 
-// export async function sendWelcomeEmail(email: string, name: string) {
-//   const emailHtml = await render(WelcomeEmail({ name }));
-//   await sendEmail(email, `Welcome to ${APP_NAME}!`, emailHtml);
-// }
-//
-// export async function sendPasswordResetOTP(email: string, otp: string) {
-//   const emailHtml = await render(PasswordResetOTPEmail({ otp }));
-//   await sendEmail(email, `Reset your ${APP_NAME} password`, emailHtml);
-// }
+export async function sendWelcomeEmail(email: string, name: string) {
+  const emailHtml = await render(WelcomeEmail({ name }));
+  await sendEmail(email, `Welcome to ${APP_NAME}!`, emailHtml);
+}
+
+export async function sendPasswordResetOTP(email: string, otp: string) {
+  const emailHtml = await render(PasswordResetOTPEmail({ otp }));
+  await sendEmail(email, `Reset your ${APP_NAME} password`, emailHtml);
+}

@@ -165,13 +165,16 @@ const LookbookItem = ({ item, lookbookId }: LookbookItemProps) => {
   if (isEditing) {
     return (
       <div ref={setNodeRef} style={style}>
-        <CardMediaDisplay
-          imageUrl={item.tryOn.resultUrl}
-          note={null}
-          subtitle={item.tryOn.garment.brand}
-          title={item.tryOn.garment.name}
-          topLeft={dragHandle}
-        />
+        <CardMediaDisplay imageUrl={item.tryOn.resultUrl} topLeft={dragHandle}>
+          <h3 className="truncate font-medium text-foreground">
+            {item.tryOn.garment.name}
+          </h3>
+          {item.tryOn.garment.brand && (
+            <p className="mt-0.5 text-muted-foreground text-sm">
+              {item.tryOn.garment.brand}
+            </p>
+          )}
+        </CardMediaDisplay>
         <div className="mt-2 flex gap-2">
           <Input
             className="h-9 text-sm"
@@ -207,12 +210,23 @@ const LookbookItem = ({ item, lookbookId }: LookbookItemProps) => {
     <div ref={setNodeRef} style={style}>
       <CardMediaDisplay
         imageUrl={item.tryOn.resultUrl}
-        note={item.note}
-        subtitle={item.tryOn.garment.brand}
-        title={item.tryOn.garment.name}
         topLeft={dragHandle}
         topRight={actionsMenu}
-      />
+      >
+        <h3 className="truncate font-medium text-foreground">
+          {item.tryOn.garment.name}
+        </h3>
+        {item.tryOn.garment.brand && (
+          <p className="mt-0.5 text-muted-foreground text-sm">
+            {item.tryOn.garment.brand}
+          </p>
+        )}
+        {item.note && (
+          <p className="mt-2 line-clamp-2 text-muted-foreground text-sm">
+            {item.note}
+          </p>
+        )}
+      </CardMediaDisplay>
     </div>
   );
 };

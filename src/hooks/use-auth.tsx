@@ -101,23 +101,28 @@ export const useRegister = ({
   });
 
 export const useAuthHelpers = () => {
-  const forgotPassword = useMutation({
+  const sendPasswordResetOTP = useMutation({
     mutationFn: async ({ email }: { email: string }) =>
-      await authClient.forgetPassword({ email, redirectTo: "/reset-password" }),
+      await authClient.emailOtp.sendVerificationOtp({
+        email,
+        type: "forget-password",
+      }),
   });
 
   const resetPassword = useMutation({
     mutationFn: async ({
-      newPassword,
-      token,
+      email,
+      otp,
+      password,
     }: {
-      newPassword: string;
-      token: string;
-    }) => await authClient.resetPassword({ newPassword, token }),
+      email: string;
+      otp: string;
+      password: string;
+    }) => await authClient.emailOtp.resetPassword({ email, otp, password }),
   });
 
   return {
-    forgotPassword,
+    sendPasswordResetOTP,
     resetPassword,
   };
 };

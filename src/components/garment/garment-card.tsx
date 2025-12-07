@@ -84,14 +84,14 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
 
   const isOwner = garment.isOwner !== false;
 
-  const buildSubtitle = () => {
-    const parts: string[] = [];
-    if (garment.brand) parts.push(garment.brand);
+  const buildSubtitleBadges = () => {
+    const badges: string[] = [];
+    if (garment.brand) badges.push(garment.brand);
     if (garment.price !== null) {
-      parts.push(`${garment.currency} ${garment.price.toFixed(2)}`);
+      badges.push(`${garment.currency} ${garment.price.toFixed(2)}`);
     }
-    parts.push(garment.category);
-    return parts.join(" · ");
+    badges.push(garment.category);
+    return badges;
   };
 
   const buildNote = () => {
@@ -165,17 +165,26 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
     </DropdownMenu>
   ) : undefined;
 
+  const note = buildNote();
+
   return (
     <>
       <CardMediaDisplay
         alt={garment.name}
         imageUrl={garment.imageUrl}
-        note={buildNote()}
-        subtitle={buildSubtitle()}
-        title={garment.name}
         topLeft={statusBadges}
         topRight={actionsMenu}
-      />
+      >
+        <h3 className="truncate font-medium text-foreground">{garment.name}</h3>
+        <div className="mt-0.5 flex flex-wrap gap-1">
+          {buildSubtitleBadges().map((label) => (
+            <Badge key={label} variant="outline">
+              {label}
+            </Badge>
+          ))}
+        </div>
+        {note && <p>{note}</p>}
+      </CardMediaDisplay>
       <GarmentForm
         garment={garment}
         onOpenChange={setFormOpen}

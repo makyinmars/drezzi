@@ -27,9 +27,9 @@ export const PasswordResetOTPEmail = ({ otp }: PasswordResetOTPEmailProps) => {
           theme: {
             extend: {
               colors: {
-                primary: "#3d9970",
-                "primary-light": "#5fb88f",
-                foreground: "#2d3b32",
+                primary: "#D4A456",
+                "primary-light": "#E8C078",
+                foreground: "#444444",
               },
             },
           },
@@ -37,12 +37,12 @@ export const PasswordResetOTPEmail = ({ otp }: PasswordResetOTPEmailProps) => {
       >
         <Body className="mx-auto my-auto bg-white px-2 font-sans">
           <Preview>Your password reset code</Preview>
-          <Container className="mx-auto my-[40px] max-w-[500px] border border-[#e8ebe9] border-solid bg-white">
+          <Container className="mx-auto my-[40px] max-w-[500px] border border-[#e8e5e0] border-solid bg-white">
             {/* Header */}
             <Section
               className="px-[40px] py-[32px] text-center"
               style={{
-                background: "linear-gradient(135deg, #5fb88f 0%, #3d9970 100%)",
+                background: "linear-gradient(135deg, #E8C078 0%, #D4A456 100%)",
               }}
             >
               <table
@@ -81,7 +81,7 @@ export const PasswordResetOTPEmail = ({ otp }: PasswordResetOTPEmailProps) => {
               {/* OTP Code Display */}
               <Text
                 className="m-0 mb-[24px] font-bold font-mono text-[40px] tracking-[8px]"
-                style={{ color: "#3d9970" }}
+                style={{ color: "#D4A456" }}
               >
                 {otp}
               </Text>

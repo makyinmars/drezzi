@@ -1,21 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link,
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import { GalleryVerticalEnd } from "lucide-react";
+import type { SocialProvider } from "better-auth/social-providers";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { signIn, signUp } from "@/auth/client";
 import ContentLayout from "@/components/common/content-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -28,7 +30,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLogin, useRegister } from "@/hooks/use-auth";
+import { APP_LOGO_URL, APP_NAME } from "@/constants/app";
 import { useTRPC } from "@/trpc/react";
 import { apiUserSignup, type UserSignup } from "@/validators/auth";
 
@@ -49,7 +51,6 @@ export const Route = createFileRoute("/auth/signup")({
 
 function RouteComponent() {
   const { t } = useLingui();
-  const { loginWithSocial } = useLogin();
   const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
@@ -63,31 +64,39 @@ function RouteComponent() {
     },
   });
 
-  const register = useRegister({
+  const loginWithSocial = useMutation({
+    mutationFn: async ({
+      provider,
+      callbackURL,
+    }: {
+      provider: SocialProvider;
+      callbackURL: string;
+    }) =>
+      await signIn.social({
+        provider,
+        callbackURL: callbackURL || "/",
+      }),
+  });
+
+  const register = useMutation({
+    mutationFn: async (data: UserSignup) => await signUp.email(data),
     onSuccess: async () => {
-      toast.success(
-        t`Account created successfully! Please check your email to verify your account.`
-      );
       form.reset();
       await queryClient.invalidateQueries(trpc.auth.getSession.queryFilter());
-      await router.navigate({
-        to: "/dashboard",
-      });
-    },
-    onError: (error) => {
-      toast.error(t`Registration failed: Please try again`);
-      console.error("Registration error:", error);
+      await router.navigate({ to: "/dashboard" });
     },
   });
 
-  const onSubmit = async (data: UserSignup) => {
-    try {
-      await register.mutateAsync(data);
-    } catch {}
+  const onSubmit = (data: UserSignup) => {
+    toast.promise(register.mutateAsync(data), {
+      loading: t`Creating your account...`,
+      success: t`Account created successfully!`,
+      error: t`Registration failed: Please try again`,
+    });
   };
 
-  const handleGoogleSignup = async () => {
-    await loginWithSocial.mutateAsync({
+  const handleGoogleSignup = () => {
+    loginWithSocial.mutate({
       provider: "google",
       callbackURL: "/dashboard",
     });
@@ -101,26 +110,26 @@ function RouteComponent() {
             className="flex items-center gap-2 self-center font-medium"
             to="/"
           >
-            <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            Acme Inc.
+            <img alt={APP_NAME} className="h-12 w-12" src={APP_LOGO_URL} />
+            <span className="font-bold text-2xl tracking-tight">
+              {APP_NAME}
+            </span>
           </Link>
           <div className="flex flex-col gap-6">
             <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-xl">
+              <CardHeader className="space-y-1 pb-6 text-center">
+                <CardTitle className="font-semibold text-xl">
                   <Trans>Create an account</Trans>
                 </CardTitle>
                 <CardDescription>
                   <Trans>Sign up with your Google account or email</Trans>
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <div className="grid gap-6">
                   <div className="flex flex-col gap-4">
                     <Button
-                      className="w-full"
+                      className="w-full bg-muted/50 hover:bg-muted"
                       disabled={loginWithSocial.isPending}
                       onClick={handleGoogleSignup}
                       variant="outline"
@@ -211,22 +220,27 @@ function RouteComponent() {
                       </Button>
                     </form>
                   </Form>
-                  <div className="text-center text-sm">
-                    <Trans>Already have an account?</Trans>{" "}
-                    <Link className="underline underline-offset-4" to="/auth">
-                      <Trans>Sign in</Trans>
-                    </Link>
-                  </div>
                 </div>
               </CardContent>
+              <CardFooter className="flex justify-center border-t p-4 pt-4">
+                <div className="text-muted-foreground text-sm">
+                  <Trans>Already have an account?</Trans>{" "}
+                  <Link
+                    className="text-foreground underline underline-offset-4 hover:text-[var(--auth-primary)]"
+                    to="/auth"
+                  >
+                    <Trans>Sign in</Trans>
+                  </Link>
+                </div>
+              </CardFooter>
             </Card>
             <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
               <Trans>By clicking continue, you agree to our</Trans>{" "}
-              <Link to="/">
+              <Link to="/terms-of-service">
                 <Trans>Terms of Service</Trans>
               </Link>{" "}
               <Trans>and</Trans>{" "}
-              <Link to="/">
+              <Link to="/privacy-policy">
                 <Trans>Privacy Policy</Trans>
               </Link>
               .

@@ -8,5 +8,4 @@ export const authClient = createAuthClient({
   plugins: [emailOTPClient()],
 });
 
-export const { signIn, signUp, useSession, forgetPassword } =
-  createAuthClient();
+export const { signIn, signUp, useSession } = authClient;

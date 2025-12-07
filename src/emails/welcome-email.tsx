@@ -37,11 +37,11 @@ export const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
           theme: {
             extend: {
               colors: {
-                primary: "#3d9970",
-                "primary-light": "#5fb88f",
-                "primary-dark": "#2d7a5a",
-                background: "#f5f9f6",
-                foreground: "#2d3b32",
+                primary: "#D4A456",
+                "primary-light": "#E8C078",
+                "primary-dark": "#C08030",
+                background: "#FDFBF7",
+                foreground: "#444444",
               },
             },
           },
@@ -49,12 +49,12 @@ export const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
       >
         <Body className="mx-auto my-auto bg-white px-2 font-sans">
           <Preview>{previewText}</Preview>
-          <Container className="mx-auto my-[40px] max-w-[500px] border border-[#e8ebe9] border-solid bg-white">
+          <Container className="mx-auto my-[40px] max-w-[500px] border border-[#e8e5e0] border-solid bg-white">
             {/* Header with gradient */}
             <Section
               className="px-[40px] py-[32px] text-center"
               style={{
-                background: "linear-gradient(135deg, #5fb88f 0%, #3d9970 100%)",
+                background: "linear-gradient(135deg, #E8C078 0%, #D4A456 100%)",
               }}
             >
               <table
@@ -198,7 +198,7 @@ export const WelcomeEmail = ({ name }: WelcomeEmailProps) => {
             </Section>
 
             {/* Footer */}
-            <Hr className="mx-[40px] my-0 border border-[#e8ebe9] border-solid" />
+            <Hr className="mx-[40px] my-0 border border-[#e8e5e0] border-solid" />
             <Section className="px-[40px] py-[24px]">
               <Text className="m-0 text-center text-[#666666] text-[12px] leading-[20px]">
                 Questions? Contact us at{" "}
