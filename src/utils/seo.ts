@@ -1,6 +1,7 @@
 import {
-  APP_LOGO_URL,
   APP_NAME,
+  APP_SEO_OG_URL,
+  APP_URL,
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
 } from "@/constants/app";
@@ -9,7 +10,6 @@ export type SEOConfig = {
   title?: string;
   description?: string;
   keywords?: string;
-  image?: string;
   url?: string;
   type?: "website" | "article";
 };
@@ -18,7 +18,6 @@ export const seo = ({
   title,
   description = DEFAULT_DESCRIPTION,
   keywords = DEFAULT_KEYWORDS,
-  image = APP_LOGO_URL,
   url,
   type = "website",
 }: SEOConfig) => {
@@ -31,21 +30,20 @@ export const seo = ({
 
     // Twitter Card tags
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:site", content: "@f7stack" },
-    { name: "twitter:creator", content: "@f7stack" },
+    { name: "twitter:site", content: "@makyinc" },
+    { name: "twitter:creator", content: "@makyinc" },
     { name: "twitter:title", content: fullTitle },
     { name: "twitter:description", content: description },
-    { name: "twitter:image", content: image },
+    { name: "twitter:image", content: APP_SEO_OG_URL },
+    { name: "twitter:url", content: url ?? APP_URL },
 
     // OpenGraph tags (use 'property' not 'name')
     { property: "og:type", content: type },
     { property: "og:title", content: fullTitle },
     { property: "og:description", content: description },
-    { property: "og:image", content: image },
+    { property: "og:image", content: APP_SEO_OG_URL },
     { property: "og:site_name", content: APP_NAME },
-
-    // Add canonical URL if provided
-    ...(url ? [{ property: "og:url", content: url }] : []),
+    { property: "og:url", content: url ?? APP_URL },
   ];
 
   return tags;

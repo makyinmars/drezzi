@@ -20,7 +20,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import {
-  APP_LOGO_URL,
   APP_NAME,
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
@@ -96,7 +95,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         title: `${APP_NAME} - AI Virtual Try-On | See Clothes On You Before Buying`,
         description: DEFAULT_DESCRIPTION,
         keywords: DEFAULT_KEYWORDS,
-        image: APP_LOGO_URL,
       }),
     ],
     links: [
@@ -118,7 +116,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         sizes: "16x16",
         href: "/favicon-16x16.png",
       },
-      { rel: "manifest", href: "/site.webmanifest", color: "#10b981" },
+      { rel: "manifest", href: "/site.webmanifest", color: "#d9a03d" },
       { rel: "icon", href: "/favicon.ico" },
     ],
   }),

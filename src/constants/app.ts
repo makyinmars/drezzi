@@ -8,3 +8,8 @@ export const DEFAULT_DESCRIPTION =
 
 export const DEFAULT_KEYWORDS =
   "virtual try-on, AI fashion, styling, outfit preview, clothes visualization, fashion tech, Drezzi, lookbook";
+
+export const APP_SEO_OG_URL =
+  "https://j2pc1hx4iz.ufs.sh/f/jych5iNwfaTvqHxvtCsPDiQcNeuGTrHKC4132X9yOmtMhZ8b";
+
+export const APP_URL = "https://getdrezzi.app";
