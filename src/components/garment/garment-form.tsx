@@ -246,7 +246,8 @@ const GarmentForm = ({
                   </CardTitle>
                   <CardDescription className="text-sm">
                     <Trans>
-                      Paste a product URL to auto-fill details from retailers
+                      Paste a product URL to auto-fill details from retailers.
+                      This costs 1 credit per import.
                     </Trans>
                   </CardDescription>
                 </CardHeader>

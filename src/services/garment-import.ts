@@ -30,6 +30,10 @@ function normalizeImageUrl(imageUrl: string): string {
   return imageUrl;
 }
 
+/**
+ * Import garment details from a product URL using AI extraction.
+ * Note: This operation costs 1 credit per import.
+ */
 export async function importGarmentFromUrl(url: string) {
   const result = await generateObject({
     model: google("gemini-2.5-flash"),

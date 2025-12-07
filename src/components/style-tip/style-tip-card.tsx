@@ -139,7 +139,7 @@ const StyleTipCard = ({ tryOnId, tips, isCompleted }: StyleTipCardProps) => {
 
               return (
                 <Item
-                  className="mb-2 break-inside-avoid"
+                  className="relative mb-2 break-inside-avoid"
                   key={tip.id}
                   size="sm"
                   variant="muted"
@@ -152,14 +152,18 @@ const StyleTipCard = ({ tryOnId, tips, isCompleted }: StyleTipCardProps) => {
                       {tip.content}
                     </ItemDescription>
                   </ItemContent>
-                  <ItemActions className="opacity-0 transition-opacity group-hover/item:opacity-100">
+                  <ItemActions className="absolute top-2 right-2 opacity-0 transition-opacity group-hover/item:opacity-100">
                     <StyleTipForm tip={tip} tryOnId={tryOnId}>
                       <Button className="h-6 w-6" size="icon" variant="ghost">
                         <Edit className="h-3 w-3" />
                       </Button>
                     </StyleTipForm>
                     <StyleTipDelete tip={tip} tryOnId={tryOnId}>
-                      <Button className="h-6 w-6" size="icon" variant="ghost">
+                      <Button
+                        className="h-6 w-6 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        size="icon"
+                        variant="ghost"
+                      >
                         <Trash className="h-3 w-3" />
                       </Button>
                     </StyleTipDelete>
