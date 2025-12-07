@@ -60,6 +60,25 @@ const TryOnDelete = ({ tryOn, children }: TryOnDeleteProps) => {
           router.navigate({ to: "/try-on" });
         }
       },
+      onSettled: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.dashboard.stats.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.dashboard.recentActivity.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.favorites.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.recent.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.lookbook.availableTryOns.queryKey(),
+          }),
+        ]);
+      },
     })
   );
 

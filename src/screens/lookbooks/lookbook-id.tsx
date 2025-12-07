@@ -8,8 +8,8 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
+  rectSortingStrategy,
   SortableContext,
-  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -17,12 +17,14 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
+  Calendar,
   Edit,
   Eye,
   EyeOff,
+  Layers,
   Plus,
   Share2,
   Trash,
@@ -37,12 +39,21 @@ import LookbookItem from "@/components/lookbook/lookbook-item";
 import ShareDialog from "@/components/lookbook/share-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const Route = getRouteApi("/(authed)/lookbooks/$lookbookId");
 
 const LookbookDetailScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const { lookbookId } = Route.useParams();
   const trpc = useTRPC();
@@ -109,10 +120,8 @@ const LookbookDetailScreen = () => {
     });
   };
 
-  const locale = "en";
-  const dateFormatter = new Intl.DateTimeFormat(locale, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
-    timeStyle: "short",
   });
 
   return (
@@ -120,28 +129,28 @@ const LookbookDetailScreen = () => {
       <PageHeader
         actions={
           <div className="flex gap-2">
-            <Button asChild size="sm" variant="ghost">
-              <a href="/lookbooks">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                <Trans>Back</Trans>
-              </a>
+            <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
+              <Link to="/lookbooks">
+                <ArrowLeft />
+                {!isMobile && <Trans>Back</Trans>}
+              </Link>
             </Button>
             <LookbookForm lookbook={lookbook}>
-              <Button size="sm" variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                <Trans>Edit</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="outline">
+                <Edit />
+                {!isMobile && <Trans>Edit</Trans>}
               </Button>
             </LookbookForm>
             <ShareDialog lookbook={lookbook}>
-              <Button size="sm" variant="outline">
-                <Share2 className="mr-2 h-4 w-4" />
-                <Trans>Share</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="outline">
+                <Share2 />
+                {!isMobile && <Trans>Share</Trans>}
               </Button>
             </ShareDialog>
             <LookbookDelete lookbook={lookbook}>
-              <Button size="sm" variant="destructive">
-                <Trash className="mr-2 h-4 w-4" />
-                <Trans>Delete</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="destructive">
+                <Trash />
+                {!isMobile && <Trans>Delete</Trans>}
               </Button>
             </LookbookDelete>
           </div>
@@ -150,132 +159,131 @@ const LookbookDetailScreen = () => {
         title={lookbook.name}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Details</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  <Trans>Visibility</Trans>
-                </span>
-                {lookbook.isPublic ? (
-                  <Badge variant="secondary">
-                    <Eye className="mr-1 h-3 w-3" />
-                    <Trans>Public</Trans>
-                  </Badge>
-                ) : (
-                  <Badge variant="outline">
-                    <EyeOff className="mr-1 h-3 w-3" />
-                    <Trans>Private</Trans>
-                  </Badge>
-                )}
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  <Trans>Items</Trans>
-                </span>
-                <span>{lookbook.items.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  <Trans>Created</Trans>
-                </span>
-                <span>
-                  {dateFormatter.format(new Date(lookbook.createdAt))}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  <Trans>Updated</Trans>
-                </span>
-                <span>
-                  {dateFormatter.format(new Date(lookbook.updatedAt))}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Badge Row */}
+      <div className="flex flex-wrap gap-2">
+        <Badge variant="outline">
+          {lookbook.isPublic ? (
+            <>
+              <Eye className="mr-1 h-3 w-3" />
+              <Trans>Public</Trans>
+            </>
+          ) : (
+            <>
+              <EyeOff className="mr-1 h-3 w-3" />
+              <Trans>Private</Trans>
+            </>
+          )}
+        </Badge>
+        <Badge variant="outline">
+          <Layers className="mr-1 h-3 w-3" />
+          <Trans>{lookbook.items.length} items</Trans>
+        </Badge>
+        <Badge variant="outline">
+          <Calendar className="mr-1 h-3 w-3" />
+          {dateFormatter.format(new Date(lookbook.createdAt))}
+        </Badge>
+      </div>
 
+      {/* Collection Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-lg">
+            <Trans>Collection</Trans>
+          </h2>
           <Suspense
             fallback={
-              <Button className="w-full" disabled>
+              <Button disabled size="sm">
                 <Plus className="mr-2 h-4 w-4" />
                 <Trans>Loading...</Trans>
               </Button>
             }
           >
             <AddTryOnDialog lookbookId={lookbookId}>
-              <Button className="w-full">
+              <Button size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
-                <Trans>Add Try-On</Trans>
+                <Trans>Add Item</Trans>
               </Button>
             </AddTryOnDialog>
           </Suspense>
         </div>
 
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Items</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {lookbook.items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-                  <h3 className="mb-2 font-medium text-lg">
-                    <Trans>No items yet</Trans>
-                  </h3>
-                  <p className="mb-4 text-muted-foreground text-sm">
-                    <Trans>
-                      Add try-on results to this lookbook to start curating.
-                    </Trans>
-                  </p>
-                  <Suspense
-                    fallback={
-                      <Button disabled>
-                        <Plus className="mr-2 h-4 w-4" />
-                        <Trans>Loading...</Trans>
-                      </Button>
-                    }
-                  >
-                    <AddTryOnDialog lookbookId={lookbookId}>
-                      <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        <Trans>Add Your First Item</Trans>
-                      </Button>
-                    </AddTryOnDialog>
-                  </Suspense>
+        {lookbook.items.length === 0 ? (
+          <Empty className="border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Plus className="h-5 w-5" />
+              </EmptyMedia>
+              <EmptyTitle>
+                <Trans>No items yet</Trans>
+              </EmptyTitle>
+              <EmptyDescription>
+                <Trans>
+                  Add try-on results to this lookbook to start curating.
+                </Trans>
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Suspense
+                fallback={
+                  <Button disabled>
+                    <Plus className="mr-2 h-4 w-4" />
+                    <Trans>Loading...</Trans>
+                  </Button>
+                }
+              >
+                <AddTryOnDialog lookbookId={lookbookId}>
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    <Trans>Add Your First Item</Trans>
+                  </Button>
+                </AddTryOnDialog>
+              </Suspense>
+            </EmptyContent>
+          </Empty>
+        ) : (
+          <>
+            <DndContext
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              sensors={sensors}
+            >
+              <SortableContext
+                items={lookbook.items.map((item) => item.id)}
+                strategy={rectSortingStrategy}
+              >
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+                  {lookbook.items.map((item) => (
+                    <LookbookItem
+                      item={item}
+                      key={item.id}
+                      lookbookId={lookbookId}
+                    />
+                  ))}
                 </div>
-              ) : (
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                  sensors={sensors}
+              </SortableContext>
+            </DndContext>
+
+            {/* Add Try-On CTA */}
+            <Suspense
+              fallback={
+                <div className="flex cursor-not-allowed items-center justify-center rounded-lg border border-dashed p-6 text-muted-foreground">
+                  <Plus className="mr-2 h-4 w-4" />
+                  <Trans>Loading...</Trans>
+                </div>
+              }
+            >
+              <AddTryOnDialog lookbookId={lookbookId}>
+                <button
+                  className="flex w-full items-center justify-center rounded-lg border border-dashed p-6 text-muted-foreground transition-colors hover:border-primary hover:bg-muted/50 hover:text-foreground"
+                  type="button"
                 >
-                  <SortableContext
-                    items={lookbook.items.map((item) => item.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    <div className="space-y-2">
-                      {lookbook.items.map((item) => (
-                        <LookbookItem
-                          item={item}
-                          key={item.id}
-                          lookbookId={lookbookId}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                  <Plus className="mr-2 h-4 w-4" />
+                  <Trans>Add Try-On</Trans>
+                </button>
+              </AddTryOnDialog>
+            </Suspense>
+          </>
+        )}
       </div>
     </div>
   );

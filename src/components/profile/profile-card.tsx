@@ -16,6 +16,7 @@ import {
 import { useTRPC } from "@/trpc/react";
 import type { ProfileListProcedure } from "@/trpc/routers/profile";
 
+import MediaDisplay from "../common/media-display";
 import ProfileDelete from "./profile-delete";
 import ProfileForm from "./profile-form";
 
@@ -56,6 +57,11 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
           context?.previousData
         );
       },
+      onSettled: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.profile.byId.queryKey({ id: profile.id }),
+        });
+      },
     })
   );
 
@@ -77,20 +83,21 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
   ].filter((m) => m.value !== null);
 
   return (
-    <Card className="overflow-hidden">
-      <div className="relative aspect-[4/5] bg-muted lg:aspect-[3/4]">
-        <img
-          alt={profile.name}
-          className="h-full w-full object-contain p-1"
-          src={profile.photoUrl}
-        />
+    <Card className="overflow-hidden pt-0">
+      <MediaDisplay
+        alt={profile.name}
+        aspectRatio="4/5"
+        className="lg:aspect-3/4"
+        src={profile.photoUrl}
+        variant="card"
+      >
         {profile.isDefault && (
           <Badge className="absolute top-2 right-2" variant="secondary">
             <Check className="mr-1 h-3 w-3" />
             <Trans>Default</Trans>
           </Badge>
         )}
-      </div>
+      </MediaDisplay>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center justify-between">
           <span>{profile.name}</span>

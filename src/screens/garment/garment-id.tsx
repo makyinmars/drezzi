@@ -4,7 +4,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Edit,
@@ -21,11 +21,13 @@ import GarmentForm from "@/components/garment/garment-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const Route = getRouteApi("/(authed)/garment/$garmentId");
 
 const GarmentDetailScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const { garmentId } = Route.useParams();
   const trpc = useTRPC();
@@ -73,42 +75,42 @@ const GarmentDetailScreen = () => {
       <PageHeader
         actions={
           <div className="flex gap-2">
-            <Button asChild size="sm" variant="ghost">
-              <a href="/garment">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                <Trans>Back</Trans>
-              </a>
+            <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
+              <Link to="/garment">
+                <ArrowLeft />
+                {!isMobile && <Trans>Back</Trans>}
+              </Link>
             </Button>
             {isOwner && (
               <>
                 <GarmentForm garment={garment}>
-                  <Button size="sm" variant="outline">
-                    <Edit className="mr-2 h-4 w-4" />
-                    <Trans>Edit</Trans>
+                  <Button size={isMobile ? "icon" : "sm"} variant="outline">
+                    <Edit />
+                    {!isMobile && <Trans>Edit</Trans>}
                   </Button>
                 </GarmentForm>
                 <Button
                   disabled={togglePublicMutation.isPending}
                   onClick={handleTogglePublic}
-                  size="sm"
+                  size={isMobile ? "icon" : "sm"}
                   variant="outline"
                 >
                   {garment.isPublic ? (
                     <>
-                      <EyeOff className="mr-2 h-4 w-4" />
-                      <Trans>Make Private</Trans>
+                      <EyeOff />
+                      {!isMobile && <Trans>Make Private</Trans>}
                     </>
                   ) : (
                     <>
-                      <Eye className="mr-2 h-4 w-4" />
-                      <Trans>Make Public</Trans>
+                      <Eye />
+                      {!isMobile && <Trans>Make Public</Trans>}
                     </>
                   )}
                 </Button>
                 <GarmentDelete garment={garment}>
-                  <Button size="sm" variant="destructive">
-                    <Trash className="mr-2 h-4 w-4" />
-                    <Trans>Delete</Trans>
+                  <Button size={isMobile ? "icon" : "sm"} variant="destructive">
+                    <Trash />
+                    {!isMobile && <Trans>Delete</Trans>}
                   </Button>
                 </GarmentDelete>
               </>

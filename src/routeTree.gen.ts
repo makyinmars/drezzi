@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as TodoTodoIdRouteImport } from './routes/todo/$todoId'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as authedSupportRouteImport } from './routes/(authed)/support'
 import { Route as authedDashboardRouteRouteImport } from './routes/(authed)/dashboard/route'
 import { Route as authedTryOnIndexRouteImport } from './routes/(authed)/try-on/index'
@@ -67,6 +68,11 @@ const TodoTodoIdRoute = TodoTodoIdRouteImport.update({
 const AuthSignupRoute = AuthSignupRouteImport.update({
   id: '/auth/signup',
   path: '/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/auth/reset-password',
+  path: '/auth/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authedSupportRoute = authedSupportRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/dashboard': typeof authedDashboardRouteRouteWithChildren
   '/support': typeof authedSupportRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/support': typeof authedSupportRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth': typeof AuthIndexRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/(authed)/dashboard': typeof authedDashboardRouteRouteWithChildren
   '/(authed)/support': typeof authedSupportRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/signup': typeof AuthSignupRoute
   '/todo/$todoId': typeof TodoTodoIdRoute
   '/auth/': typeof AuthIndexRoute
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/dashboard'
     | '/support'
+    | '/auth/reset-password'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/terms-of-service'
     | '/support'
+    | '/auth/reset-password'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/(authed)/dashboard'
     | '/(authed)/support'
+    | '/auth/reset-password'
     | '/auth/signup'
     | '/todo/$todoId'
     | '/auth/'
@@ -326,6 +338,7 @@ export interface RootRouteChildren {
   authedRouteRoute: typeof authedRouteRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignupRoute: typeof AuthSignupRoute
   TodoTodoIdRoute: typeof TodoTodoIdRoute
   AuthIndexRoute: typeof AuthIndexRoute
@@ -384,6 +397,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/signup'
       fullPath: '/auth/signup'
       preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(authed)/support': {
@@ -567,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   authedRouteRoute: authedRouteRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignupRoute: AuthSignupRoute,
   TodoTodoIdRoute: TodoTodoIdRoute,
   AuthIndexRoute: AuthIndexRoute,

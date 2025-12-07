@@ -7,6 +7,14 @@ import PageHeader from "@/components/common/page-header";
 import TryOnCard from "@/components/try-on/try-on-card";
 import TryOnForm from "@/components/try-on/try-on-form";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
@@ -42,26 +50,33 @@ const TryOnListScreen = () => {
       />
 
       {tryOnsQuery.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <h3 className="mb-2 font-medium text-lg">
-            <Trans>No try-ons yet</Trans>
-          </h3>
-          <p className="mb-4 text-muted-foreground text-sm">
-            <Trans>
-              Start your first virtual try-on to see how clothes look on you.
-            </Trans>
-          </p>
-          <Suspense fallback={<Skeleton className="h-10 w-40" />}>
-            <TryOnForm>
-              <Button size={isMobile ? "icon" : "default"}>
-                <Sparkles className="size-4" />
-                {!isMobile && <Trans>Start Your First Try-On</Trans>}
-              </Button>
-            </TryOnForm>
-          </Suspense>
-        </div>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Sparkles className="h-5 w-5" />
+            </EmptyMedia>
+            <EmptyTitle>
+              <Trans>No try-ons yet</Trans>
+            </EmptyTitle>
+            <EmptyDescription>
+              <Trans>
+                Start your first virtual try-on to see how clothes look on you.
+              </Trans>
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Suspense fallback={<Skeleton className="h-10 w-40" />}>
+              <TryOnForm>
+                <Button size={isMobile ? "icon" : "default"}>
+                  <Sparkles className="size-4" />
+                  {!isMobile && <Trans>Start Your First Try-On</Trans>}
+                </Button>
+              </TryOnForm>
+            </Suspense>
+          </EmptyContent>
+        </Empty>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {tryOnsQuery.data.map((tryOn) => (
             <TryOnCard key={tryOn.id} tryOn={tryOn} />
           ))}

@@ -1,21 +1,20 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, Eye, EyeOff, Trash } from "lucide-react";
+import { Edit, Eye, EyeOff, MoreHorizontal, Trash } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
+import CardMediaDisplay from "@/components/custom/card-media-display";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTRPC } from "@/trpc/react";
 import type { GarmentListProcedure } from "@/trpc/routers/garment";
-
 import GarmentDelete from "./garment-delete";
 import GarmentForm from "./garment-form";
 
@@ -27,6 +26,8 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
   const { t } = useLingui();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const [formOpen, setFormOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const togglePublicMutation = useMutation(
     trpc.garment.togglePublic.mutationOptions({
@@ -57,6 +58,16 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
           context?.previousData
         );
       },
+      onSettled: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.garment.byId.queryKey({ id: garment.id }),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.garment.publicList.queryKey(),
+          }),
+        ]);
+      },
     })
   );
 
@@ -73,97 +84,109 @@ const GarmentCard = ({ garment }: GarmentCardProps) => {
 
   const isOwner = garment.isOwner !== false;
 
-  return (
-    <Card className="overflow-hidden">
-      <div className="relative h-48">
-        <img
-          alt={garment.name}
-          className="h-full w-full object-cover"
-          src={garment.imageUrl}
-        />
-        <div className="absolute top-2 right-2 flex gap-1">
-          {garment.isPublic && (
-            <Badge variant="secondary">
-              <Eye className="mr-1 h-3 w-3" />
-              <Trans>Public</Trans>
-            </Badge>
-          )}
-          {!isOwner && (
-            <Badge variant="outline">
-              <Trans>Shared</Trans>
-            </Badge>
-          )}
-        </div>
+  const buildSubtitle = () => {
+    const parts: string[] = [];
+    if (garment.brand) parts.push(garment.brand);
+    if (garment.price !== null) {
+      parts.push(`${garment.currency} ${garment.price.toFixed(2)}`);
+    }
+    parts.push(garment.category);
+    return parts.join(" · ");
+  };
+
+  const buildNote = () => {
+    const parts: string[] = [];
+    if (garment.colors.length > 0) {
+      parts.push(garment.colors.slice(0, 3).join(", "));
+    }
+    if (garment.sizes.length > 0) {
+      parts.push(garment.sizes.slice(0, 3).join(", "));
+    }
+    return parts.length > 0 ? parts.join(" · ") : null;
+  };
+
+  const statusBadges =
+    garment.isPublic || !isOwner ? (
+      <div className="flex gap-1">
+        {garment.isPublic && (
+          <Badge variant="secondary">
+            <Eye className="mr-1 h-3 w-3" />
+            <Trans>Public</Trans>
+          </Badge>
+        )}
+        {!isOwner && (
+          <Badge variant="outline">
+            <Trans>Shared</Trans>
+          </Badge>
+        )}
       </div>
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between">
-          <span className="truncate">{garment.name}</span>
-          <Badge variant="outline">{garment.category}</Badge>
-        </CardTitle>
-        <CardDescription>
-          {garment.brand ? (
-            <span>{garment.brand}</span>
+    ) : undefined;
+
+  const actionsMenu = isOwner ? (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="h-8 w-8 bg-background/80 backdrop-blur-sm"
+          size="icon"
+          variant="secondary"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setFormOpen(true)}>
+          <Edit />
+          <Trans>Edit</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={togglePublicMutation.isPending}
+          onClick={handleTogglePublic}
+        >
+          {garment.isPublic ? (
+            <>
+              <EyeOff />
+              <Trans>Make Private</Trans>
+            </>
           ) : (
-            <Trans>No brand specified</Trans>
+            <>
+              <Eye />
+              <Trans>Make Public</Trans>
+            </>
           )}
-          {garment.price !== null && (
-            <span className="ml-2">
-              {garment.currency} {garment.price.toFixed(2)}
-            </span>
-          )}
-        </CardDescription>
-      </CardHeader>
-      {(garment.colors.length > 0 || garment.sizes.length > 0) && (
-        <CardContent className="pb-2">
-          <div className="flex flex-wrap gap-1">
-            {garment.colors.slice(0, 3).map((color) => (
-              <Badge key={color} variant="secondary">
-                {color}
-              </Badge>
-            ))}
-            {garment.sizes.slice(0, 3).map((size) => (
-              <Badge key={size} variant="outline">
-                {size}
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
-      )}
-      {isOwner && (
-        <CardFooter className="flex gap-2 pt-2">
-          <GarmentForm garment={garment}>
-            <Button size="sm" variant="outline">
-              <Edit className="mr-1 h-3 w-3" />
-              <Trans>Edit</Trans>
-            </Button>
-          </GarmentForm>
-          <Button
-            disabled={togglePublicMutation.isPending}
-            onClick={handleTogglePublic}
-            size="sm"
-            variant="outline"
-          >
-            {garment.isPublic ? (
-              <>
-                <EyeOff className="mr-1 h-3 w-3" />
-                <Trans>Make Private</Trans>
-              </>
-            ) : (
-              <>
-                <Eye className="mr-1 h-3 w-3" />
-                <Trans>Make Public</Trans>
-              </>
-            )}
-          </Button>
-          <GarmentDelete garment={garment}>
-            <Button size="sm" variant="destructive">
-              <Trash className="mr-1 h-3 w-3" />
-              <Trans>Delete</Trans>
-            </Button>
-          </GarmentDelete>
-        </CardFooter>
-      )}
-    </Card>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => setDeleteOpen(true)}
+          variant="destructive"
+        >
+          <Trash />
+          <Trans>Delete</Trans>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  ) : undefined;
+
+  return (
+    <>
+      <CardMediaDisplay
+        alt={garment.name}
+        imageUrl={garment.imageUrl}
+        note={buildNote()}
+        subtitle={buildSubtitle()}
+        title={garment.name}
+        topLeft={statusBadges}
+        topRight={actionsMenu}
+      />
+      <GarmentForm
+        garment={garment}
+        onOpenChange={setFormOpen}
+        open={formOpen}
+      />
+      <GarmentDelete
+        garment={garment}
+        onOpenChange={setDeleteOpen}
+        open={deleteOpen}
+      />
+    </>
   );
 };
 

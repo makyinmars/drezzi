@@ -13,3 +13,5 @@ export const APP_SEO_OG_URL =
   "https://j2pc1hx4iz.ufs.sh/f/jych5iNwfaTvqHxvtCsPDiQcNeuGTrHKC4132X9yOmtMhZ8b";
 
 export const APP_URL = "https://getdrezzi.app";
+
+export const DREZZI_SUPPORT_EMAIL = "developer@makyinc.com";

@@ -40,16 +40,34 @@ export const lookbookRouter = {
       include: {
         _count: { select: { items: true } },
         cover: true,
+        items: {
+          take: 4,
+          orderBy: { order: "asc" },
+          include: {
+            tryOn: {
+              include: { result: true },
+            },
+          },
+        },
       },
       orderBy: { updatedAt: "desc" },
     });
 
     return Promise.all(
-      lookbooks.map(async (lb) => ({
-        ...lb,
-        coverUrl: await getLookbookCoverUrl(lb.cover?.key ?? null),
-        itemCount: lb._count.items,
-      }))
+      lookbooks.map(async (lb) => {
+        const previews = await Promise.all(
+          lb.items
+            .filter((item) => item.tryOn.result?.key)
+            .map((item) => getTryOnResultUrl(item.tryOn.result?.key ?? ""))
+        );
+
+        return {
+          ...lb,
+          coverUrl: await getLookbookCoverUrl(lb.cover?.key ?? null),
+          itemCount: lb._count.items,
+          previewUrls: previews,
+        };
+      })
     );
   }),
 

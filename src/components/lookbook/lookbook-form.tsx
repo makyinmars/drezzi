@@ -6,14 +6,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -22,6 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsivePanel,
+  ResponsivePanelContent,
+  ResponsivePanelDescription,
+  ResponsivePanelHeader,
+  ResponsivePanelTitle,
+  ResponsivePanelTrigger,
+} from "@/components/ui/responsive-panel";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useTRPC } from "@/trpc/react";
@@ -80,6 +80,8 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
           isPublic: variables.isPublic ?? false,
           shareSlug: null,
           itemCount: 0,
+          previewUrls: [],
+          items: [],
           _count: { items: 0 },
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -182,106 +184,110 @@ const LookbookForm = ({ lookbook, children }: LookbookFormProps) => {
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
+    <ResponsivePanel onOpenChange={setOpen} open={open}>
+      <ResponsivePanelTrigger asChild>{children}</ResponsivePanelTrigger>
+      <ResponsivePanelContent>
+        <ResponsivePanelHeader>
+          <ResponsivePanelTitle>
             {lookbook ? (
               <Trans>Edit Lookbook</Trans>
             ) : (
               <Trans>Create Lookbook</Trans>
             )}
-          </DialogTitle>
-          <DialogDescription>
+          </ResponsivePanelTitle>
+          <ResponsivePanelDescription>
             {lookbook ? (
               <Trans>Update your lookbook details</Trans>
             ) : (
               <Trans>Create a new lookbook to curate your try-on looks</Trans>
             )}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Name</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t`e.g., Summer Outfits 2025`}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Description</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={t`Optional description...`}
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="isPublic"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
+          </ResponsivePanelDescription>
+        </ResponsivePanelHeader>
+        <div className="p-4">
+          <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
                     <FormLabel>
-                      <Trans>Public</Trans>
+                      <Trans>Name</Trans>
                     </FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      <Trans>Allow others to view this lookbook via link</Trans>
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                    <FormControl>
+                      <Input
+                        placeholder={t`e.g., Summer Outfits 2025`}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button
-              className="w-full"
-              disabled={
-                lookbook ? updateMutation.isPending : createMutation.isPending
-              }
-              type="submit"
-            >
-              {lookbook ? (
-                <Trans>Update Lookbook</Trans>
-              ) : (
-                <Trans>Create Lookbook</Trans>
-              )}
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Trans>Description</Trans>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t`Optional description...`}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isPublic"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>
+                        <Trans>Public</Trans>
+                      </FormLabel>
+                      <div className="text-muted-foreground text-sm">
+                        <Trans>
+                          Allow others to view this lookbook via link
+                        </Trans>
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                className="w-full"
+                disabled={
+                  lookbook ? updateMutation.isPending : createMutation.isPending
+                }
+                type="submit"
+              >
+                {lookbook ? (
+                  <Trans>Update Lookbook</Trans>
+                ) : (
+                  <Trans>Create Lookbook</Trans>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </ResponsivePanelContent>
+    </ResponsivePanel>
   );
 };
 

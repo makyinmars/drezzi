@@ -61,6 +61,11 @@ const ProfileDelete = ({ profile, children }: ProfileDeleteProps) => {
           router.navigate({ to: "/profile" });
         }
       },
+      onSettled: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.dashboard.stats.queryKey(),
+        });
+      },
     })
   );
 

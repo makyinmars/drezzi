@@ -1,6 +1,8 @@
 import { useLingui } from "@lingui/react/macro";
+import { Link } from "@tanstack/react-router";
 import {
   CheckCircle2,
+  ChevronRight,
   Clock,
   Loader2,
   type LucideIcon,
@@ -8,6 +10,13 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
 
 type TryOnStatus = "pending" | "processing" | "completed" | "failed";
@@ -106,16 +115,18 @@ function ActivityRow({ item, index }: { item: ActivityItem; index: number }) {
   const StatusIcon = status.icon;
 
   return (
-    <div
+    <Link
       className={cn(
         "group flex items-center gap-4 rounded-xl border border-transparent bg-muted/30 p-4 transition-all duration-300",
         "fade-in slide-in-from-left-2 animate-in fill-mode-both",
         "hover:border-border hover:bg-muted/50"
       )}
+      params={{ tryOnId: item.id }}
       style={{
         animationDelay: `${(index + 4) * 100}ms`,
         animationDuration: "500ms",
       }}
+      to="/try-on/$tryOnId"
     >
       {/* Garment thumbnail */}
       <ActivityThumbnail item={item} />
@@ -148,7 +159,10 @@ function ActivityRow({ item, index }: { item: ActivityItem; index: number }) {
           {formatTimeAgo(item.createdAt)}
         </span>
       </div>
-    </div>
+
+      {/* Chevron indicator */}
+      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-1 group-hover:text-muted-foreground" />
+    </Link>
   );
 }
 
@@ -157,15 +171,17 @@ export function RecentActivity({ items }: RecentActivityProps) {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-muted/20 py-12 text-center">
-        <Clock className="mb-3 h-10 w-10 text-muted-foreground/50" />
-        <p className="font-medium text-muted-foreground">
-          {t`No recent activity`}
-        </p>
-        <p className="mt-1 text-muted-foreground/70 text-sm">
-          {t`Start a try-on to see your activity here`}
-        </p>
-      </div>
+      <Empty className="rounded-2xl border bg-muted/20">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Clock className="h-5 w-5" />
+          </EmptyMedia>
+          <EmptyTitle>{t`No recent activity`}</EmptyTitle>
+          <EmptyDescription>
+            {t`Start a try-on to see your activity here`}
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 

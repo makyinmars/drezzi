@@ -23,7 +23,7 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <Link className="flex items-center gap-3" to="/">
-            <img alt={APP_NAME} className="h-20 w-20" src={APP_LOGO_URL} />
+            <img alt={APP_NAME} className="h-12 w-12" src={APP_LOGO_URL} />
             <span className="hidden font-bold text-2xl tracking-tight md:block">
               {APP_NAME}
             </span>

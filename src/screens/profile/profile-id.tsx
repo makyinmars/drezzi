@@ -4,7 +4,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, Edit, Star, Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,11 +14,13 @@ import ProfileForm from "@/components/profile/profile-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const Route = getRouteApi("/(authed)/profile/$profileId");
 
 const ProfileDetailScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const { profileId } = Route.useParams();
   const trpc = useTRPC();
@@ -70,31 +72,31 @@ const ProfileDetailScreen = () => {
       <PageHeader
         actions={
           <div className="flex gap-2">
-            <Button asChild size="sm" variant="ghost">
-              <a href="/profile">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                <Trans>Back</Trans>
-              </a>
+            <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
+              <Link to="/profile">
+                <ArrowLeft />
+                {!isMobile && <Trans>Back</Trans>}
+              </Link>
             </Button>
             <ProfileForm profile={profile}>
-              <Button size="sm" variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                <Trans>Edit</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="outline">
+                <Edit />
+                {!isMobile && <Trans>Edit</Trans>}
               </Button>
             </ProfileForm>
             <Button
               disabled={profile.isDefault || setDefaultMutation.isPending}
               onClick={handleSetDefault}
-              size="sm"
+              size={isMobile ? "icon" : "sm"}
               variant="outline"
             >
-              <Star className="mr-2 h-4 w-4" />
-              <Trans>Set Default</Trans>
+              <Star />
+              {!isMobile && <Trans>Set Default</Trans>}
             </Button>
             <ProfileDelete profile={profile}>
-              <Button size="sm" variant="destructive">
-                <Trash className="mr-2 h-4 w-4" />
-                <Trans>Delete</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="destructive">
+                <Trash />
+                {!isMobile && <Trans>Delete</Trans>}
               </Button>
             </ProfileDelete>
           </div>

@@ -40,6 +40,7 @@ export const tryOnRouter = {
           result: true,
           bodyProfile: { include: { photo: true } },
           garment: { include: { image: true } },
+          styleTips: true,
         },
         orderBy: { createdAt: "desc" },
       });

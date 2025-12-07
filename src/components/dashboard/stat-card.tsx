@@ -68,8 +68,9 @@ export function StatCard({
       className={cn(
         "group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all duration-500 hover:shadow-lg",
         "fade-in slide-in-from-bottom-4 animate-in fill-mode-both",
-        variant === "large" && "row-span-2 p-8",
-        variant === "wide" && "col-span-2"
+        variant === "large" &&
+          "border-2 border-primary/10 p-6 md:col-span-2 md:row-span-2 md:border md:p-8 lg:p-10",
+        variant === "wide" && "col-span-full md:col-span-2 lg:col-span-3"
       )}
       style={{
         animationDelay: `${index * 100}ms`,
@@ -102,7 +103,9 @@ export function StatCard({
         <p
           className={cn(
             "font-bold text-foreground tracking-tight transition-all duration-300",
-            variant === "large" ? "text-6xl" : "text-4xl"
+            variant === "large"
+              ? "text-5xl md:text-6xl lg:text-7xl"
+              : "text-3xl md:text-4xl"
           )}
         >
           {animatedValue.toLocaleString()}

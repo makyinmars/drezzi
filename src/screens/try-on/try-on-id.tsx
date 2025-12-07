@@ -25,12 +25,22 @@ import TryOnProgress from "@/components/try-on/try-on-progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const Route = getRouteApi("/(authed)/try-on/$tryOnId");
 
 const TryOnDetailScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const { tryOnId } = Route.useParams();
   const trpc = useTRPC();
@@ -44,22 +54,32 @@ const TryOnDetailScreen = () => {
   const toggleFavoriteMutation = useMutation(
     trpc.tryOn.toggleFavorite.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: trpc.tryOn.list.queryKey(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey: trpc.tryOn.byId.queryKey({ id: tryOnId }),
-        });
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.list.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.byId.queryKey({ id: tryOnId }),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.favorites.queryKey(),
+          }),
+        ]);
       },
     })
   );
 
   const retryMutation = useMutation(
     trpc.tryOn.retry.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.tryOn.byId.queryKey({ id: tryOnId }),
-        });
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.byId.queryKey({ id: tryOnId }),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.tryOn.list.queryKey(),
+          }),
+        ]);
       },
     })
   );
@@ -101,28 +121,28 @@ const TryOnDetailScreen = () => {
       <PageHeader
         actions={
           <div className="flex gap-2">
-            <Button asChild size="sm" variant="ghost">
+            <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
               <Link to="/try-on">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                <Trans>Back</Trans>
+                <ArrowLeft />
+                {!isMobile && <Trans>Back</Trans>}
               </Link>
             </Button>
             {tryOn.status === "completed" && (
               <Button
                 disabled={toggleFavoriteMutation.isPending}
                 onClick={handleToggleFavorite}
-                size="sm"
+                size={isMobile ? "icon" : "sm"}
                 variant="outline"
               >
                 {tryOn.isFavorite ? (
                   <>
-                    <HeartOff className="mr-2 h-4 w-4" />
-                    <Trans>Unfavorite</Trans>
+                    <HeartOff />
+                    {!isMobile && <Trans>Unfavorite</Trans>}
                   </>
                 ) : (
                   <>
-                    <Heart className="mr-2 h-4 w-4" />
-                    <Trans>Favorite</Trans>
+                    <Heart />
+                    {!isMobile && <Trans>Favorite</Trans>}
                   </>
                 )}
               </Button>
@@ -131,17 +151,18 @@ const TryOnDetailScreen = () => {
               <Button
                 disabled={retryMutation.isPending}
                 onClick={handleRetry}
-                size="sm"
+                size={isMobile ? "icon" : "sm"}
                 variant="outline"
               >
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw />
+                {!isMobile && <Trans>Retry</Trans>}
                 <Trans>Retry</Trans>
               </Button>
             )}
             <TryOnDelete tryOn={tryOn}>
-              <Button size="sm" variant="destructive">
-                <Trash className="mr-2 h-4 w-4" />
-                <Trans>Delete</Trans>
+              <Button size={isMobile ? "icon" : "sm"} variant="destructive">
+                <Trash />
+                {!isMobile && <Trans>Delete</Trans>}
               </Button>
             </TryOnDelete>
           </div>
@@ -150,10 +171,11 @@ const TryOnDetailScreen = () => {
         title={tryOn.garment.name}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Result */}
-        <Card className="overflow-hidden lg:col-span-2">
-          <div className="flex max-h-[60vh] min-h-80 items-center justify-center bg-muted lg:max-h-[70vh]">
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left Column: Image + Status */}
+        <div className="space-y-4">
+          {/* Main Result */}
+          <div className="relative flex min-h-64 items-center justify-center overflow-hidden rounded-lg bg-muted">
             {tryOn.status === "completed" && tryOn.resultUrl ? (
               <img
                 alt={t`Try-on result for ${tryOn.garment.name}`}
@@ -164,10 +186,74 @@ const TryOnDetailScreen = () => {
               <TryOnProgress status={tryOn.status} />
             )}
           </div>
-        </Card>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
+          {/* Error Message */}
+          {tryOn.errorMessage && (
+            <div className="rounded-lg border border-destructive bg-destructive/10 p-3">
+              <p className="text-destructive text-sm">{tryOn.errorMessage}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Details */}
+        <div className="space-y-4">
+          {/* Body Profile + Garment Row */}
+          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Item variant="outline">
+              <ItemMedia className="h-40 w-40 overflow-hidden rounded-lg">
+                <img
+                  alt={tryOn.bodyProfile.name}
+                  className="h-full w-full object-cover"
+                  src={tryOn.bodyProfile.photoUrl}
+                />
+              </ItemMedia>
+              <ItemContent>
+                <ItemDescription>
+                  <Trans>Body Profile</Trans>
+                </ItemDescription>
+                <ItemTitle>{tryOn.bodyProfile.name}</ItemTitle>
+                {tryOn.bodyProfile.isDefault && (
+                  <Badge variant="secondary">
+                    <Trans>Default</Trans>
+                  </Badge>
+                )}
+              </ItemContent>
+            </Item>
+
+            <Item variant="outline">
+              <ItemMedia className="h-40 w-40 overflow-hidden rounded-lg">
+                <img
+                  alt={tryOn.garment.name}
+                  className="h-full w-full object-cover"
+                  src={tryOn.garment.imageUrl}
+                />
+              </ItemMedia>
+              <ItemContent>
+                <ItemDescription>
+                  <Trans>Garment</Trans>
+                </ItemDescription>
+                <ItemTitle>{tryOn.garment.name}</ItemTitle>
+                <Badge variant="outline">{tryOn.garment.category}</Badge>
+              </ItemContent>
+            </Item>
+          </ItemGroup>
+
+          {/* Style Tips */}
+          <StyleTipCard
+            isCompleted={tryOn.status === "completed"}
+            tips={tryOn.styleTips ?? []}
+            tryOnId={tryOn.id}
+          />
+
+          {/* Try Another */}
+          <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <TryOnForm preselectedProfileId={tryOn.bodyProfileId}>
+              <Button className="w-full" variant="outline">
+                <Sparkles className="mr-2 h-4 w-4" />
+                <Trans>Try Another Garment</Trans>
+              </Button>
+            </TryOnForm>
+          </Suspense>
           {/* Status Card */}
           <Card>
             <CardHeader>
@@ -212,89 +298,6 @@ const TryOnDetailScreen = () => {
                   </span>
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Error Message */}
-          {tryOn.errorMessage && (
-            <Card className="border-destructive">
-              <CardHeader>
-                <CardTitle className="text-destructive">
-                  <Trans>Error</Trans>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-destructive text-sm">{tryOn.errorMessage}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Body Profile Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Body Profile</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4">
-                <img
-                  alt={tryOn.bodyProfile.name}
-                  className="h-16 w-16 rounded-lg object-cover"
-                  src={tryOn.bodyProfile.photoUrl}
-                />
-                <div>
-                  <p className="font-medium">{tryOn.bodyProfile.name}</p>
-                  {tryOn.bodyProfile.isDefault && (
-                    <Badge variant="secondary">
-                      <Trans>Default</Trans>
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Garment Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Garment</Trans>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4">
-                <img
-                  alt={tryOn.garment.name}
-                  className="h-16 w-16 rounded-lg object-cover"
-                  src={tryOn.garment.imageUrl}
-                />
-                <div>
-                  <p className="font-medium">{tryOn.garment.name}</p>
-                  <Badge variant="outline">{tryOn.garment.category}</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Style Tips */}
-          <StyleTipCard
-            isCompleted={tryOn.status === "completed"}
-            tips={tryOn.styleTips ?? []}
-            tryOnId={tryOn.id}
-          />
-
-          {/* Try Another */}
-          <Card>
-            <CardContent className="pt-6">
-              <Suspense fallback={<Skeleton className="h-10 w-full" />}>
-                <TryOnForm preselectedProfileId={tryOn.bodyProfileId}>
-                  <Button className="w-full" variant="outline">
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    <Trans>Try Another Garment</Trans>
-                  </Button>
-                </TryOnForm>
-              </Suspense>
             </CardContent>
           </Card>
         </div>

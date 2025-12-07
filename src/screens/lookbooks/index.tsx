@@ -6,6 +6,14 @@ import PageHeader from "@/components/common/page-header";
 import LookbookCard from "@/components/lookbook/lookbook-card";
 import LookbookForm from "@/components/lookbook/lookbook-form";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
@@ -31,24 +39,32 @@ const LookbookListScreen = () => {
       />
 
       {lookbooksQuery.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <h3 className="mb-2 font-medium text-lg">
-            <Trans>No lookbooks yet</Trans>
-          </h3>
-          <p className="mb-4 text-muted-foreground text-sm">
-            <Trans>
-              Create your first lookbook to start curating your try-on results.
-            </Trans>
-          </p>
-          <LookbookForm>
-            <Button size={isMobile ? "icon" : "default"}>
-              <Plus className="size-4" />
-              {!isMobile && <Trans>Create Your First Lookbook</Trans>}
-            </Button>
-          </LookbookForm>
-        </div>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Plus className="h-5 w-5" />
+            </EmptyMedia>
+            <EmptyTitle>
+              <Trans>No lookbooks yet</Trans>
+            </EmptyTitle>
+            <EmptyDescription>
+              <Trans>
+                Create your first lookbook to start curating your try-on
+                results.
+              </Trans>
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <LookbookForm>
+              <Button size={isMobile ? "icon" : "default"}>
+                <Plus className="size-4" />
+                {!isMobile && <Trans>Create Your First Lookbook</Trans>}
+              </Button>
+            </LookbookForm>
+          </EmptyContent>
+        </Empty>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
           {lookbooksQuery.data.map((lookbook) => (
             <LookbookCard key={lookbook.id} lookbook={lookbook} />
           ))}

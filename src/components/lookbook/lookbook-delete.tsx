@@ -60,6 +60,11 @@ const LookbookDelete = ({ lookbook, children }: LookbookDeleteProps) => {
           router.navigate({ to: "/lookbooks" });
         }
       },
+      onSettled: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.dashboard.stats.queryKey(),
+        });
+      },
     })
   );
 

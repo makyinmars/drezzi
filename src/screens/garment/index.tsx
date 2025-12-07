@@ -6,6 +6,14 @@ import PageHeader from "@/components/common/page-header";
 import GarmentCard from "@/components/garment/garment-card";
 import GarmentForm from "@/components/garment/garment-form";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
@@ -28,29 +36,36 @@ const GarmentListScreen = () => {
             </Button>
           </GarmentForm>
         }
-        description={t`Manage your wardrobe for virtual try-ons`}
-        title={t`My Wardrobe`}
+        description={t`Manage your garments for virtual try-ons`}
+        title={t`My Garments`}
       />
 
       {garmentsQuery.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <h3 className="mb-2 font-medium text-lg">
-            <Trans>No garments yet</Trans>
-          </h3>
-          <p className="mb-4 text-muted-foreground text-sm">
-            <Trans>
-              Add your first garment to start building your virtual wardrobe.
-            </Trans>
-          </p>
-          <GarmentForm>
-            <Button size={isMobile ? "icon" : "default"}>
-              <Plus className="size-4" />
-              {!isMobile && <Trans>Add Your First Garment</Trans>}
-            </Button>
-          </GarmentForm>
-        </div>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Plus className="h-5 w-5" />
+            </EmptyMedia>
+            <EmptyTitle>
+              <Trans>No garments yet</Trans>
+            </EmptyTitle>
+            <EmptyDescription>
+              <Trans>
+                Add your first garment to start building your virtual wardrobe.
+              </Trans>
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <GarmentForm>
+              <Button size={isMobile ? "icon" : "default"}>
+                <Plus className="size-4" />
+                {!isMobile && <Trans>Add Your First Garment</Trans>}
+              </Button>
+            </GarmentForm>
+          </EmptyContent>
+        </Empty>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {garmentsQuery.data.map((garment) => (
             <GarmentCard garment={garment} key={garment.id} />
           ))}

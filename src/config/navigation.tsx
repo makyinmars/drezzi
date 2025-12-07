@@ -24,7 +24,7 @@ export const navigationConfig: NavConfig = {
       icon: Wand2,
     },
     {
-      title: <Trans>My Wardrobe</Trans>,
+      title: <Trans>My Garments</Trans>,
       url: "/garment",
       icon: Archive,
       items: [

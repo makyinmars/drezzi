@@ -20,9 +20,16 @@ import { useTRPC } from "@/trpc/react";
 type GarmentDeleteProps = {
   garment: Garment;
   children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const GarmentDelete = ({ garment, children }: GarmentDeleteProps) => {
+const GarmentDelete = ({
+  garment,
+  children,
+  open,
+  onOpenChange,
+}: GarmentDeleteProps) => {
   const { t } = useLingui();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -63,6 +70,16 @@ const GarmentDelete = ({ garment, children }: GarmentDeleteProps) => {
           router.navigate({ to: "/garment" });
         }
       },
+      onSettled: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.garment.categories.queryKey(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.dashboard.stats.queryKey(),
+          }),
+        ]);
+      },
     })
   );
 
@@ -75,8 +92,8 @@ const GarmentDelete = ({ garment, children }: GarmentDeleteProps) => {
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      {children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

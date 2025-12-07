@@ -2,12 +2,18 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { GripVertical, Pencil, Trash, X } from "lucide-react";
+import { GripVertical, MoreHorizontal, Pencil, Trash, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import CardMediaDisplay from "@/components/custom/card-media-display";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/react";
 import type { LookbookByIdProcedure } from "@/trpc/routers/lookbook";
@@ -80,6 +86,18 @@ const LookbookItem = ({ item, lookbookId }: LookbookItemProps) => {
           context?.previousData
         );
       },
+      onSettled: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: trpc.lookbook.availableTryOns.queryKey({
+              id: lookbookId,
+            }),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: trpc.lookbook.list.queryKey(),
+          }),
+        ]);
+      },
     })
   );
 
@@ -105,94 +123,97 @@ const LookbookItem = ({ item, lookbookId }: LookbookItemProps) => {
     });
   };
 
-  return (
-    <Card ref={setNodeRef} style={style}>
-      <CardContent className="p-3">
-        <div className="flex gap-3">
-          <button
-            className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
+  const dragHandle = (
+    <button
+      className="cursor-grab text-muted-foreground hover:text-foreground active:cursor-grabbing"
+      type="button"
+      {...attributes}
+      {...listeners}
+    >
+      <GripVertical className="h-4 w-4" />
+    </button>
+  );
+
+  const actionsMenu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="h-8 w-8 bg-background/80 backdrop-blur-sm"
+          size="icon"
+          variant="secondary"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setIsEditing(true)}>
+          <Pencil />
+          <Trans>Edit Note</Trans>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={removeMutation.isPending}
+          onClick={handleRemove}
+          variant="destructive"
+        >
+          <Trash />
+          <Trans>Remove</Trans>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  if (isEditing) {
+    return (
+      <div ref={setNodeRef} style={style}>
+        <CardMediaDisplay
+          imageUrl={item.tryOn.resultUrl}
+          note={null}
+          subtitle={item.tryOn.garment.brand}
+          title={item.tryOn.garment.name}
+          topLeft={dragHandle}
+        />
+        <div className="mt-2 flex gap-2">
+          <Input
+            className="h-9 text-sm"
+            onChange={(e) => setNote(e.target.value)}
+            placeholder={t`Add a note...`}
+            value={note}
+          />
+          <Button
+            disabled={updateNoteMutation.isPending}
+            onClick={handleSaveNote}
+            size="sm"
             type="button"
-            {...attributes}
-            {...listeners}
           >
-            <GripVertical className="h-5 w-5" />
-          </button>
-
-          <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
-            {item.tryOn.resultUrl ? (
-              <img
-                alt={item.tryOn.garment.name}
-                className="h-full w-full object-cover"
-                src={item.tryOn.resultUrl}
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-muted-foreground text-xs">
-                <Trans>No image</Trans>
-              </div>
-            )}
-          </div>
-
-          <div className="flex min-w-0 flex-1 flex-col">
-            <p className="truncate font-medium">{item.tryOn.garment.name}</p>
-            {isEditing ? (
-              <div className="mt-1 flex gap-2">
-                <Input
-                  className="h-8 text-sm"
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder={t`Add a note...`}
-                  value={note}
-                />
-                <Button
-                  disabled={updateNoteMutation.isPending}
-                  onClick={handleSaveNote}
-                  size="sm"
-                  type="button"
-                >
-                  <Trans>Save</Trans>
-                </Button>
-                <Button
-                  onClick={() => {
-                    setIsEditing(false);
-                    setNote(item.note ?? "");
-                  }}
-                  size="sm"
-                  type="button"
-                  variant="ghost"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <p className="mt-1 line-clamp-2 text-muted-foreground text-sm">
-                {item.note ?? <Trans>No note</Trans>}
-              </p>
-            )}
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-1">
-            {!isEditing && (
-              <Button
-                onClick={() => setIsEditing(true)}
-                size="icon"
-                type="button"
-                variant="ghost"
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            )}
-            <Button
-              disabled={removeMutation.isPending}
-              onClick={handleRemove}
-              size="icon"
-              type="button"
-              variant="ghost"
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
+            <Trans>Save</Trans>
+          </Button>
+          <Button
+            onClick={() => {
+              setIsEditing(false);
+              setNote(item.note ?? "");
+            }}
+            size="icon"
+            type="button"
+            variant="ghost"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <CardMediaDisplay
+        imageUrl={item.tryOn.resultUrl}
+        note={item.note}
+        subtitle={item.tryOn.garment.brand}
+        title={item.tryOn.garment.name}
+        topLeft={dragHandle}
+        topRight={actionsMenu}
+      />
+    </div>
   );
 };
 

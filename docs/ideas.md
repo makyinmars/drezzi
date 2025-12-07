@@ -213,19 +213,19 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type Outfit = {
-     id: string
-     name: string
-     userId: string
-     items: OutfitItem[]
-     resultKey?: string
-     createdAt: Date
-   }
+     id: string;
+     name: string;
+     userId: string;
+     items: OutfitItem[];
+     resultKey?: string;
+     createdAt: Date;
+   };
 
    type OutfitItem = {
-     garmentId: string
-     layer: 'bottom' | 'top' | 'outer' | 'accessory'
-     order: number
-   }
+     garmentId: string;
+     layer: "bottom" | "top" | "outer" | "accessory";
+     order: number;
+   };
    ```
 
 3. **Worker Enhancement:**
@@ -271,7 +271,7 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
      originalProfile: bodyImage,
      garmentImage: garmentImage,
      resultImage: generatedImage,
-   })
+   });
 
    if (qualityScore.overall < QUALITY_THRESHOLD) {
      // Retry with adjusted parameters
@@ -353,20 +353,20 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type WardrobeItem = {
-     id: string
-     userId: string
-     garmentId?: string // Link to Garment if from catalog
-     customImageKey?: string // User-uploaded owned item
-     name: string
-     category: string
-     colors: string[]
-     status: 'owned' | 'wishlist' | 'considering'
-     purchaseDate?: Date
-     purchasePrice?: number
-     wearCount: number
-     lastWorn?: Date
-     notes?: string
-   }
+     id: string;
+     userId: string;
+     garmentId?: string; // Link to Garment if from catalog
+     customImageKey?: string; // User-uploaded owned item
+     name: string;
+     category: string;
+     colors: string[];
+     status: "owned" | "wishlist" | "considering";
+     purchaseDate?: Date;
+     purchasePrice?: number;
+     wearCount: number;
+     lastWorn?: Date;
+     notes?: string;
+   };
    ```
 
 2. **Features:**
@@ -402,25 +402,25 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type StyleProfile = {
-     userId: string
+     userId: string;
      // Style axes (0-100 scale)
-     casualFormal: number // 0=very casual, 100=very formal
-     minimalistMaximalist: number
-     classicTrendy: number
-     subtleBold: number
+     casualFormal: number; // 0=very casual, 100=very formal
+     minimalistMaximalist: number;
+     classicTrendy: number;
+     subtleBold: number;
 
      // Preferences
-     preferredColors: string[]
-     avoidColors: string[]
-     preferredPatterns: string[]
-     avoidPatterns: string[]
+     preferredColors: string[];
+     avoidColors: string[];
+     preferredPatterns: string[];
+     avoidPatterns: string[];
 
      // Fit
-     fitPreference: 'slim' | 'regular' | 'relaxed' | 'oversized'
+     fitPreference: "slim" | "regular" | "relaxed" | "oversized";
 
      // Occasions
-     primaryOccasions: string[] // work, casual, date, etc.
-   }
+     primaryOccasions: string[]; // work, casual, date, etc.
+   };
    ```
 
 3. **Recommendation Engine:**
@@ -493,13 +493,13 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type ColorAnalysis = {
-     skinUndertone: 'warm' | 'cool' | 'neutral'
-     seasonalType: 'spring' | 'summer' | 'autumn' | 'winter'
-     bestColors: string[] // Hex codes
-     avoidColors: string[]
-     metalPreference: 'gold' | 'silver' | 'both'
-     contrastLevel: 'low' | 'medium' | 'high'
-   }
+     skinUndertone: "warm" | "cool" | "neutral";
+     seasonalType: "spring" | "summer" | "autumn" | "winter";
+     bestColors: string[]; // Hex codes
+     avoidColors: string[];
+     metalPreference: "gold" | "silver" | "both";
+     contrastLevel: "low" | "medium" | "high";
+   };
    ```
 
 3. **Integration:**
@@ -527,13 +527,13 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type SizeRecommendation = {
-     garmentId: string
-     recommendedSize: string
-     confidence: number
-     reasoning: string
-     alternativeSize?: string
-     alternativeReason?: string
-   }
+     garmentId: string;
+     recommendedSize: string;
+     confidence: number;
+     reasoning: string;
+     alternativeSize?: string;
+     alternativeReason?: string;
+   };
    ```
 
 3. **Feedback Loop:**
@@ -563,16 +563,16 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type SharedTryOn = {
-     id: string
-     tryOnId: string
-     userId: string
-     shareType: 'link' | 'friends' | 'public'
-     allowedUsers?: string[] // For friends sharing
-     expiresAt?: Date
-     viewCount: number
-     reactions: Reaction[]
-     comments: Comment[]
-   }
+     id: string;
+     tryOnId: string;
+     userId: string;
+     shareType: "link" | "friends" | "public";
+     allowedUsers?: string[]; // For friends sharing
+     expiresAt?: Date;
+     viewCount: number;
+     reactions: Reaction[];
+     comments: Comment[];
+   };
    ```
 
 3. **Privacy Controls:**
@@ -692,15 +692,15 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type PromptExperiment = {
-     id: string
-     name: string
-     variants: PromptVariant[]
-     trafficSplit: number[]
-     startDate: Date
-     endDate?: Date
-     status: 'running' | 'concluded'
-     winningVariant?: string
-   }
+     id: string;
+     name: string;
+     variants: PromptVariant[];
+     trafficSplit: number[];
+     startDate: Date;
+     endDate?: Date;
+     status: "running" | "concluded";
+     winningVariant?: string;
+   };
    ```
 
 ---
@@ -862,14 +862,16 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    findSimilar: protectedProcedure
-     .input(z.object({
-       garmentId: z.string().cuid(),
-       limit: z.number().default(6),
-       category: z.enum(GARMENT_CATEGORIES).optional(),
-     }))
+     .input(
+       z.object({
+         garmentId: z.string().cuid(),
+         limit: z.number().default(6),
+         category: z.enum(GARMENT_CATEGORIES).optional(),
+       }),
+     )
      .query(async ({ input }) => {
        // Cosine similarity search using pgvector
-     })
+     });
    ```
 
 6. **UI Components:**
@@ -902,16 +904,22 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
    ```typescript
    type GarmentAnalysis = {
-     category: string
-     subcategory: string
-     colors: { name: string; hex: string }[]
-     pattern: 'solid' | 'striped' | 'floral' | 'plaid' | 'geometric' | 'abstract'
-     style: 'casual' | 'formal' | 'sporty' | 'bohemian' | 'minimalist'
-     material: string // cotton, denim, silk, etc.
-     occasions: string[] // work, casual, date, etc.
-     suggestedTags: string[]
-     confidence: number
-   }
+     category: string;
+     subcategory: string;
+     colors: { name: string; hex: string }[];
+     pattern:
+       | "solid"
+       | "striped"
+       | "floral"
+       | "plaid"
+       | "geometric"
+       | "abstract";
+     style: "casual" | "formal" | "sporty" | "bohemian" | "minimalist";
+     material: string; // cotton, denim, silk, etc.
+     occasions: string[]; // work, casual, date, etc.
+     suggestedTags: string[];
+     confidence: number;
+   };
    ```
 
 4. **UI States:**
@@ -930,19 +938,19 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
 ## Priority Matrix
 
-| Idea                        | Impact | Effort | Priority |
-| --------------------------- | ------ | ------ | -------- |
-| Import from URL             | High   | Medium | P0       |
-| Profile Enhancement Worker  | High   | Medium | P0       |
-| Vector Embeddings           | High   | Medium | P1       |
-| Multi-Garment Try-On        | High   | High   | P1       |
-| AI Body Measurement         | High   | Medium | P1       |
-| Digital Wardrobe            | High   | High   | P1       |
-| Similarity Search           | High   | Low    | P1       |
-| Enhanced Auto-Categorization| Medium | Medium | P2       |
-| Background Removal          | Medium | Low    | P2       |
-| Try-On Sharing              | Medium | Medium | P2       |
-| Color Analysis              | Medium | Medium | P2       |
-| Size Recommendations        | High   | High   | P2       |
-| Style Profile               | Medium | High   | P3       |
-| Community Challenges        | Low    | High   | P3       |
+| Idea                         | Impact | Effort | Priority |
+| ---------------------------- | ------ | ------ | -------- |
+| Import from URL              | High   | Medium | P0       |
+| Profile Enhancement Worker   | High   | Medium | P0       |
+| Vector Embeddings            | High   | Medium | P1       |
+| Multi-Garment Try-On         | High   | High   | P1       |
+| AI Body Measurement          | High   | Medium | P1       |
+| Digital Wardrobe             | High   | High   | P1       |
+| Similarity Search            | High   | Low    | P1       |
+| Enhanced Auto-Categorization | Medium | Medium | P2       |
+| Background Removal           | Medium | Low    | P2       |
+| Try-On Sharing               | Medium | Medium | P2       |
+| Color Analysis               | Medium | Medium | P2       |
+| Size Recommendations         | High   | High   | P2       |
+| Style Profile                | Medium | High   | P3       |
+| Community Challenges         | Low    | High   | P3       |

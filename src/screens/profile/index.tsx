@@ -6,6 +6,14 @@ import PageHeader from "@/components/common/page-header";
 import ProfileCard from "@/components/profile/profile-card";
 import ProfileForm from "@/components/profile/profile-form";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
@@ -31,25 +39,32 @@ const ProfileListScreen = () => {
       />
 
       {profilesQuery.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
-          <h3 className="mb-2 font-medium text-lg">
-            <Trans>No profiles yet</Trans>
-          </h3>
-          <p className="mb-4 text-muted-foreground text-sm">
-            <Trans>
-              Create your first body profile to start trying on clothes
-              virtually.
-            </Trans>
-          </p>
-          <ProfileForm>
-            <Button size={isMobile ? "icon" : "default"}>
-              <Plus className="size-4" />
-              {!isMobile && <Trans>Create Your First Profile</Trans>}
-            </Button>
-          </ProfileForm>
-        </div>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Plus className="h-5 w-5" />
+            </EmptyMedia>
+            <EmptyTitle>
+              <Trans>No profiles yet</Trans>
+            </EmptyTitle>
+            <EmptyDescription>
+              <Trans>
+                Create your first body profile to start trying on clothes
+                virtually.
+              </Trans>
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <ProfileForm>
+              <Button size={isMobile ? "icon" : "default"}>
+                <Plus className="size-4" />
+                {!isMobile && <Trans>Create Your First Profile</Trans>}
+              </Button>
+            </ProfileForm>
+          </EmptyContent>
+        </Empty>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
           {profilesQuery.data.map((profile) => (
             <ProfileCard key={profile.id} profile={profile} />
           ))}

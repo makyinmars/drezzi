@@ -32,7 +32,7 @@ const DashboardScreen = () => {
       />
 
       {/* Stats Grid - Asymmetric editorial layout */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 [grid-auto-flow:dense] md:grid-cols-2 md:gap-5 lg:grid-cols-4 lg:gap-6">
         {/* Hero stat - Total Try-Ons */}
         <StatCard
           accentColor={ACCENT_GOLD}
@@ -63,7 +63,7 @@ const DashboardScreen = () => {
           value={stats.totalGarments}
         />
 
-        {/* Success Rate - Wide card */}
+        {/* Success Rate */}
         <StatCard
           accentColor={ACCENT_EMERALD}
           description={`${stats.completedTryOns} ${t`completed successfully`}`}
@@ -72,7 +72,6 @@ const DashboardScreen = () => {
           suffix="%"
           title={t`Success Rate`}
           value={stats.successRate}
-          variant="wide"
         />
 
         {/* Body Profiles */}

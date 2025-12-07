@@ -16,9 +16,17 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyDescription, EmptyMedia } from "@/components/ui/empty";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/trpc/react";
 import type { StyleTipCategory } from "@/validators/style-tip";
 
@@ -68,8 +76,8 @@ const StyleTipCard = ({ tryOnId, tips, isCompleted }: StyleTipCardProps) => {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm">
           <Trans>Style Tips</Trans>
         </CardTitle>
         <div className="flex gap-2">
@@ -96,43 +104,70 @@ const StyleTipCard = ({ tryOnId, tips, isCompleted }: StyleTipCardProps) => {
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {tips.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            <Trans>No style tips available yet.</Trans>
-          </p>
-        ) : (
-          tips.map((tip) => {
-            const config = CATEGORY_CONFIG[tip.category as StyleTipCategory];
-            const Icon = config?.icon ?? Sparkles;
+      <CardContent className="columns-1 gap-2 md:columns-2">
+        {regenerateMutation.isPending
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <Item
+                className="mb-2 break-inside-avoid"
+                key={i}
+                size="sm"
+                variant="muted"
+              >
+                <ItemMedia className="flex items-center justify-center">
+                  <Skeleton className="h-5 w-5 rounded-md" />
+                </ItemMedia>
+                <ItemContent>
+                  <Skeleton className="h-20 w-full" />
+                </ItemContent>
+              </Item>
+            ))
+          : null}
+        {!regenerateMutation.isPending && tips.length === 0 ? (
+          <Empty className="col-span-full">
+            <EmptyMedia variant="icon">
+              <Sparkles className="h-6 w-6" />
+            </EmptyMedia>
+            <EmptyDescription>
+              <Trans>No style tips available yet.</Trans>
+            </EmptyDescription>
+          </Empty>
+        ) : null}
+        {!regenerateMutation.isPending && tips.length > 0
+          ? tips.map((tip) => {
+              const config = CATEGORY_CONFIG[tip.category as StyleTipCategory];
+              const Icon = config?.icon ?? Sparkles;
 
-            return (
-              <div className="group rounded-lg bg-muted p-3" key={tip.id}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <Badge variant="secondary">
-                      {config?.label ?? tip.category}
-                    </Badge>
-                  </div>
-                  <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              return (
+                <Item
+                  className="mb-2 break-inside-avoid"
+                  key={tip.id}
+                  size="sm"
+                  variant="muted"
+                >
+                  <ItemMedia>
+                    <Icon className="h-3 w-3 text-muted-foreground" />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemDescription className="line-clamp-none">
+                      {tip.content}
+                    </ItemDescription>
+                  </ItemContent>
+                  <ItemActions className="opacity-0 transition-opacity group-hover/item:opacity-100">
                     <StyleTipForm tip={tip} tryOnId={tryOnId}>
-                      <Button size="icon" variant="ghost">
-                        <Edit className="h-4 w-4" />
+                      <Button className="h-6 w-6" size="icon" variant="ghost">
+                        <Edit className="h-3 w-3" />
                       </Button>
                     </StyleTipForm>
                     <StyleTipDelete tip={tip} tryOnId={tryOnId}>
-                      <Button size="icon" variant="ghost">
-                        <Trash className="h-4 w-4" />
+                      <Button className="h-6 w-6" size="icon" variant="ghost">
+                        <Trash className="h-3 w-3" />
                       </Button>
                     </StyleTipDelete>
-                  </div>
-                </div>
-                <p className="mt-2 text-sm">{tip.content}</p>
-              </div>
-            );
-          })
-        )}
+                  </ItemActions>
+                </Item>
+              );
+            })
+          : null}
       </CardContent>
     </Card>
   );

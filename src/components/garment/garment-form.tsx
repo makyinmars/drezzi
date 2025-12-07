@@ -6,14 +6,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -22,6 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsivePanel,
+  ResponsivePanelContent,
+  ResponsivePanelDescription,
+  ResponsivePanelHeader,
+  ResponsivePanelTitle,
+  ResponsivePanelTrigger,
+} from "@/components/ui/responsive-panel";
 import {
   Select,
   SelectContent,
@@ -44,11 +44,20 @@ import GarmentImageUpload from "./garment-image-upload";
 type GarmentFormProps = {
   garment?: GarmentListProcedure[number];
   children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const GarmentForm = ({ garment, children }: GarmentFormProps) => {
+const GarmentForm = ({
+  garment,
+  children,
+  open: controlledOpen,
+  onOpenChange,
+}: GarmentFormProps) => {
   const { t } = useLingui();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -156,137 +165,43 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
+    <ResponsivePanel onOpenChange={setOpen} open={open}>
+      {children && (
+        <ResponsivePanelTrigger asChild>{children}</ResponsivePanelTrigger>
+      )}
+      <ResponsivePanelContent>
+        <ResponsivePanelHeader>
+          <ResponsivePanelTitle>
             {garment ? <Trans>Edit Garment</Trans> : <Trans>Add Garment</Trans>}
-          </DialogTitle>
-          <DialogDescription>
+          </ResponsivePanelTitle>
+          <ResponsivePanelDescription>
             {garment ? (
               <Trans>Update your garment details</Trans>
             ) : (
               <Trans>Add a new garment to your wardrobe</Trans>
             )}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <GarmentImageUpload
-              currentImageUrl={garment?.imageUrl}
-              onFileSelect={handleFileSelect}
-            />
-
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Name</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t`e.g., Blue Oxford Shirt`}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Description</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={t`Optional description...`}
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Category</Trans>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder={t`Select category`} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {GARMENT_CATEGORIES.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          </ResponsivePanelDescription>
+        </ResponsivePanelHeader>
+        <div className="max-h-[70vh] overflow-y-auto p-4">
+          <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+              <GarmentImageUpload
+                currentImageUrl={garment?.imageUrl}
+                onFileSelect={handleFileSelect}
               />
 
               <FormField
                 control={form.control}
-                name="brand"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      <Trans>Brand</Trans>
+                      <Trans>Name</Trans>
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={t`e.g., Nike`}
+                        placeholder={t`e.g., Blue Oxford Shirt`}
                         {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Price</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="99.99"
-                        step="0.01"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -296,93 +211,199 @@ const GarmentForm = ({ garment, children }: GarmentFormProps) => {
 
               <FormField
                 control={form.control}
-                name="currency"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      <Trans>Currency</Trans>
+                      <Trans>Description</Trans>
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="GBP">GBP</SelectItem>
-                        <SelectItem value="CAD">CAD</SelectItem>
-                        <SelectItem value="AUD">AUD</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t`Optional description...`}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="retailUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Retail URL</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t`https://...`}
-                      type="url"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Trans>Category</Trans>
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder={t`Select category`} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {GARMENT_CATEGORIES.map((cat) => (
+                            <SelectItem key={cat} value={cat}>
+                              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="isPublic"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
+                <FormField
+                  control={form.control}
+                  name="brand"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Trans>Brand</Trans>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t`e.g., Nike`}
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Trans>Price</Trans>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="99.99"
+                          step="0.01"
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value ? Number(e.target.value) : null
+                            )
+                          }
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="currency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Trans>Currency</Trans>
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                          <SelectItem value="CAD">CAD</SelectItem>
+                          <SelectItem value="AUD">AUD</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="retailUrl"
+                render={({ field }) => (
+                  <FormItem>
                     <FormLabel>
-                      <Trans>Public</Trans>
+                      <Trans>Retail URL</Trans>
                     </FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      <Trans>Allow others to see and try on this garment</Trans>
+                    <FormControl>
+                      <Input
+                        placeholder={t`https://...`}
+                        type="url"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isPublic"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>
+                        <Trans>Public</Trans>
+                      </FormLabel>
+                      <div className="text-muted-foreground text-sm">
+                        <Trans>
+                          Allow others to see and try on this garment
+                        </Trans>
+                      </div>
                     </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <Button
-              className="w-full"
-              disabled={
-                garment ? updateMutation.isPending : createMutation.isPending
-              }
-              type="submit"
-            >
-              {garment ? (
-                <Trans>Update Garment</Trans>
-              ) : (
-                <Trans>Add Garment</Trans>
-              )}
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              <Button
+                className="w-full"
+                disabled={
+                  garment ? updateMutation.isPending : createMutation.isPending
+                }
+                type="submit"
+              >
+                {garment ? (
+                  <Trans>Update Garment</Trans>
+                ) : (
+                  <Trans>Add Garment</Trans>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </ResponsivePanelContent>
+    </ResponsivePanel>
   );
 };
 
