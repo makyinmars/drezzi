@@ -6,9 +6,11 @@ import {
   getGarmentImageUrl,
   getGarmentUploadUrl,
 } from "@/services/garment";
+import { downloadImage, importGarmentFromUrl } from "@/services/garment-import";
 import {
   apiGarmentCreate,
   apiGarmentId,
+  apiGarmentImportUrl,
   apiGarmentListFilters,
   apiGarmentUpdate,
   apiGarmentUploadRequest,
@@ -155,18 +157,25 @@ export const garmentRouter = {
       const userId = ctx.session.user.id;
 
       const file = input.get("file");
-      if (!(file instanceof File)) {
+      const preUploadedImageId = toOptionalString(input.get("imageId"));
+
+      if (!(preUploadedImageId || file instanceof File)) {
         throw errors.invalidGarmentImage();
       }
 
       return await ctx.prisma.$transaction(async (tx) => {
-        const uploaded = await uploadFileToS3({
-          file,
-          userId,
-          prisma: tx,
-          prefix: "garments",
-          allowedMimeTypes: IMAGE_TYPE_REGEX,
-        });
+        let imageId = preUploadedImageId;
+
+        if (!imageId && file instanceof File) {
+          const uploaded = await uploadFileToS3({
+            file,
+            userId,
+            prisma: tx,
+            prefix: "garments",
+            allowedMimeTypes: IMAGE_TYPE_REGEX,
+          });
+          imageId = uploaded.id;
+        }
 
         const parsed = apiGarmentCreate.parse({
           name: input.get("name")?.toString(),
@@ -176,7 +185,7 @@ export const garmentRouter = {
           brand: toOptionalString(input.get("brand")),
           price: toOptionalNumber(input.get("price")),
           currency: input.get("currency")?.toString() ?? "USD",
-          imageId: uploaded.id,
+          imageId,
           maskId: undefined,
           retailUrl: toOptionalString(input.get("retailUrl")),
           colors: toStringArray(input.get("colors")) ?? [],
@@ -352,6 +361,44 @@ export const garmentRouter = {
 
       const result = await getGarmentUploadUrl(userId, input.contentType);
       return result;
+    }),
+
+  importFromUrl: protectedProcedure
+    .input(apiGarmentImportUrl)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      const extracted = await importGarmentFromUrl(input.url);
+
+      let uploadedImageId: string | null = null;
+      let uploadedImageUrl: string | null = null;
+
+      if (extracted.imageUrl) {
+        const blob = await downloadImage(extracted.imageUrl, input.url);
+        if (blob) {
+          const file = new File([blob], "imported-image.jpg", {
+            type: blob.type || "image/jpeg",
+          });
+
+          const uploaded = await uploadFileToS3({
+            file,
+            userId,
+            prisma: ctx.prisma,
+            prefix: "garments",
+            allowedMimeTypes: IMAGE_TYPE_REGEX,
+          });
+
+          uploadedImageId = uploaded.id;
+          uploadedImageUrl = await getGarmentImageUrl(uploaded.key);
+        }
+      }
+
+      return {
+        ...extracted,
+        retailUrl: input.url,
+        uploadedImageId,
+        uploadedImageUrl,
+      };
     }),
 
   categories: protectedProcedure.query(async ({ ctx }) => {

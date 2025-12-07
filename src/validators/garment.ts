@@ -78,6 +78,10 @@ export const apiGarmentUploadRequest = z.object({
   contentLength: z.number().max(10 * 1024 * 1024),
 });
 
+export const apiGarmentImportUrl = z.object({
+  url: z.url(),
+});
+
 export const apiGarmentListFilters = z.object({
   category: z.enum(GARMENT_CATEGORIES).optional(),
   brand: z.string().optional(),
@@ -93,5 +97,6 @@ export type GarmentCreate = z.infer<typeof apiGarmentCreate>;
 export type GarmentUpdate = z.infer<typeof apiGarmentUpdate>;
 export type GarmentCreateAndUpdate = z.infer<typeof apiGarmentCreateAndUpdate>;
 export type GarmentUploadRequest = z.infer<typeof apiGarmentUploadRequest>;
+export type GarmentImportUrl = z.infer<typeof apiGarmentImportUrl>;
 export type GarmentListFilters = z.infer<typeof apiGarmentListFilters>;
 export type GarmentCategory = (typeof GARMENT_CATEGORIES)[number];

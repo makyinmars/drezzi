@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Upload, X } from "lucide-react";
 import type { ReactNode } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import MediaDisplay from "@/components/common/media-display";
@@ -28,6 +28,12 @@ export default function ImageUpload({
   const [preview, setPreview] = useState<string | null>(
     currentImageUrl ?? null
   );
+
+  useEffect(() => {
+    if (currentImageUrl) {
+      setPreview(currentImageUrl);
+    }
+  }, [currentImageUrl]);
 
   const handleFileSelect = useCallback(
     (file: File) => {

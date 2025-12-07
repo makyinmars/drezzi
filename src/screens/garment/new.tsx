@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Info, Shirt } from "lucide-react";
+import { Link, useRouter } from "@tanstack/react-router";
+import { ArrowLeft, Info, Link2, Loader2, Shirt } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -50,6 +50,9 @@ const GarmentNewScreen = () => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [importUrl, setImportUrl] = useState("");
+  const [importedImageId, setImportedImageId] = useState<string | null>(null);
+  const [importedImageUrl, setImportedImageUrl] = useState<string | null>(null);
 
   const form = useForm<GarmentCreateAndUpdate>({
     resolver: zodResolver(apiGarmentCreateAndUpdate),
@@ -85,13 +88,55 @@ const GarmentNewScreen = () => {
     })
   );
 
-  const handleFileSelect = (file: File | null) => {
-    setSelectedFile(file);
+  const importMutation = useMutation(
+    trpc.garment.importFromUrl.mutationOptions({
+      onSuccess: (data) => {
+        form.setValue("name", data.name);
+        if (data.description) form.setValue("description", data.description);
+        if (data.price) form.setValue("price", data.price);
+        if (data.currency) form.setValue("currency", data.currency);
+        if (data.brand) form.setValue("brand", data.brand);
+        if (data.category) form.setValue("category", data.category);
+        if (data.subcategory) form.setValue("subcategory", data.subcategory);
+        if (data.retailUrl) form.setValue("retailUrl", data.retailUrl);
+        if (data.colors.length > 0) form.setValue("colors", data.colors);
+        if (data.sizes.length > 0) form.setValue("sizes", data.sizes);
+        if (data.uploadedImageId) {
+          setImportedImageId(data.uploadedImageId);
+          setImportedImageUrl(data.uploadedImageUrl);
+        }
+      },
+    })
+  );
+
+  const handleImport = () => {
+    if (!importUrl.trim()) return;
+    toast.promise(importMutation.mutateAsync({ url: importUrl }), {
+      loading: t`Importing product details...`,
+      success: t`Product imported successfully`,
+      error: (err) => t`Failed to import: ${err.message}`,
+    });
   };
 
-  const buildFormData = (data: GarmentCreateAndUpdate, file: File | null) => {
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
+    if (file) {
+      setImportedImageId(null);
+      setImportedImageUrl(null);
+    }
+  };
+
+  const buildFormData = (
+    data: GarmentCreateAndUpdate,
+    file: File | null,
+    preUploadedImageId: string | null
+  ) => {
     const formData = new FormData();
-    if (file) formData.append("file", file);
+    if (preUploadedImageId) {
+      formData.append("imageId", preUploadedImageId);
+    } else if (file) {
+      formData.append("file", file);
+    }
     formData.append("name", data.name);
     formData.append("description", data.description ?? "");
     formData.append("category", data.category);
@@ -114,12 +159,12 @@ const GarmentNewScreen = () => {
   };
 
   const onSubmit = async (data: GarmentCreateAndUpdate) => {
-    if (!selectedFile) {
+    if (!(selectedFile || importedImageId)) {
       toast.error(t`Please upload an image first`);
       return;
     }
 
-    const formData = buildFormData(data, selectedFile);
+    const formData = buildFormData(data, selectedFile, importedImageId);
 
     toast.promise(createMutation.mutateAsync(formData), {
       loading: t`Adding garment...`,
@@ -133,20 +178,105 @@ const GarmentNewScreen = () => {
       <PageHeader
         actions={
           <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
-            <a href="/garment">
+            <Link to="/garment">
               <ArrowLeft className="size-4" />
               {!isMobile && <Trans>Back</Trans>}
-            </a>
+            </Link>
           </Button>
         }
         description={t`Add a new garment to your wardrobe`}
         title={t`Add Garment`}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <Alert>
+            <Shirt className="h-4 w-4" />
+            <AlertTitle>
+              <Trans>Image Tips</Trans>
+            </AlertTitle>
+            <AlertDescription>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
+                <li>
+                  <Trans>Use a plain, light background</Trans>
+                </li>
+                <li>
+                  <Trans>Show the full garment clearly</Trans>
+                </li>
+                <li>
+                  <Trans>Ensure good lighting</Trans>
+                </li>
+                <li>
+                  <Trans>Flat lay or hanger shots work best</Trans>
+                </li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>
+              <Trans>About Public Garments</Trans>
+            </AlertTitle>
+            <AlertDescription className="text-sm">
+              <Trans>
+                Public garments can be seen and tried on by other users. Keep
+                garments private if you want them for personal use only.
+              </Trans>
+            </AlertDescription>
+          </Alert>
+        </div>
+
         <div className="lg:col-span-2">
           <Form {...form}>
             <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Link2 className="size-5" />
+                    <Trans>Import from URL</Trans>
+                  </CardTitle>
+                  <CardDescription>
+                    <Trans>
+                      Paste a product URL to auto-fill details from retailers
+                      like Zara, H&M, ASOS
+                    </Trans>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Input
+                      className="flex-1"
+                      disabled={importMutation.isPending}
+                      onChange={(e) => setImportUrl(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleImport();
+                        }
+                      }}
+                      placeholder={t`https://www.zara.com/us/en/...`}
+                      type="url"
+                      value={importUrl}
+                    />
+                    <Button
+                      disabled={!importUrl.trim() || importMutation.isPending}
+                      onClick={handleImport}
+                      type="button"
+                    >
+                      {importMutation.isPending ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          <Trans>Importing...</Trans>
+                        </>
+                      ) : (
+                        <Trans>Import</Trans>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card>
                 <CardHeader>
                   <CardTitle>
@@ -159,6 +289,7 @@ const GarmentNewScreen = () => {
                 <CardContent>
                   <ImageUpload
                     alt="Garment preview"
+                    currentImageUrl={importedImageUrl ?? undefined}
                     onFileSelect={handleFileSelect}
                     uploadLabel={
                       <Trans>Drop garment image here or click to upload</Trans>
@@ -400,44 +531,6 @@ const GarmentNewScreen = () => {
               </Button>
             </form>
           </Form>
-        </div>
-
-        <div className="space-y-4">
-          <Alert>
-            <Shirt className="h-4 w-4" />
-            <AlertTitle>
-              <Trans>Image Tips</Trans>
-            </AlertTitle>
-            <AlertDescription>
-              <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
-                <li>
-                  <Trans>Use a plain, light background</Trans>
-                </li>
-                <li>
-                  <Trans>Show the full garment clearly</Trans>
-                </li>
-                <li>
-                  <Trans>Ensure good lighting</Trans>
-                </li>
-                <li>
-                  <Trans>Flat lay or hanger shots work best</Trans>
-                </li>
-              </ul>
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertTitle>
-              <Trans>About Public Garments</Trans>
-            </AlertTitle>
-            <AlertDescription className="text-sm">
-              <Trans>
-                Public garments can be seen and tried on by other users. Keep
-                garments private if you want them for personal use only.
-              </Trans>
-            </AlertDescription>
-          </Alert>
         </div>
       </div>
     </div>
