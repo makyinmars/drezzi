@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PageHeader from "@/components/common/page-header";
-import GarmentImageUpload from "@/components/garment/garment-image-upload";
+import ImageUpload from "@/components/custom/image-upload";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -157,7 +157,13 @@ const GarmentNewScreen = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <GarmentImageUpload onFileSelect={handleFileSelect} />
+                  <ImageUpload
+                    alt="Garment preview"
+                    onFileSelect={handleFileSelect}
+                    uploadLabel={
+                      <Trans>Drop garment image here or click to upload</Trans>
+                    }
+                  />
                 </CardContent>
               </Card>
 

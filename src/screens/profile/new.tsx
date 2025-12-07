@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PageHeader from "@/components/common/page-header";
-import PhotoUpload from "@/components/profile/photo-upload";
+import ImageUpload from "@/components/custom/image-upload";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -154,7 +154,13 @@ const ProfileNewScreen = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <PhotoUpload onFileSelect={handleFileSelect} />
+                  <ImageUpload
+                    alt="Profile preview"
+                    onFileSelect={handleFileSelect}
+                    uploadLabel={
+                      <Trans>Drop photo here or click to upload</Trans>
+                    }
+                  />
                 </CardContent>
               </Card>
 

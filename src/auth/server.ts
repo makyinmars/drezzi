@@ -9,6 +9,8 @@ import { serverEnv } from "@/env/server";
 import { prisma } from "@/lib/prisma";
 
 export const auth = betterAuth({
+  baseURL: serverEnv.PUBLIC_URL,
+  trustedOrigins: [serverEnv.PUBLIC_URL],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),

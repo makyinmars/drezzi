@@ -1,21 +1,32 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Upload, X } from "lucide-react";
+import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
+import MediaDisplay from "@/components/common/media-display";
 import { Button } from "@/components/ui/button";
 
 const IMAGE_TYPE_REGEX = /^image\/(jpeg|png|webp)$/;
 
-type PhotoUploadProps = {
+type ImageUploadProps = {
   onFileSelect: (file: File | null, previewUrl: string | null) => void;
-  currentPhotoUrl?: string;
+  currentImageUrl?: string;
+  alt?: string;
+  uploadLabel?: ReactNode;
+  uploadSubLabel?: ReactNode;
 };
 
-const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
+export default function ImageUpload({
+  onFileSelect,
+  currentImageUrl,
+  alt = "Image preview",
+  uploadLabel,
+  uploadSubLabel,
+}: ImageUploadProps) {
   const { t } = useLingui();
   const [preview, setPreview] = useState<string | null>(
-    currentPhotoUrl ?? null
+    currentImageUrl ?? null
   );
 
   const handleFileSelect = useCallback(
@@ -44,7 +55,7 @@ const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
-      const file = e.dataTransfer.files[0];
+      const file = e.dataTransfer.files.item(0);
       if (file) {
         handleFileSelect(file);
       }
@@ -54,7 +65,7 @@ const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
+      const file = e.target.files?.item(0);
       if (file) {
         handleFileSelect(file);
       }
@@ -70,12 +81,13 @@ const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
   return (
     <div className="space-y-2">
       {preview ? (
-        <div className="relative">
-          <img
-            alt="Profile preview"
-            className="h-48 w-full rounded-lg object-cover"
-            src={preview}
-          />
+        <MediaDisplay
+          alt={alt}
+          className="h-72 rounded-lg"
+          fit="cover"
+          src={preview}
+          variant="card"
+        >
           <Button
             className="absolute top-2 right-2"
             onClick={clearPreview}
@@ -83,21 +95,21 @@ const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
             type="button"
             variant="destructive"
           >
-            <X className="h-4 w-4" />
+            <X />
           </Button>
-        </div>
+        </MediaDisplay>
       ) : (
         <label
-          className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed transition-colors hover:border-muted-foreground/50"
+          className="flex h-72 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed transition-colors hover:border-muted-foreground/50"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
         >
           <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
           <span className="text-muted-foreground text-sm">
-            <Trans>Drop photo here or click to upload</Trans>
+            {uploadLabel ?? <Trans>Drop image here or click to upload</Trans>}
           </span>
           <span className="mt-1 text-muted-foreground text-xs">
-            <Trans>JPEG, PNG, or WebP up to 10MB</Trans>
+            {uploadSubLabel ?? <Trans>JPEG, PNG, or WebP up to 10MB</Trans>}
           </span>
           <input
             accept="image/jpeg,image/png,image/webp"
@@ -109,6 +121,4 @@ const PhotoUpload = ({ onFileSelect, currentPhotoUrl }: PhotoUploadProps) => {
       )}
     </div>
   );
-};
-
-export default PhotoUpload;
+}

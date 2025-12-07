@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import ImageUpload from "@/components/custom/image-upload";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -38,8 +39,6 @@ import {
   GARMENT_CATEGORIES,
   type GarmentCreateAndUpdate,
 } from "@/validators/garment";
-
-import GarmentImageUpload from "./garment-image-upload";
 
 type GarmentFormProps = {
   garment?: GarmentListProcedure[number];
@@ -186,9 +185,13 @@ const GarmentForm = ({
           <Form {...form}>
             <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-4 md:flex-row">
-                <GarmentImageUpload
+                <ImageUpload
+                  alt="Garment preview"
                   currentImageUrl={garment?.imageUrl}
                   onFileSelect={handleFileSelect}
+                  uploadLabel={
+                    <Trans>Drop garment image here or click to upload</Trans>
+                  }
                 />
                 <div className="flex flex-1 flex-col gap-2">
                   <FormField

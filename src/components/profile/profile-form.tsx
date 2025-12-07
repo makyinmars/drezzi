@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import ImageUpload from "@/components/custom/image-upload";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,8 +37,6 @@ import {
   apiBodyProfileCreateAndUpdate,
   type BodyProfileCreateAndUpdate,
 } from "@/validators/profile";
-
-import PhotoUpload from "./photo-upload";
 
 type ProfileFormProps = {
   profile?: ProfileListProcedure[number];
@@ -176,9 +175,11 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
         </DialogHeader>
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <PhotoUpload
-              currentPhotoUrl={profile?.photoUrl}
+            <ImageUpload
+              alt="Profile preview"
+              currentImageUrl={profile?.photoUrl}
               onFileSelect={handleFileSelect}
+              uploadLabel={<Trans>Drop photo here or click to upload</Trans>}
             />
 
             <FormField
