@@ -908,7 +908,7 @@ msgstr "Profil par défaut"
 #: src/components/style-tip/style-tip-delete.tsx:68
 #: src/components/todo/todo-delete.tsx:101
 #: src/components/todo/todo-detail.tsx:79
-#: src/components/try-on/try-on-card.tsx:223
+#: src/components/try-on/try-on-card.tsx:225
 #: src/components/try-on/try-on-delete.tsx:113
 #: src/screens/garment/garment-id.tsx:113
 #: src/screens/lookbooks/lookbook-id.tsx:153
@@ -1320,7 +1320,7 @@ msgstr "Essayages échoués"
 msgid "FAL AI"
 msgstr "FAL AI"
 
-#: src/components/try-on/try-on-card.tsx:187
+#: src/components/try-on/try-on-card.tsx:189
 #: src/screens/try-on/try-on-id.tsx:145
 msgid "Favorite"
 msgstr "Favori"
@@ -1380,7 +1380,7 @@ msgstr "Du téléchargement à l'essayage en quatre étapes simples"
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: src/components/try-on/try-on-card.tsx:208
+#: src/components/try-on/try-on-card.tsx:210
 #: src/components/try-on/try-on-form.tsx:187
 #: src/screens/try-on/try-on-id.tsx:233
 msgid "Garment"
@@ -2016,7 +2016,7 @@ msgstr "en attente"
 msgid "per credit"
 msgstr "par crédit"
 
-#: src/components/try-on/try-on-card.tsx:318
+#: src/components/try-on/try-on-card.tsx:320
 msgid "Personalized recommendations for this look"
 msgstr "Recommandations personnalisées pour ce look"
 
@@ -2271,7 +2271,7 @@ msgstr "Résultat"
 msgid "Retail URL"
 msgstr "URL du détaillant"
 
-#: src/components/try-on/try-on-card.tsx:201
+#: src/components/try-on/try-on-card.tsx:203
 #: src/screens/try-on/try-on-id.tsx:158
 #: src/screens/try-on/try-on-id.tsx:159
 msgid "Retry"
@@ -2514,8 +2514,8 @@ msgstr "Conseil de style mis à jour"
 
 #: src/components/landing/index.tsx:394
 #: src/components/style-tip/style-tip-card.tsx:81
-#: src/components/try-on/try-on-card.tsx:213
-#: src/components/try-on/try-on-card.tsx:315
+#: src/components/try-on/try-on-card.tsx:215
+#: src/components/try-on/try-on-card.tsx:317
 msgid "Style Tips"
 msgstr "Conseils de style"
 
@@ -2678,7 +2678,7 @@ msgid "Try-on restarted"
 msgstr "Essayage redémarré"
 
 #. placeholder {0}: tryOn.garment.name
-#: src/components/try-on/try-on-card.tsx:243
+#: src/components/try-on/try-on-card.tsx:245
 #: src/screens/try-on/try-on-id.tsx:181
 msgid "Try-on result for {0}"
 msgstr "Résultat d'essayage pour {0}"
@@ -2687,7 +2687,7 @@ msgstr "Résultat d'essayage pour {0}"
 msgid "try-ons in progress"
 msgstr "essayages en cours"
 
-#: src/components/try-on/try-on-card.tsx:182
+#: src/components/try-on/try-on-card.tsx:184
 #: src/screens/try-on/try-on-id.tsx:140
 msgid "Unfavorite"
 msgstr "Retirer des favoris"
@@ -2820,7 +2820,7 @@ msgid "Verify Code"
 msgstr "Vérifier le code"
 
 #: src/components/profile/profile-card.tsx:229
-#: src/components/try-on/try-on-card.tsx:172
+#: src/components/try-on/try-on-card.tsx:174
 msgid "View"
 msgstr "Voir"
 

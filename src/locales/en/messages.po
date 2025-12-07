@@ -908,7 +908,7 @@ msgstr "Default Profile"
 #: src/components/style-tip/style-tip-delete.tsx:68
 #: src/components/todo/todo-delete.tsx:101
 #: src/components/todo/todo-detail.tsx:79
-#: src/components/try-on/try-on-card.tsx:223
+#: src/components/try-on/try-on-card.tsx:225
 #: src/components/try-on/try-on-delete.tsx:113
 #: src/screens/garment/garment-id.tsx:113
 #: src/screens/lookbooks/lookbook-id.tsx:153
@@ -1320,7 +1320,7 @@ msgstr "Failed Try-Ons"
 msgid "FAL AI"
 msgstr "FAL AI"
 
-#: src/components/try-on/try-on-card.tsx:187
+#: src/components/try-on/try-on-card.tsx:189
 #: src/screens/try-on/try-on-id.tsx:145
 msgid "Favorite"
 msgstr "Favorite"
@@ -1380,7 +1380,7 @@ msgstr "From upload to try-on in four simple steps"
 msgid "Full Name"
 msgstr "Full Name"
 
-#: src/components/try-on/try-on-card.tsx:208
+#: src/components/try-on/try-on-card.tsx:210
 #: src/components/try-on/try-on-form.tsx:187
 #: src/screens/try-on/try-on-id.tsx:233
 msgid "Garment"
@@ -2016,7 +2016,7 @@ msgstr "pending"
 msgid "per credit"
 msgstr "per credit"
 
-#: src/components/try-on/try-on-card.tsx:318
+#: src/components/try-on/try-on-card.tsx:320
 msgid "Personalized recommendations for this look"
 msgstr "Personalized recommendations for this look"
 
@@ -2271,7 +2271,7 @@ msgstr "Result"
 msgid "Retail URL"
 msgstr "Retail URL"
 
-#: src/components/try-on/try-on-card.tsx:201
+#: src/components/try-on/try-on-card.tsx:203
 #: src/screens/try-on/try-on-id.tsx:158
 #: src/screens/try-on/try-on-id.tsx:159
 msgid "Retry"
@@ -2514,8 +2514,8 @@ msgstr "Style tip updated"
 
 #: src/components/landing/index.tsx:394
 #: src/components/style-tip/style-tip-card.tsx:81
-#: src/components/try-on/try-on-card.tsx:213
-#: src/components/try-on/try-on-card.tsx:315
+#: src/components/try-on/try-on-card.tsx:215
+#: src/components/try-on/try-on-card.tsx:317
 msgid "Style Tips"
 msgstr "Style Tips"
 
@@ -2678,7 +2678,7 @@ msgid "Try-on restarted"
 msgstr "Try-on restarted"
 
 #. placeholder {0}: tryOn.garment.name
-#: src/components/try-on/try-on-card.tsx:243
+#: src/components/try-on/try-on-card.tsx:245
 #: src/screens/try-on/try-on-id.tsx:181
 msgid "Try-on result for {0}"
 msgstr "Try-on result for {0}"
@@ -2687,7 +2687,7 @@ msgstr "Try-on result for {0}"
 msgid "try-ons in progress"
 msgstr "try-ons in progress"
 
-#: src/components/try-on/try-on-card.tsx:182
+#: src/components/try-on/try-on-card.tsx:184
 #: src/screens/try-on/try-on-id.tsx:140
 msgid "Unfavorite"
 msgstr "Unfavorite"
@@ -2820,7 +2820,7 @@ msgid "Verify Code"
 msgstr "Verify Code"
 
 #: src/components/profile/profile-card.tsx:229
-#: src/components/try-on/try-on-card.tsx:172
+#: src/components/try-on/try-on-card.tsx:174
 msgid "View"
 msgstr "View"
 
