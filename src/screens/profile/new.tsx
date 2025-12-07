@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Camera, Info } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -128,18 +128,58 @@ const ProfileNewScreen = () => {
       <PageHeader
         actions={
           <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
-            <a href="/profile">
+            <Link to="/profile">
               <ArrowLeft className="size-4" />
               {!isMobile && <Trans>Back</Trans>}
-            </a>
+            </Link>
           </Button>
         }
         description={t`Add a new body profile for virtual try-ons`}
         title={t`Create Body Profile`}
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <Alert>
+            <Camera className="h-4 w-4" />
+            <AlertTitle>
+              <Trans>Photo Tips</Trans>
+            </AlertTitle>
+            <AlertDescription>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
+                <li>
+                  <Trans>Stand in front of a plain background</Trans>
+                </li>
+                <li>
+                  <Trans>Wear fitted clothing for best results</Trans>
+                </li>
+                <li>
+                  <Trans>Ensure good, even lighting</Trans>
+                </li>
+                <li>
+                  <Trans>Face the camera directly</Trans>
+                </li>
+                <li>
+                  <Trans>Include your full body in the frame</Trans>
+                </li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>
+              <Trans>About Measurements</Trans>
+            </AlertTitle>
+            <AlertDescription className="text-sm">
+              <Trans>
+                Measurements are optional but help improve the accuracy of
+                virtual try-ons. You can always add them later.
+              </Trans>
+            </AlertDescription>
+          </Alert>
+        </div>
+        <div>
           <Form {...form}>
             <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
               <Card>
@@ -412,47 +452,6 @@ const ProfileNewScreen = () => {
               </Button>
             </form>
           </Form>
-        </div>
-
-        <div className="space-y-4">
-          <Alert>
-            <Camera className="h-4 w-4" />
-            <AlertTitle>
-              <Trans>Photo Tips</Trans>
-            </AlertTitle>
-            <AlertDescription>
-              <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
-                <li>
-                  <Trans>Stand in front of a plain background</Trans>
-                </li>
-                <li>
-                  <Trans>Wear fitted clothing for best results</Trans>
-                </li>
-                <li>
-                  <Trans>Ensure good, even lighting</Trans>
-                </li>
-                <li>
-                  <Trans>Face the camera directly</Trans>
-                </li>
-                <li>
-                  <Trans>Include your full body in the frame</Trans>
-                </li>
-              </ul>
-            </AlertDescription>
-          </Alert>
-
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertTitle>
-              <Trans>About Measurements</Trans>
-            </AlertTitle>
-            <AlertDescription className="text-sm">
-              <Trans>
-                Measurements are optional but help improve the accuracy of
-                virtual try-ons. You can always add them later.
-              </Trans>
-            </AlertDescription>
-          </Alert>
         </div>
       </div>
     </div>

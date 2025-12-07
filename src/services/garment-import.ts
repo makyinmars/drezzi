@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { generateText } from "ai";
+import { generateObject } from "ai";
 import { z } from "zod";
 
 import { GARMENT_CATEGORIES } from "@/validators/garment";
@@ -21,8 +21,6 @@ const extractedGarmentSchema = z.object({
 
 export type ExtractedGarment = z.infer<typeof extractedGarmentSchema>;
 
-const JSON_REGEX = /\{[\s\S]*\}/;
-
 function normalizeImageUrl(imageUrl: string): string {
   if (imageUrl.includes("static.zara.net")) {
     const url = new URL(imageUrl);
@@ -33,14 +31,12 @@ function normalizeImageUrl(imageUrl: string): string {
 }
 
 export async function importGarmentFromUrl(url: string) {
-  const result = await generateText({
+  const result = await generateObject({
     model: google("gemini-2.5-flash"),
-    tools: {
-      url_context: google.tools.urlContext({}),
-    },
-    prompt: `Visit this product URL and extract garment information: ${url}
+    schema: extractedGarmentSchema,
+    prompt: `Extract garment information from this product URL: ${url}
 
-Extract the following details from the product page:
+Extract the following details:
 - Product name (required)
 - Description (max 500 characters, summarize if longer)
 - Price (numeric value only, no currency symbol)
@@ -50,42 +46,13 @@ Extract the following details from the product page:
 - Subcategory (e.g., t-shirt, jeans, sneakers, jacket)
 - Primary colors as an array (e.g., ["black", "white"])
 - Available sizes as an array (e.g., ["S", "M", "L", "XL"])
-- Main product image URL:
-  - Check these sources IN ORDER:
-    1. Open Graph meta tag: <meta property="og:image" content="...">
-    2. Twitter card image: <meta name="twitter:image" content="...">
-    3. JSON-LD structured data: <script type="application/ld+json"> containing "image" property
-    4. Preload links: <link rel="preload" as="image" href="...">
-  - For Zara: Look for URLs containing "static.zara.net/assets/public/" with product ID
-  - The URL format is: https://static.zara.net/assets/public/{hash}/{hash}/{hash}/{hash}/{productId}-{suffix}/{productId}-{suffix}.jpg
-  - Prefer high resolution images
-  - Return the complete, absolute URL (not data URIs or placeholder images)
+- Main product image URL if you can determine it
 
 Return null for any field you cannot determine with confidence.
-For category, use your best judgment based on the product type.
-
-Respond ONLY with valid JSON in this exact format:
-{
-  "name": "string",
-  "description": "string or null",
-  "price": number or null,
-  "currency": "USD" | "EUR" | "GBP" | "CAD" | "AUD",
-  "brand": "string or null",
-  "category": "tops" | "bottoms" | "dresses" | "outerwear" | "shoes" | "accessories" | null,
-  "subcategory": "string or null",
-  "colors": ["string"],
-  "sizes": ["string"],
-  "imageUrl": "string or null"
-}`,
+For category, use your best judgment based on the product type.`,
   });
 
-  const jsonMatch = result.text.match(JSON_REGEX);
-  if (!jsonMatch) {
-    throw new Error("Failed to parse garment data from response");
-  }
-
-  const parsed = JSON.parse(jsonMatch[0]);
-  const extracted = extractedGarmentSchema.parse(parsed);
+  const extracted = result.object;
 
   if (extracted.imageUrl) {
     extracted.imageUrl = normalizeImageUrl(extracted.imageUrl);

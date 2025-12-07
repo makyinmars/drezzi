@@ -865,7 +865,7 @@ const TechSection = () => {
 
           {/* Description Card - spans bottom right */}
           <motion.div
-            className="md:col-span-7"
+            className="md:col-span-12"
             initial={{ opacity: 0, y: 30 }}
             transition={{ delay: 0.2, duration: 1, ease: easing }}
             viewport={{ once: true }}

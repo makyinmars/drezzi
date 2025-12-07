@@ -1,11 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Link2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ImageUpload from "@/components/custom/image-upload";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -58,6 +67,9 @@ const GarmentForm = ({
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [importUrl, setImportUrl] = useState("");
+  const [importedImageId, setImportedImageId] = useState<string | null>(null);
+  const [importedImageUrl, setImportedImageUrl] = useState<string | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -111,14 +123,56 @@ const GarmentForm = ({
     })
   );
 
-  const handleFileSelect = (file: File | null) => {
-    setSelectedFile(file);
+  const importMutation = useMutation(
+    trpc.garment.importFromUrl.mutationOptions({
+      onSuccess: (data) => {
+        form.setValue("name", data.name);
+        if (data.description) form.setValue("description", data.description);
+        if (data.price) form.setValue("price", data.price);
+        if (data.currency) form.setValue("currency", data.currency);
+        if (data.brand) form.setValue("brand", data.brand);
+        if (data.category) form.setValue("category", data.category);
+        if (data.subcategory) form.setValue("subcategory", data.subcategory);
+        if (data.retailUrl) form.setValue("retailUrl", data.retailUrl);
+        if (data.colors.length > 0) form.setValue("colors", data.colors);
+        if (data.sizes.length > 0) form.setValue("sizes", data.sizes);
+        if (data.uploadedImageId) {
+          setImportedImageId(data.uploadedImageId);
+          setImportedImageUrl(data.uploadedImageUrl);
+        }
+      },
+    })
+  );
+
+  const handleImport = () => {
+    if (!importUrl.trim()) return;
+    toast.promise(importMutation.mutateAsync({ url: importUrl }), {
+      loading: t`Importing product details...`,
+      success: t`Product imported successfully`,
+      error: (err) => t`Failed to import: ${err.message}`,
+    });
   };
 
-  const buildFormData = (data: GarmentCreateAndUpdate, file: File | null) => {
+  const handleFileSelect = (file: File | null) => {
+    setSelectedFile(file);
+    if (file) {
+      setImportedImageId(null);
+      setImportedImageUrl(null);
+    }
+  };
+
+  const buildFormData = (
+    data: GarmentCreateAndUpdate,
+    file: File | null,
+    preUploadedImageId: string | null
+  ) => {
     const formData = new FormData();
     if (data.id) formData.append("id", data.id);
-    if (file) formData.append("file", file);
+    if (preUploadedImageId) {
+      formData.append("imageId", preUploadedImageId);
+    } else if (file) {
+      formData.append("file", file);
+    }
     formData.append("name", data.name);
     formData.append("description", data.description ?? "");
     formData.append("category", data.category);
@@ -141,12 +195,12 @@ const GarmentForm = ({
   };
 
   const onSubmit = async (data: GarmentCreateAndUpdate) => {
-    const formData = buildFormData(data, selectedFile);
-
-    if (!(data.id || selectedFile)) {
+    if (!(data.id || selectedFile || importedImageId)) {
       toast.error(t`Please upload an image first`);
       return;
     }
+
+    const formData = buildFormData(data, selectedFile, importedImageId);
 
     if (data.id) {
       toast.promise(updateMutation.mutateAsync(formData), {
@@ -181,13 +235,76 @@ const GarmentForm = ({
             )}
           </ResponsivePanelDescription>
         </ResponsivePanelHeader>
-        <div className="max-h-[70vh] overflow-y-auto p-4">
+        <div className="max-h-[70vh] space-y-4 overflow-y-auto p-4">
+          {!garment && (
+            <>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Link2 className="size-4" />
+                    <Trans>Import from URL</Trans>
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    <Trans>
+                      Paste a product URL to auto-fill details from retailers
+                    </Trans>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Input
+                      className="flex-1"
+                      disabled={importMutation.isPending}
+                      onChange={(e) => setImportUrl(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleImport();
+                        }
+                      }}
+                      placeholder={t`https://www.zara.com/us/en/...`}
+                      type="url"
+                      value={importUrl}
+                    />
+                    <Button
+                      disabled={!importUrl.trim() || importMutation.isPending}
+                      onClick={handleImport}
+                      type="button"
+                    >
+                      {importMutation.isPending ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          <Trans>Importing...</Trans>
+                        </>
+                      ) : (
+                        <Trans>Import</Trans>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>
+                  <Trans>Import Limitations</Trans>
+                </AlertTitle>
+                <AlertDescription className="text-sm">
+                  <Trans>
+                    Product images may not always import automatically. If the
+                    image doesn't appear, please upload one manually.
+                  </Trans>
+                </AlertDescription>
+              </Alert>
+            </>
+          )}
+
           <Form {...form}>
             <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-4 md:flex-row">
                 <ImageUpload
                   alt="Garment preview"
-                  currentImageUrl={garment?.imageUrl}
+                  currentImageUrl={importedImageUrl ?? garment?.imageUrl}
                   onFileSelect={handleFileSelect}
                   uploadLabel={
                     <Trans>Drop garment image here or click to upload</Trans>

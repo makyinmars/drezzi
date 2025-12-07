@@ -2,7 +2,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Info, Link2, Loader2, Shirt } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Info,
+  Link2,
+  Loader2,
+  Shirt,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -222,6 +229,19 @@ const GarmentNewScreen = () => {
               <Trans>
                 Public garments can be seen and tried on by other users. Keep
                 garments private if you want them for personal use only.
+              </Trans>
+            </AlertDescription>
+          </Alert>
+
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>
+              <Trans>Import Limitations</Trans>
+            </AlertTitle>
+            <AlertDescription className="text-sm">
+              <Trans>
+                Product images may not always import automatically. If the image
+                doesn't appear, please upload one manually.
               </Trans>
             </AlertDescription>
           </Alert>
