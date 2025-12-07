@@ -27,6 +27,9 @@ export default defineConfig({
       },
     }),
   ],
+  ssr: {
+    noExternal: ["ms"],
+  },
   nitro: {
     preset: "aws-lambda",
     awsLambda: {

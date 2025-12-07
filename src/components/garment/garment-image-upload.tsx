@@ -3,6 +3,7 @@ import { Upload, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
+import MediaDisplay from "@/components/common/media-display";
 import { Button } from "@/components/ui/button";
 
 const IMAGE_TYPE_REGEX = /^image\/(jpeg|png|webp)$/;
@@ -73,12 +74,13 @@ const GarmentImageUpload = ({
   return (
     <div className="space-y-2">
       {preview ? (
-        <div className="relative">
-          <img
-            alt="Garment preview"
-            className="h-48 w-full rounded-lg object-cover"
-            src={preview}
-          />
+        <MediaDisplay
+          alt="Garment preview"
+          className="h-48 rounded-lg"
+          fit="cover"
+          src={preview}
+          variant="card"
+        >
           <Button
             className="absolute top-2 right-2"
             onClick={clearPreview}
@@ -88,7 +90,7 @@ const GarmentImageUpload = ({
           >
             <X className="h-4 w-4" />
           </Button>
-        </div>
+        </MediaDisplay>
       ) : (
         <label
           className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed transition-colors hover:border-muted-foreground/50"
