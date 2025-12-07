@@ -1,5 +1,4 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createIsomorphicFn, createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import {
@@ -145,7 +144,6 @@ export function Provider({
   return (
     <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
       {children}
-      <ReactQueryDevtools buttonPosition="bottom-right" />
     </TRPCProvider>
   );
 }

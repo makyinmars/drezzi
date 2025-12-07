@@ -3,8 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import ContentLayout from "@/components/common/content-layout";
 import Landing from "@/components/landing";
 import {
-  APP_LOGO_URL,
   APP_NAME,
+  APP_SEO_OG_URL,
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
 } from "@/constants/app";
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:image",
-        content: APP_LOGO_URL,
+        content: APP_SEO_OG_URL,
       },
       {
         name: "twitter:card",
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/")({
       },
       {
         name: "twitter:image",
-        content: APP_LOGO_URL,
+        content: APP_SEO_OG_URL,
       },
       {
         name: "keywords",

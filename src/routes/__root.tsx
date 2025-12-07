@@ -155,7 +155,6 @@ function RootDocument({
           enableSystem
         >
           {children}
-
           <TanStackDevtools
             plugins={[
               {
