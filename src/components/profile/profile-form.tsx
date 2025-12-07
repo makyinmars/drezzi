@@ -7,14 +7,6 @@ import { toast } from "sonner";
 import ImageUpload from "@/components/custom/image-upload";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -23,6 +15,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsivePanel,
+  ResponsivePanelContent,
+  ResponsivePanelDescription,
+  ResponsivePanelHeader,
+  ResponsivePanelTitle,
+  ResponsivePanelTrigger,
+} from "@/components/ui/responsive-panel";
 import {
   Select,
   SelectContent,
@@ -41,11 +41,20 @@ import {
 type ProfileFormProps = {
   profile?: ProfileListProcedure[number];
   children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const ProfileForm = ({ profile, children }: ProfileFormProps) => {
+const ProfileForm = ({
+  profile,
+  children,
+  open: controlledOpen,
+  onOpenChange,
+}: ProfileFormProps) => {
   const { t } = useLingui();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -154,261 +163,270 @@ const ProfileForm = ({ profile, children }: ProfileFormProps) => {
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>
+    <ResponsivePanel onOpenChange={setOpen} open={open}>
+      {children && (
+        <ResponsivePanelTrigger asChild>{children}</ResponsivePanelTrigger>
+      )}
+      <ResponsivePanelContent>
+        <ResponsivePanelHeader>
+          <ResponsivePanelTitle>
             {profile ? (
               <Trans>Edit Body Profile</Trans>
             ) : (
               <Trans>Create Body Profile</Trans>
             )}
-          </DialogTitle>
-          <DialogDescription>
+          </ResponsivePanelTitle>
+          <ResponsivePanelDescription>
             {profile ? (
               <Trans>Update your body profile for virtual try-ons</Trans>
             ) : (
               <Trans>Add a new body profile for virtual try-ons</Trans>
             )}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <ImageUpload
-              alt="Profile preview"
-              currentImageUrl={profile?.photoUrl}
-              onFileSelect={handleFileSelect}
-              uploadLabel={<Trans>Drop photo here or click to upload</Trans>}
-            />
+          </ResponsivePanelDescription>
+        </ResponsivePanelHeader>
+        <div className="max-h-[70vh] overflow-y-auto p-4">
+          <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-4 md:flex-row">
+                <ImageUpload
+                  alt="Profile preview"
+                  currentImageUrl={profile?.photoUrl}
+                  onFileSelect={handleFileSelect}
+                  uploadLabel={
+                    <Trans>Drop photo here or click to upload</Trans>
+                  }
+                />
+                <div className="flex flex-1 flex-col gap-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <Trans>Profile Name</Trans>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t`e.g., Default, Casual, Formal`}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Profile Name</Trans>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t`e.g., Default, Casual, Formal`}
-                      {...field}
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="height"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            <Trans>Height (cm)</Trans>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="175"
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : null
+                                )
+                              }
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="height"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Height (cm)</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="175"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <FormField
+                      control={form.control}
+                      name="chest"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            <Trans>Chest (cm)</Trans>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="95"
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : null
+                                )
+                              }
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              <FormField
-                control={form.control}
-                name="chest"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Chest (cm)</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="95"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <FormField
+                      control={form.control}
+                      name="waist"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            <Trans>Waist (cm)</Trans>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="80"
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : null
+                                )
+                              }
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              <FormField
-                control={form.control}
-                name="waist"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Waist (cm)</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="80"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <FormField
+                      control={form.control}
+                      name="hip"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            <Trans>Hip (cm)</Trans>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="95"
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : null
+                                )
+                              }
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              <FormField
-                control={form.control}
-                name="hip"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Hip (cm)</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="95"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="inseam"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <Trans>Inseam (cm)</Trans>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="80"
-                        type="number"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="fitPreference"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    <Trans>Fit Preference</Trans>
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t`Select fit preference`} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="slim">
-                        <Trans>Slim</Trans>
-                      </SelectItem>
-                      <SelectItem value="regular">
-                        <Trans>Regular</Trans>
-                      </SelectItem>
-                      <SelectItem value="relaxed">
-                        <Trans>Relaxed</Trans>
-                      </SelectItem>
-                      <SelectItem value="loose">
-                        <Trans>Loose</Trans>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="isDefault"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      <Trans>Default Profile</Trans>
-                    </FormLabel>
-                    <div className="text-muted-foreground text-sm">
-                      <Trans>
-                        Use this profile as your default for try-ons
-                      </Trans>
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="inseam"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            <Trans>Inseam (cm)</Trans>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="80"
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : null
+                                )
+                              }
+                              value={field.value ?? ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                </div>
+              </div>
 
-            <Button
-              className="w-full"
-              disabled={
-                profile ? updateMutation.isPending : createMutation.isPending
-              }
-              type="submit"
-            >
-              {profile ? (
-                <Trans>Update Profile</Trans>
-              ) : (
-                <Trans>Create Profile</Trans>
-              )}
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              <FormField
+                control={form.control}
+                name="fitPreference"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Trans>Fit Preference</Trans>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t`Select fit preference`} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="slim">
+                          <Trans>Slim</Trans>
+                        </SelectItem>
+                        <SelectItem value="regular">
+                          <Trans>Regular</Trans>
+                        </SelectItem>
+                        <SelectItem value="relaxed">
+                          <Trans>Relaxed</Trans>
+                        </SelectItem>
+                        <SelectItem value="loose">
+                          <Trans>Loose</Trans>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isDefault"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>
+                        <Trans>Default Profile</Trans>
+                      </FormLabel>
+                      <div className="text-muted-foreground text-sm">
+                        <Trans>
+                          Use this profile as your default for try-ons
+                        </Trans>
+                      </div>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                className="w-full"
+                disabled={
+                  profile ? updateMutation.isPending : createMutation.isPending
+                }
+                type="submit"
+              >
+                {profile ? (
+                  <Trans>Update Profile</Trans>
+                ) : (
+                  <Trans>Create Profile</Trans>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </ResponsivePanelContent>
+    </ResponsivePanel>
   );
 };
 

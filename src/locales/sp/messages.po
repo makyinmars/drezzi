@@ -26,7 +26,7 @@ msgstr "\"{0}\" ha sido añadido a tu lista"
 
 #. placeholder {0}: created.name
 #: src/components/lookbook/lookbook-form.tsx:179
-#: src/components/profile/profile-form.tsx:150
+#: src/components/profile/profile-form.tsx:159
 #: src/screens/profile/new.tsx:121
 msgid "\"{0}\" has been created"
 msgstr "\"{0}\" ha sido creado"
@@ -50,7 +50,7 @@ msgstr "\"{0}\" ha sido eliminado de tu lista"
 #: src/components/garment/garment-form.tsx:154
 #: src/components/lookbook/lookbook-form.tsx:165
 #: src/components/profile/profile-card.tsx:195
-#: src/components/profile/profile-form.tsx:144
+#: src/components/profile/profile-form.tsx:153
 #: src/components/todo/todo-form.tsx:180
 msgid "\"{0}\" has been updated"
 msgstr "\"{0}\" ha sido actualizado"
@@ -307,7 +307,7 @@ msgstr "Añadir"
 msgid "Add a custom style tip for this try-on"
 msgstr "Añadir un consejo de estilo personalizado para este probador"
 
-#: src/components/profile/profile-form.tsx:172
+#: src/components/profile/profile-form.tsx:183
 #: src/screens/profile/new.tsx:137
 msgid "Add a new body profile for virtual try-ons"
 msgstr "Añadir un nuevo perfil corporal para probadores virtuales"
@@ -644,7 +644,7 @@ msgid "Chest"
 msgstr "Pecho"
 
 #: src/components/profile/profile-card.tsx:419
-#: src/components/profile/profile-form.tsx:237
+#: src/components/profile/profile-form.tsx:252
 #: src/screens/profile/new.tsx:304
 msgid "Chest (cm)"
 msgstr "Pecho (cm)"
@@ -712,7 +712,7 @@ msgstr "Crear cuenta"
 msgid "Create an account"
 msgstr "Crear una cuenta"
 
-#: src/components/profile/profile-form.tsx:165
+#: src/components/profile/profile-form.tsx:176
 #: src/screens/profile/new.tsx:138
 msgid "Create Body Profile"
 msgstr "Crear Perfil Corporal"
@@ -727,7 +727,7 @@ msgstr "Crear Lookbook"
 msgid "Create New Todo"
 msgstr "Crear Nueva Tarea"
 
-#: src/components/profile/profile-form.tsx:405
+#: src/components/profile/profile-form.tsx:422
 #: src/screens/profile/index.tsx:33
 #: src/screens/profile/new.tsx:411
 msgid "Create Profile"
@@ -775,7 +775,7 @@ msgstr "Creando prenda..."
 msgid "Creating lookbook..."
 msgstr "Creando lookbook..."
 
-#: src/components/profile/profile-form.tsx:149
+#: src/components/profile/profile-form.tsx:158
 #: src/screens/profile/new.tsx:120
 msgid "Creating profile..."
 msgstr "Creando perfil..."
@@ -836,7 +836,7 @@ msgid "Default"
 msgstr "Predeterminado"
 
 #: src/components/profile/profile-card.tsx:574
-#: src/components/profile/profile-form.tsx:377
+#: src/components/profile/profile-form.tsx:394
 #: src/screens/profile/new.tsx:239
 #: src/screens/profile/profile-id.tsx:119
 msgid "Default Profile"
@@ -956,7 +956,7 @@ msgid "Drop image here or click to upload"
 msgstr "Arrastra la imagen aquí o haz clic para subir"
 
 #: src/components/profile/profile-card.tsx:361
-#: src/components/profile/profile-form.tsx:182
+#: src/components/profile/profile-form.tsx:196
 #: src/screens/profile/new.tsx:161
 msgid "Drop photo here or click to upload"
 msgstr "Arrastra la foto aquí o haz clic para subir"
@@ -967,7 +967,7 @@ msgid "e.g., Blue Oxford Shirt"
 msgstr "ej., Camisa Oxford Azul"
 
 #: src/components/profile/profile-card.tsx:375
-#: src/components/profile/profile-form.tsx:195
+#: src/components/profile/profile-form.tsx:210
 #: src/screens/profile/new.tsx:184
 msgid "e.g., Default, Casual, Formal"
 msgstr "ej. : Predeterminado, Casual, Formal"
@@ -991,7 +991,7 @@ msgstr "ej. : Conjuntos de Verano 2025"
 msgid "Edit"
 msgstr "Editar"
 
-#: src/components/profile/profile-form.tsx:163
+#: src/components/profile/profile-form.tsx:174
 msgid "Edit Body Profile"
 msgstr "Editar Perfil Corporal"
 
@@ -1092,7 +1092,7 @@ msgid "Error creating lookbook: {0}"
 msgstr "Error creando lookbook: {0}"
 
 #. placeholder {0}: err.message
-#: src/components/profile/profile-form.tsx:151
+#: src/components/profile/profile-form.tsx:160
 #: src/screens/profile/new.tsx:122
 msgid "Error creating profile: {0}"
 msgstr "Error creando perfil: {0}"
@@ -1176,7 +1176,7 @@ msgstr "Error actualizando lookbook: {0}"
 
 #. placeholder {0}: err.message
 #: src/components/profile/profile-card.tsx:196
-#: src/components/profile/profile-form.tsx:145
+#: src/components/profile/profile-form.tsx:154
 msgid "Error updating profile: {0}"
 msgstr "Error actualizando perfil: {0}"
 
@@ -1264,7 +1264,7 @@ msgid "File size must be less than 10MB"
 msgstr "El tamaño del archivo debe ser menor a 10MB"
 
 #: src/components/profile/profile-card.tsx:534
-#: src/components/profile/profile-form.tsx:342
+#: src/components/profile/profile-form.tsx:359
 #: src/screens/profile/new.tsx:199
 #: src/screens/profile/profile-id.tsx:135
 msgid "Fit Preference"
@@ -1404,7 +1404,7 @@ msgid "Height"
 msgstr "Altura"
 
 #: src/components/profile/profile-card.tsx:391
-#: src/components/profile/profile-form.tsx:211
+#: src/components/profile/profile-form.tsx:226
 #: src/screens/profile/new.tsx:278
 msgid "Height (cm)"
 msgstr "Altura (cm)"
@@ -1415,7 +1415,7 @@ msgid "Hip"
 msgstr "Cadera"
 
 #: src/components/profile/profile-card.tsx:475
-#: src/components/profile/profile-form.tsx:289
+#: src/components/profile/profile-form.tsx:304
 #: src/screens/profile/new.tsx:356
 msgid "Hip (cm)"
 msgstr "Cadera (cm)"
@@ -1492,7 +1492,7 @@ msgid "Inseam"
 msgstr "Entrepierna"
 
 #: src/components/profile/profile-card.tsx:503
-#: src/components/profile/profile-form.tsx:315
+#: src/components/profile/profile-form.tsx:330
 #: src/screens/profile/new.tsx:382
 msgid "Inseam (cm)"
 msgstr "Entrepierna (cm)"
@@ -1644,7 +1644,7 @@ msgid "Lookbooks: Retained until you delete them or your account"
 msgstr "Lookbooks: Conservados hasta que los elimine o elimine su cuenta"
 
 #: src/components/profile/profile-card.tsx:558
-#: src/components/profile/profile-form.tsx:361
+#: src/components/profile/profile-form.tsx:378
 #: src/screens/profile/new.tsx:223
 msgid "Loose"
 msgstr "Holgado"
@@ -1911,7 +1911,7 @@ msgstr "Plataforma"
 msgid "Please select a valid image file (JPEG, PNG, or WebP)"
 msgstr "Por favor selecciona un archivo de imagen válido (JPEG, PNG o WebP)"
 
-#: src/components/profile/profile-form.tsx:137
+#: src/components/profile/profile-form.tsx:146
 #: src/screens/profile/new.tsx:113
 msgid "Please upload a photo first"
 msgstr "Por favor sube una foto primero"
@@ -1972,7 +1972,7 @@ msgid "Profile Information"
 msgstr "Información del Perfil"
 
 #: src/components/profile/profile-card.tsx:371
-#: src/components/profile/profile-form.tsx:191
+#: src/components/profile/profile-form.tsx:206
 #: src/screens/profile/new.tsx:180
 msgid "Profile Name"
 msgstr "Nombre del Perfil"
@@ -2029,7 +2029,7 @@ msgid "Registration failed: Please try again"
 msgstr "Error de registro: Por favor intenta de nuevo"
 
 #: src/components/profile/profile-card.tsx:552
-#: src/components/profile/profile-form.tsx:355
+#: src/components/profile/profile-form.tsx:372
 #: src/screens/profile/new.tsx:217
 msgid "Regular"
 msgstr "Regular"
@@ -2043,7 +2043,7 @@ msgid "Reimagined"
 msgstr "Reimaginado"
 
 #: src/components/profile/profile-card.tsx:555
-#: src/components/profile/profile-form.tsx:358
+#: src/components/profile/profile-form.tsx:375
 #: src/screens/profile/new.tsx:220
 msgid "Relaxed"
 msgstr "Relajado"
@@ -2163,7 +2163,7 @@ msgid "Select category"
 msgstr "Selecciona categoría"
 
 #: src/components/profile/profile-card.tsx:543
-#: src/components/profile/profile-form.tsx:347
+#: src/components/profile/profile-form.tsx:364
 #: src/screens/profile/new.tsx:208
 msgid "Select fit preference"
 msgstr "Selecciona preferencia de ajuste"
@@ -2264,7 +2264,7 @@ msgid "Sizes"
 msgstr "Tallas"
 
 #: src/components/profile/profile-card.tsx:549
-#: src/components/profile/profile-form.tsx:352
+#: src/components/profile/profile-form.tsx:369
 #: src/screens/profile/new.tsx:214
 msgid "Slim"
 msgstr "Ajustado"
@@ -2520,7 +2520,7 @@ msgid "Update Lookbook"
 msgstr "Actualizar Lookbook"
 
 #: src/components/profile/profile-card.tsx:606
-#: src/components/profile/profile-form.tsx:403
+#: src/components/profile/profile-form.tsx:420
 msgid "Update Profile"
 msgstr "Actualizar Perfil"
 
@@ -2533,7 +2533,7 @@ msgid "Update Todo"
 msgstr "Actualizar Tarea"
 
 #: src/components/profile/profile-card.tsx:286
-#: src/components/profile/profile-form.tsx:170
+#: src/components/profile/profile-form.tsx:181
 msgid "Update your body profile for virtual try-ons"
 msgstr "Actualiza tu perfil corporal para probadores virtuales"
 
@@ -2563,7 +2563,7 @@ msgid "Updating lookbook..."
 msgstr "Actualizando lookbook..."
 
 #: src/components/profile/profile-card.tsx:194
-#: src/components/profile/profile-form.tsx:143
+#: src/components/profile/profile-form.tsx:152
 msgid "Updating profile..."
 msgstr "Actualizando perfil..."
 
@@ -2620,7 +2620,7 @@ msgid "Use the Service for any illegal or unauthorized purpose"
 msgstr "Usar el Servicio para cualquier propósito ilegal o no autorizado"
 
 #: src/components/profile/profile-card.tsx:577
-#: src/components/profile/profile-form.tsx:380
+#: src/components/profile/profile-form.tsx:397
 #: src/screens/profile/new.tsx:242
 msgid "Use this profile as your default for try-ons"
 msgstr "Usa este perfil como predeterminado para probadores"
@@ -2674,7 +2674,7 @@ msgid "Waist"
 msgstr "Cintura"
 
 #: src/components/profile/profile-card.tsx:447
-#: src/components/profile/profile-form.tsx:263
+#: src/components/profile/profile-form.tsx:278
 #: src/screens/profile/new.tsx:330
 msgid "Waist (cm)"
 msgstr "Cintura (cm)"

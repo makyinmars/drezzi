@@ -63,7 +63,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         {/* Split-screen grid */}
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-center gap-4 lg:grid-cols-2 lg:gap-8">
           {/* Left Column - Brand & Content */}
           <div className="flex flex-col items-center">
             {/* Logo - positioned at top-left */}

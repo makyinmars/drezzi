@@ -132,8 +132,11 @@ export default $config({
       link: [connectionsTable],
       permissions: [
         {
-          actions: ["execute-api:ManageConnections"],
-          resources: [$interpolate`${websocket.nodes.api.executionArn}/*`],
+          actions: ["execute-api:ManageConnections", "execute-api:Invoke"],
+          resources: [
+            $interpolate`${websocket.nodes.api.executionArn}/*`,
+            $interpolate`arn:aws:execute-api:us-east-2:*:${websocket.nodes.api.id}/*`,
+          ],
         },
       ],
     });
@@ -195,6 +198,7 @@ export default $config({
       runtime: "nodejs20.x",
       timeout: "3 minutes",
       memory: "1024 MB",
+      nodejs: { install: ["sharp"] },
       link: [bucket, connectionsTable],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,

@@ -202,7 +202,7 @@ const IconCard = ({
           </div>
 
           {/* Bottom gradient label */}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-card via-card/80 to-transparent p-4 backdrop-blur-sm">
+          <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-card via-card/80 to-transparent p-4 backdrop-blur-sm">
             <p className="font-medium text-foreground text-xs uppercase tracking-widest dark:text-foreground/90">
               {label}
             </p>
@@ -210,7 +210,7 @@ const IconCard = ({
 
           {/* Decorative corner accent */}
           <div
-            className={`absolute top-0 right-0 h-12 w-12 bg-gradient-to-bl from-accent/20 to-transparent transition-opacity duration-500 ${showGlow ? "opacity-100" : "opacity-0"}
+            className={`absolute top-0 right-0 h-12 w-12 bg-linear-to-bl from-accent/20 to-transparent transition-opacity duration-500 ${showGlow ? "opacity-100" : "opacity-0"}
             `}
           />
         </div>
@@ -278,7 +278,7 @@ const WandConnector = ({ phase, reducedMotion }: WandConnectorProps) => {
       {/* Wand container */}
       <motion.div
         animate={{ scale: getScale() }}
-        className={`relative flex h-14 w-14 items-center justify-center rounded-xl border bg-gradient-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent/50" : "border-border/80 dark:border-border/50"}
+        className={`relative flex h-14 w-14 items-center justify-center rounded-xl border bg-linear-to-br from-card via-muted/30 to-muted/60 shadow-xl backdrop-blur-sm transition-all duration-500 dark:from-card dark:via-card dark:to-muted/50 ${isActive ? "border-accent/50" : "border-border/80 dark:border-border/50"}
         `}
         style={{
           boxShadow: isActive
@@ -386,7 +386,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
 
       {/* Card */}
       <div
-        className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-gradient-to-b from-accent/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 ${isComplete ? "border-accent" : "border-accent/60 dark:border-accent/40"}
+        className={`relative h-48 w-36 overflow-hidden rounded-xl border-2 bg-linear-to-b from-accent/20 via-card/95 to-card shadow-2xl backdrop-blur-sm transition-all duration-500 md:h-64 md:w-48 ${isComplete ? "border-accent" : "border-accent/60 dark:border-accent/40"}
         `}
       >
         {/* Success sparkles background */}
@@ -466,7 +466,7 @@ const ResultCard = ({ phase, reducedMotion, imageSrc }: ResultCardProps) => {
         </div>
 
         {/* Bottom label */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-card via-card/80 to-transparent p-4 backdrop-blur-sm">
+        <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-card via-card/80 to-transparent p-4 backdrop-blur-sm">
           <p className="font-semibold text-accent text-xs uppercase tracking-widest">
             <Trans>AI Result</Trans>
           </p>
