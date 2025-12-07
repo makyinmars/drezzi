@@ -27,7 +27,6 @@ import { Route as authedGarmentIndexRouteImport } from './routes/(authed)/garmen
 import { Route as authedDashboardIndexRouteImport } from './routes/(authed)/dashboard/index'
 import { Route as SharedLookbookSlugRouteImport } from './routes/shared/lookbook/$slug'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
-import { Route as ApiSseTryonRouteImport } from './routes/api/sse/tryon'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as authedTryOnTryOnIdRouteImport } from './routes/(authed)/try-on/$tryOnId'
 import { Route as authedProfileNewRouteImport } from './routes/(authed)/profile/new'
@@ -125,11 +124,6 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   path: '/api/trpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSseTryonRoute = ApiSseTryonRouteImport.update({
-  id: '/api/sse/tryon',
-  path: '/api/sse/tryon',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -184,7 +178,6 @@ export interface FileRoutesByFullPath {
   '/profile/new': typeof authedProfileNewRoute
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/sse/tryon': typeof ApiSseTryonRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/dashboard/': typeof authedDashboardIndexRoute
@@ -210,7 +203,6 @@ export interface FileRoutesByTo {
   '/profile/new': typeof authedProfileNewRoute
   '/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/sse/tryon': typeof ApiSseTryonRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/dashboard': typeof authedDashboardIndexRoute
@@ -239,7 +231,6 @@ export interface FileRoutesById {
   '/(authed)/profile/new': typeof authedProfileNewRoute
   '/(authed)/try-on/$tryOnId': typeof authedTryOnTryOnIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/sse/tryon': typeof ApiSseTryonRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
   '/shared/lookbook/$slug': typeof SharedLookbookSlugRoute
   '/(authed)/dashboard/': typeof authedDashboardIndexRoute
@@ -268,7 +259,6 @@ export interface FileRouteTypes {
     | '/profile/new'
     | '/try-on/$tryOnId'
     | '/api/auth/$'
-    | '/api/sse/tryon'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
     | '/dashboard/'
@@ -294,7 +284,6 @@ export interface FileRouteTypes {
     | '/profile/new'
     | '/try-on/$tryOnId'
     | '/api/auth/$'
-    | '/api/sse/tryon'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
     | '/dashboard'
@@ -322,7 +311,6 @@ export interface FileRouteTypes {
     | '/(authed)/profile/new'
     | '/(authed)/try-on/$tryOnId'
     | '/api/auth/$'
-    | '/api/sse/tryon'
     | '/api/trpc/$'
     | '/shared/lookbook/$slug'
     | '/(authed)/dashboard/'
@@ -343,7 +331,6 @@ export interface RootRouteChildren {
   TodoTodoIdRoute: typeof TodoTodoIdRoute
   AuthIndexRoute: typeof AuthIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiSseTryonRoute: typeof ApiSseTryonRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
   SharedLookbookSlugRoute: typeof SharedLookbookSlugRoute
 }
@@ -476,13 +463,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/sse/tryon': {
-      id: '/api/sse/tryon'
-      path: '/api/sse/tryon'
-      fullPath: '/api/sse/tryon'
-      preLoaderRoute: typeof ApiSseTryonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -592,7 +572,6 @@ const rootRouteChildren: RootRouteChildren = {
   TodoTodoIdRoute: TodoTodoIdRoute,
   AuthIndexRoute: AuthIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiSseTryonRoute: ApiSseTryonRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
   SharedLookbookSlugRoute: SharedLookbookSlugRoute,
 }

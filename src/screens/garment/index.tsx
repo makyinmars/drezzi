@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 import PageHeader from "@/components/common/page-header";
 import GarmentCard from "@/components/garment/garment-card";
@@ -14,16 +15,26 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
+
+type FilterValue = "all" | "mine" | "public";
 
 const GarmentListScreen = () => {
   const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
+  const [filter, setFilter] = useState<FilterValue>("all");
   const garmentsQuery = useSuspenseQuery(
-    trpc.garment.list.queryOptions({ includePublic: false })
+    trpc.garment.list.queryOptions({ includePublic: true })
   );
+
+  const filteredGarments = garmentsQuery.data.filter((garment) => {
+    if (filter === "all") return true;
+    if (filter === "mine") return garment.isOwner !== false;
+    return !garment.isOwner;
+  });
 
   return (
     <div className="space-y-6">
@@ -40,7 +51,24 @@ const GarmentListScreen = () => {
         title={t`My Garments`}
       />
 
-      {garmentsQuery.data.length === 0 ? (
+      <Tabs
+        defaultValue="all"
+        onValueChange={(value) => setFilter(value as FilterValue)}
+      >
+        <TabsList>
+          <TabsTrigger value="all">
+            <Trans>All</Trans>
+          </TabsTrigger>
+          <TabsTrigger value="mine">
+            <Trans>My Garments</Trans>
+          </TabsTrigger>
+          <TabsTrigger value="public">
+            <Trans>Public</Trans>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {filteredGarments.length === 0 ? (
         <Empty className="border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -66,7 +94,7 @@ const GarmentListScreen = () => {
         </Empty>
       ) : (
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          {garmentsQuery.data.map((garment) => (
+          {filteredGarments.map((garment) => (
             <GarmentCard garment={garment} key={garment.id} />
           ))}
         </div>

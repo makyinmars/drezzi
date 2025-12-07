@@ -9,9 +9,8 @@ import {
   Sparkles,
   Upload,
 } from "lucide-react";
-
-import type { TryOnStage } from "@/lib/pubsub";
 import { cn } from "@/lib/utils";
+import type { TryOnStage } from "@/lib/websocket-publisher";
 
 type TryOnProgressProps = {
   status: string;

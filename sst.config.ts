@@ -89,6 +89,58 @@ export default $config({
       },
     });
 
+    // ==========================================
+    // WEBSOCKET - Real-time Event Delivery
+    // ==========================================
+    const connectionsTable = new sst.aws.Dynamo("WebSocketConnections", {
+      fields: {
+        pk: "string",
+        sk: "string",
+      },
+      primaryIndex: { hashKey: "pk", rangeKey: "sk" },
+      globalIndexes: {
+        byConnection: { hashKey: "sk", rangeKey: "pk" },
+      },
+      ttl: "expiresAt",
+    });
+
+    const websocket = new sst.aws.ApiGatewayWebSocket("RealtimeWS", {
+      ...(domain && {
+        domain: {
+          name: `ws.${domain}`,
+          dns: sst.cloudflare.dns(),
+        },
+      }),
+    });
+
+    websocket.route("$connect", {
+      handler: "src/websocket/connect.handler",
+      link: [connectionsTable],
+      environment: {
+        DATABASE_URL: process.env.DATABASE_URL as string,
+        BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
+      },
+    });
+
+    websocket.route("$disconnect", {
+      handler: "src/websocket/disconnect.handler",
+      link: [connectionsTable],
+    });
+
+    websocket.route("$default", {
+      handler: "src/websocket/default.handler",
+      link: [connectionsTable],
+      permissions: [
+        {
+          actions: ["execute-api:ManageConnections"],
+          resources: [$interpolate`${websocket.nodes.api.executionArn}/*`],
+        },
+      ],
+    });
+
+    // ==========================================
+    // TRY-ON - Virtual Try-On Processing
+    // ==========================================
     const queue = new sst.aws.Queue("TryOnQueue", {
       visibilityTimeout: "5 minutes",
       fifo: false,
@@ -99,10 +151,10 @@ export default $config({
       runtime: "nodejs20.x",
       timeout: "5 minutes",
       memory: "1024 MB",
-      link: [bucket],
+      link: [bucket, connectionsTable],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
-        REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
+        WEBSOCKET_API_ENDPOINT: websocket.managementEndpoint,
         GOOGLE_GENERATIVE_AI_API_KEY:
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
         AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
@@ -121,18 +173,64 @@ export default $config({
           ],
           resources: [queue.arn],
         },
+        {
+          actions: ["execute-api:ManageConnections"],
+          resources: [$interpolate`${websocket.nodes.api.executionArn}/*`],
+        },
       ],
     });
 
     queue.subscribe(tryOnWorker.arn);
 
+    // ==========================================
+    // UPSCALE - FAL AI Image Enhancement
+    // ==========================================
+    const upscaleQueue = new sst.aws.Queue("UpscaleQueue", {
+      visibilityTimeout: "3 minutes",
+      fifo: false,
+    });
+
+    const upscaleWorker = new sst.aws.Function("UpscaleWorker", {
+      handler: "src/workers/upscale.handler",
+      runtime: "nodejs20.x",
+      timeout: "3 minutes",
+      memory: "1024 MB",
+      link: [bucket, connectionsTable],
+      environment: {
+        DATABASE_URL: process.env.DATABASE_URL as string,
+        WEBSOCKET_API_ENDPOINT: websocket.managementEndpoint,
+        FAL_API_KEY: process.env.FAL_API_KEY as string,
+      },
+      permissions: [
+        {
+          actions: ["s3:GetObject", "s3:PutObject"],
+          resources: [bucket.arn, $interpolate`${bucket.arn}/*`],
+        },
+        {
+          actions: [
+            "sqs:ReceiveMessage",
+            "sqs:DeleteMessage",
+            "sqs:ChangeMessageVisibility",
+            "sqs:GetQueueAttributes",
+          ],
+          resources: [upscaleQueue.arn],
+        },
+        {
+          actions: ["execute-api:ManageConnections"],
+          resources: [$interpolate`${websocket.nodes.api.executionArn}/*`],
+        },
+      ],
+    });
+
+    upscaleQueue.subscribe(upscaleWorker.arn);
 
     const web = new sst.aws.TanStackStart("MyWeb", {
-      link: [bucket, queue, email],
+      link: [bucket, queue, upscaleQueue, email],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
         REDIS_PUBLIC_URL: process.env.REDIS_PUBLIC_URL as string,
         VITE_PUBLIC_URL: publicUrl,
+        VITE_WEBSOCKET_URL: websocket.url,
         PUBLIC_URL: publicUrl,
         BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
         GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
@@ -156,7 +254,10 @@ export default $config({
       app: $app.stage === "production" ? web.url : publicUrl,
       bucket: bucket.name,
       queue: queue.url,
+      upscaleQueue: upscaleQueue.url,
       emailSender: email.sender,
+      websocket: websocket.url,
+      connectionsTable: connectionsTable.name,
     };
   },
 });

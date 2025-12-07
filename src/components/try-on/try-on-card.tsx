@@ -1,39 +1,37 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Clock,
   ExternalLink,
   Heart,
   HeartOff,
+  MoreHorizontal,
   RefreshCw,
   Shirt,
   Sparkles,
   Trash,
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import LoadingState from "@/components/common/loading-state";
-import MediaDisplay from "@/components/common/media-display";
-import ButtonWithTooltip from "@/components/custom/button-with-tooltip";
+import CardMediaDisplay from "@/components/custom/card-media-display";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/custom/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Item,
   ItemContent,
@@ -41,7 +39,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import { useIsMobile } from "@/hooks/use-mobile";
+import type { TryOnStage } from "@/lib/websocket-publisher";
 import { useTRPC } from "@/trpc/react";
 import type { TryOnListProcedure } from "@/trpc/routers/tryOn";
 
@@ -53,10 +51,12 @@ type TryOnCardProps = {
 };
 
 const TryOnCard = ({ tryOn }: TryOnCardProps) => {
-  const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [garmentSheetOpen, setGarmentSheetOpen] = useState(false);
+  const [tipsSheetOpen, setTipsSheetOpen] = useState(false);
 
   const toggleFavoriteMutation = useMutation(
     trpc.tryOn.toggleFavorite.mutationOptions({
@@ -128,6 +128,12 @@ const TryOnCard = ({ tryOn }: TryOnCardProps) => {
     });
   };
 
+  const handleNavigate = () => {
+    if (tryOn.status === "completed" && tryOn.resultUrl) {
+      navigate({ to: "/try-on/$tryOnId", params: { tryOnId: tryOn.id } });
+    }
+  };
+
   const getStatusVariant = () => {
     if (tryOn.status === "completed") return "default";
     if (tryOn.status === "failed") return "destructive";
@@ -135,185 +141,199 @@ const TryOnCard = ({ tryOn }: TryOnCardProps) => {
   };
   const statusVariant = getStatusVariant();
 
-  const renderMediaContent = () => {
-    if (tryOn.status === "completed" && tryOn.resultUrl) {
-      return (
-        <Link params={{ tryOnId: tryOn.id }} to="/try-on/$tryOnId">
-          <img
-            alt={t`Try-on result for ${tryOn.garment.name}`}
-            className="h-full w-full cursor-pointer object-contain transition-opacity hover:opacity-90"
-            src={tryOn.resultUrl}
-          />
-        </Link>
-      );
-    }
-    if (tryOn.status === "failed") {
-      return (
-        <div className="flex h-full w-full items-center justify-center">
-          <TryOnProgress status={tryOn.status} />
-        </div>
-      );
-    }
-    return (
+  const statusBadges = (
+    <div className="flex gap-1">
+      <Badge variant={statusVariant}>{tryOn.status}</Badge>
+      {tryOn.isFavorite && (
+        <Badge variant="secondary">
+          <Heart className="h-3 w-3 fill-current" />
+        </Badge>
+      )}
+    </div>
+  );
+
+  const actionsMenu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="h-8 w-8 bg-background/80 backdrop-blur-sm"
+          size="icon"
+          variant="secondary"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {tryOn.status === "completed" && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link params={{ tryOnId: tryOn.id }} to="/try-on/$tryOnId">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                <Trans>View</Trans>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={toggleFavoriteMutation.isPending}
+              onClick={handleToggleFavorite}
+            >
+              {tryOn.isFavorite ? (
+                <>
+                  <HeartOff className="mr-2 h-4 w-4" />
+                  <Trans>Unfavorite</Trans>
+                </>
+              ) : (
+                <>
+                  <Heart className="mr-2 h-4 w-4" />
+                  <Trans>Favorite</Trans>
+                </>
+              )}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        {tryOn.status === "failed" && (
+          <>
+            <DropdownMenuItem
+              disabled={retryMutation.isPending}
+              onClick={handleRetry}
+            >
+              <RefreshCw className="mr-2 h-4 w-4" />
+              <Trans>Retry</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        <DropdownMenuItem onClick={() => setGarmentSheetOpen(true)}>
+          <Shirt className="mr-2 h-4 w-4" />
+          <Trans>Garment</Trans>
+        </DropdownMenuItem>
+        {tryOn.styleTips && tryOn.styleTips.length > 0 && (
+          <DropdownMenuItem onClick={() => setTipsSheetOpen(true)}>
+            <Sparkles className="mr-2 h-4 w-4" />
+            <Trans>Style Tips</Trans>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
+        <TryOnDelete tryOn={tryOn}>
+          <DropdownMenuItem
+            className="text-destructive focus:text-destructive"
+            onSelect={(e) => e.preventDefault()}
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            <Trans>Delete</Trans>
+          </DropdownMenuItem>
+        </TryOnDelete>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  const customMedia =
+    tryOn.status !== "completed" || !tryOn.resultUrl ? (
       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted/30 to-muted/60">
-        <LoadingState
-          centered={false}
-          size="sm"
-          text={tryOn.status === "processing" ? t`Generating...` : t`Queued`}
+        <TryOnProgress
+          stage={(tryOn as { stage?: TryOnStage }).stage}
+          status={tryOn.status}
         />
       </div>
-    );
-  };
+    ) : undefined;
 
   return (
-    <Card className="overflow-hidden pt-0">
-      <MediaDisplay aspectRatio="4/5" className="lg:aspect-3/2" variant="card">
-        {renderMediaContent()}
-        <div className="absolute top-2 right-2 flex gap-1">
-          <Badge variant={statusVariant}>{tryOn.status}</Badge>
-          {tryOn.isFavorite && (
-            <Badge variant="secondary">
-              <Heart className="h-3 w-3 fill-current" />
+    <>
+      <CardMediaDisplay
+        alt={t`Try-on result for ${tryOn.garment.name}`}
+        aspectRatio="4/5"
+        customMedia={customMedia}
+        imageUrl={
+          tryOn.status === "completed" && tryOn.resultUrl
+            ? tryOn.resultUrl
+            : undefined
+        }
+        onClick={
+          tryOn.status === "completed" && tryOn.resultUrl
+            ? handleNavigate
+            : undefined
+        }
+        topLeft={statusBadges}
+        topRight={actionsMenu}
+      >
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate font-semibold text-sm">
+              {tryOn.garment.name}
+            </span>
+            <Badge className="shrink-0" variant="outline">
+              {tryOn.garment.category}
             </Badge>
-          )}
-        </div>
-      </MediaDisplay>
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between">
-          <span className="truncate">{tryOn.garment.name}</span>
-          <Badge variant="outline">{tryOn.garment.category}</Badge>
-        </CardTitle>
-        {tryOn.processingMs && (
-          <CardDescription className="flex items-center gap-2">
+          </div>
+          {tryOn.processingMs && (
             <span className="flex items-center text-muted-foreground text-xs">
               <Clock className="mr-1 h-3 w-3" />
               {(tryOn.processingMs / 1000).toFixed(1)}s
             </span>
-          </CardDescription>
-        )}
-      </CardHeader>
-      {tryOn.errorMessage && (
-        <CardContent className="pb-2">
-          <p className="text-destructive text-sm">{tryOn.errorMessage}</p>
-        </CardContent>
-      )}
-      <CardFooter className="flex gap-2 pt-2">
-        {tryOn.status === "completed" && (
-          <>
-            <Button asChild size={isMobile ? "icon" : "sm"} variant="outline">
-              <Link params={{ tryOnId: tryOn.id }} to="/try-on/$tryOnId">
-                <ExternalLink />
-                {!isMobile && <Trans>View</Trans>}
-              </Link>
-            </Button>
-            <ButtonWithTooltip
-              disabled={toggleFavoriteMutation.isPending}
-              onClick={handleToggleFavorite}
-              showTooltip={isMobile}
-              size={isMobile ? "icon" : "sm"}
-              tooltip={tryOn.isFavorite ? t`Unfavorite` : t`Favorite`}
-              variant="outline"
-            >
-              {tryOn.isFavorite ? <HeartOff /> : <Heart />}
-              {!isMobile &&
-                (tryOn.isFavorite ? (
-                  <Trans>Unfavorite</Trans>
-                ) : (
-                  <Trans>Favorite</Trans>
-                ))}
-            </ButtonWithTooltip>
-          </>
-        )}
-        {tryOn.status === "failed" && (
-          <ButtonWithTooltip
-            disabled={retryMutation.isPending}
-            onClick={handleRetry}
-            showTooltip={isMobile}
-            size={isMobile ? "icon" : "sm"}
-            tooltip={t`Retry`}
-            variant="outline"
-          >
-            <RefreshCw />
-            {!isMobile && <Trans>Retry</Trans>}
-          </ButtonWithTooltip>
-        )}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button size={isMobile ? "icon" : "sm"} variant="outline">
-              <Shirt />
-              {!isMobile && <Trans>Garment</Trans>}
-            </Button>
-          </SheetTrigger>
+          )}
+          {tryOn.errorMessage && (
+            <p className="text-destructive text-xs">{tryOn.errorMessage}</p>
+          )}
+        </div>
+      </CardMediaDisplay>
+
+      <Sheet onOpenChange={setGarmentSheetOpen} open={garmentSheetOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>{tryOn.garment.name}</SheetTitle>
+            <SheetDescription>{tryOn.garment.category}</SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <img
+              alt={tryOn.garment.name}
+              className="w-full rounded-lg object-contain"
+              src={tryOn.garment.imageUrl}
+            />
+            <Item size="sm" variant="muted">
+              <ItemMedia variant="image">
+                <img
+                  alt={tryOn.bodyProfile.name}
+                  src={tryOn.bodyProfile.photoUrl}
+                />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{tryOn.bodyProfile.name}</ItemTitle>
+                <ItemDescription>
+                  {tryOn.bodyProfile.fitPreference}
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {tryOn.styleTips && tryOn.styleTips.length > 0 && (
+        <Sheet onOpenChange={setTipsSheetOpen} open={tipsSheetOpen}>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>{tryOn.garment.name}</SheetTitle>
-              <SheetDescription>{tryOn.garment.category}</SheetDescription>
+              <SheetTitle>
+                <Trans>Style Tips</Trans>
+              </SheetTitle>
+              <SheetDescription>
+                <Trans>Personalized recommendations for this look</Trans>
+              </SheetDescription>
             </SheetHeader>
-            <div className="mt-6 space-y-4">
-              <img
-                alt={tryOn.garment.name}
-                className="w-full rounded-lg object-contain"
-                src={tryOn.garment.imageUrl}
-              />
-              <Item size="sm" variant="muted">
-                <ItemMedia variant="image">
-                  <img
-                    alt={tryOn.bodyProfile.name}
-                    src={tryOn.bodyProfile.photoUrl}
-                  />
-                </ItemMedia>
-                <ItemContent>
-                  <ItemTitle>{tryOn.bodyProfile.name}</ItemTitle>
-                  <ItemDescription>
-                    {tryOn.bodyProfile.fitPreference}
-                  </ItemDescription>
-                </ItemContent>
-              </Item>
+            <div className="mt-6 space-y-3">
+              {tryOn.styleTips.map((tip) => (
+                <Item key={tip.id} size="sm" variant="muted">
+                  <ItemContent>
+                    <ItemTitle className="capitalize">{tip.category}</ItemTitle>
+                    <ItemDescription className="line-clamp-none">
+                      {tip.content}
+                    </ItemDescription>
+                  </ItemContent>
+                </Item>
+              ))}
             </div>
           </SheetContent>
         </Sheet>
-        {tryOn.styleTips && tryOn.styleTips.length > 0 && (
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size={isMobile ? "icon" : "sm"} variant="outline">
-                <Sparkles />
-                {!isMobile && <Trans>Tips</Trans>}
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>
-                  <Trans>Style Tips</Trans>
-                </SheetTitle>
-                <SheetDescription>
-                  <Trans>Personalized recommendations for this look</Trans>
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-6 space-y-3">
-                {tryOn.styleTips.map((tip) => (
-                  <Item key={tip.id} size="sm" variant="muted">
-                    <ItemContent>
-                      <ItemTitle className="capitalize">
-                        {tip.category}
-                      </ItemTitle>
-                      <ItemDescription className="line-clamp-none">
-                        {tip.content}
-                      </ItemDescription>
-                    </ItemContent>
-                  </Item>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
-        )}
-        <TryOnDelete tryOn={tryOn}>
-          <Button size={isMobile ? "icon" : "sm"} variant="destructive">
-            <Trash />
-            {!isMobile && <Trans>Delete</Trans>}
-          </Button>
-        </TryOnDelete>
-      </CardFooter>
-    </Card>
+      )}
+    </>
   );
 };
 

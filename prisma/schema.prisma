@@ -85,6 +85,15 @@ enum TodoStatus {
   @@map("status")
 }
 
+enum EnhancementStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+
+  @@map("enhancement_status")
+}
+
 model Todo {
   id          String     @id @default(cuid())
   text        String
@@ -107,8 +116,9 @@ model File {
   uploadedBy String?  @map("uploaded_by")
   createdAt  DateTime @default(now()) @map("created_at")
 
-  bodyProfilePhoto BodyProfile? @relation("ProfilePhoto")
-  garmentImage     Garment?     @relation("GarmentImage")
+  bodyProfilePhoto         BodyProfile? @relation("ProfilePhoto")
+  bodyProfileEnhancedPhoto BodyProfile? @relation("EnhancedProfilePhoto")
+  garmentImage             Garment?     @relation("GarmentImage")
   garmentMask      Garment?     @relation("GarmentMask")
   tryOnFrontPhoto  TryOn?       @relation("TryOnFrontPhoto")
   tryOnBackPhoto   TryOn?       @relation("TryOnBackPhoto")
@@ -119,23 +129,27 @@ model File {
 }
 
 model BodyProfile {
-  id            String   @id @default(cuid())
-  userId        String   @map("user_id")
-  name          String   @default("Default")
-  photoId       String   @unique @map("photo_id")
-  height        Float?
-  waist         Float?
-  hip           Float?
-  inseam        Float?
-  chest         Float?
-  fitPreference String   @default("regular") @map("fit_preference")
-  isDefault     Boolean  @default(false) @map("is_default")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id                String             @id @default(cuid())
+  userId            String             @map("user_id")
+  name              String             @default("Default")
+  photoId           String             @unique @map("photo_id")
+  enhancedPhotoId   String?            @unique @map("enhanced_photo_id")
+  enhancementStatus EnhancementStatus? @map("enhancement_status")
+  enhancementError  String?            @map("enhancement_error")
+  height            Float?
+  waist             Float?
+  hip               Float?
+  inseam            Float?
+  chest             Float?
+  fitPreference     String             @default("regular") @map("fit_preference")
+  isDefault         Boolean            @default(false) @map("is_default")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  photo  File    @relation("ProfilePhoto", fields: [photoId], references: [id])
-  tryOns TryOn[]
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo         File    @relation("ProfilePhoto", fields: [photoId], references: [id])
+  enhancedPhoto File?   @relation("EnhancedProfilePhoto", fields: [enhancedPhotoId], references: [id])
+  tryOns        TryOn[]
 
   @@index([userId])
   @@map("body_profile")

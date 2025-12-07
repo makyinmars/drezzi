@@ -20,9 +20,16 @@ import { useTRPC } from "@/trpc/react";
 type ProfileDeleteProps = {
   profile: BodyProfile;
   children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const ProfileDelete = ({ profile, children }: ProfileDeleteProps) => {
+const ProfileDelete = ({
+  profile,
+  children,
+  open,
+  onOpenChange,
+}: ProfileDeleteProps) => {
   const { t } = useLingui();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -78,8 +85,8 @@ const ProfileDelete = ({ profile, children }: ProfileDeleteProps) => {
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      {children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

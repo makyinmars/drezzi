@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import AuthContentLayout from "@/components/common/auth-content-layout";
-import { useTryOnSSE } from "@/hooks/use-tryon-sse";
+import { useRealtimeUpdates } from "@/hooks/use-websocket";
 
 function AuthedLayout() {
-  useTryOnSSE();
+  useRealtimeUpdates();
 
   return (
     <AuthContentLayout>

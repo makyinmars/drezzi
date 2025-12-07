@@ -246,4 +246,18 @@ export const createErrors = (i18n: I18n | undefined) => ({
       "INTERNAL_SERVER_ERROR",
       "Failed to regenerate style tips"
     ),
+
+  upscaleEnqueueFailed: () =>
+    createTranslatedError(
+      i18n,
+      "INTERNAL_SERVER_ERROR",
+      "Failed to enqueue upscale job"
+    ),
+
+  upscaleAlreadyProcessing: () =>
+    createTranslatedError(
+      i18n,
+      "BAD_REQUEST",
+      "Image is already being upscaled"
+    ),
 });

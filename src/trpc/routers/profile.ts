@@ -2,6 +2,7 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import z from "zod/v4";
 
+import { enqueueUpscaleJob } from "@/lib/upscale-sqs";
 import {
   deleteProfileAssets,
   getProfilePhotoUrl,
@@ -46,7 +47,7 @@ export const profileRouter = {
   list: protectedProcedure.query(async ({ ctx }) => {
     const profiles = await ctx.prisma.bodyProfile.findMany({
       where: { userId: ctx.session.user.id },
-      include: { photo: true },
+      include: { photo: true, enhancedPhoto: true },
       orderBy: { createdAt: "desc" },
     });
 
@@ -54,6 +55,9 @@ export const profileRouter = {
       profiles.map(async (p) => ({
         ...p,
         photoUrl: await getProfilePhotoUrl(p.photo.key),
+        enhancedPhotoUrl: p.enhancedPhoto
+          ? await getProfilePhotoUrl(p.enhancedPhoto.key)
+          : null,
       }))
     );
   }),
@@ -65,7 +69,7 @@ export const profileRouter = {
 
       const profile = await ctx.prisma.bodyProfile.findFirst({
         where: { id: input.id, userId: ctx.session.user.id },
-        include: { photo: true },
+        include: { photo: true, enhancedPhoto: true },
       });
 
       if (!profile) {
@@ -75,6 +79,9 @@ export const profileRouter = {
       return {
         ...profile,
         photoUrl: await getProfilePhotoUrl(profile.photo.key),
+        enhancedPhotoUrl: profile.enhancedPhoto
+          ? await getProfilePhotoUrl(profile.enhancedPhoto.key)
+          : null,
       };
     }),
 
@@ -121,7 +128,21 @@ export const profileRouter = {
           data: {
             ...parsed,
             userId,
+            enhancementStatus: "PENDING",
           },
+        });
+
+        // Auto-trigger upscale (fire-and-forget, outside transaction)
+        enqueueUpscaleJob({
+          type: "profile",
+          entityId: profile.id,
+          userId,
+          sourceImageKey: uploaded.key,
+        }).catch((err) => {
+          console.error(
+            `Failed to enqueue upscale for profile ${profile.id}:`,
+            err
+          );
         });
 
         return profile;
@@ -151,6 +172,7 @@ export const profileRouter = {
         }
 
         let photoId = existing.photoId;
+        let newPhotoKey: string | null = null;
 
         if (file instanceof File) {
           const uploaded = await uploadFileToS3({
@@ -161,6 +183,7 @@ export const profileRouter = {
             allowedMimeTypes: IMAGE_TYPE_REGEX,
           });
           photoId = uploaded.id;
+          newPhotoKey = uploaded.key;
         }
 
         const parsed = apiBodyProfileUpdate.parse({
@@ -197,10 +220,29 @@ export const profileRouter = {
           });
         }
 
+        // If new photo uploaded, reset enhancement and trigger upscale
+        if (newPhotoKey) {
+          updateData.enhancementStatus = "PENDING";
+          updateData.enhancedPhotoId = null;
+          updateData.enhancementError = null;
+        }
+
         const updated = await tx.bodyProfile.update({
           where: { id },
           data: updateData,
         });
+
+        // Auto-trigger upscale for new photo (fire-and-forget)
+        if (newPhotoKey) {
+          enqueueUpscaleJob({
+            type: "profile",
+            entityId: id,
+            userId,
+            sourceImageKey: newPhotoKey,
+          }).catch((err) => {
+            console.error(`Failed to enqueue upscale for profile ${id}:`, err);
+          });
+        }
 
         return updated;
       });

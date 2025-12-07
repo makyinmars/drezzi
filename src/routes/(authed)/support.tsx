@@ -1,9 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authed)/support")({
-  component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "Drezzi - Support",
+      },
+    ],
+  }),
+  component: lazyRouteComponent(() => import("@/screens/support")),
 });
-
-function RouteComponent() {
-  return <div>Hello "/(authed)/support"!</div>;
-}

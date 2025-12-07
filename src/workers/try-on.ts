@@ -8,7 +8,7 @@ import { generateText } from "ai";
 import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { Resource } from "sst";
 
-import { publish } from "@/lib/pubsub";
+import { publish } from "@/lib/websocket-publisher";
 import {
   generateStyleTips,
   getTryOnForTipGeneration,

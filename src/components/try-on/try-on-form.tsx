@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import MediaDisplay from "@/components/common/media-display";
 import { Combobox } from "@/components/custom/combobox";
 import { Button } from "@/components/ui/button";
 import {
@@ -135,8 +136,12 @@ const TryOnForm = ({
                 placeholder={t`Select a profile`}
                 renderPreview={(profile) => (
                   <Item size="sm" variant="muted">
-                    <ItemMedia variant="image">
-                      <img alt={profile.name} src={profile.photoUrl} />
+                    <ItemMedia className="size-25" variant="image">
+                      <MediaDisplay
+                        alt={profile.name}
+                        fit="cover"
+                        src={profile.photoUrl}
+                      />
                     </ItemMedia>
                     <ItemContent>
                       <ItemTitle>{profile.name}</ItemTitle>
@@ -186,8 +191,12 @@ const TryOnForm = ({
                 placeholder={t`Select a garment`}
                 renderPreview={(garment) => (
                   <Item size="sm" variant="muted">
-                    <ItemMedia variant="image">
-                      <img alt={garment.name} src={garment.imageUrl} />
+                    <ItemMedia className="size-25" variant="image">
+                      <MediaDisplay
+                        alt={garment.name}
+                        fit="cover"
+                        src={garment.imageUrl}
+                      />
                     </ItemMedia>
                     <ItemContent>
                       <ItemTitle>{garment.name}</ItemTitle>

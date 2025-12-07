@@ -18,6 +18,11 @@ declare module "sst" {
       "type": "sst.aws.TanstackStart"
       "url": string
     }
+    "RealtimeWS": {
+      "managementEndpoint": string
+      "type": "sst.aws.ApiGatewayWebSocket"
+      "url": string
+    }
     "TryOnQueue": {
       "type": "sst.aws.Queue"
       "url": string
@@ -25,6 +30,18 @@ declare module "sst" {
     "TryOnWorker": {
       "name": string
       "type": "sst.aws.Function"
+    }
+    "UpscaleQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "UpscaleWorker": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "WebSocketConnections": {
+      "name": string
+      "type": "sst.aws.Dynamo"
     }
   }
 }
