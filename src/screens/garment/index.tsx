@@ -6,9 +6,11 @@ import PageHeader from "@/components/common/page-header";
 import GarmentCard from "@/components/garment/garment-card";
 import GarmentForm from "@/components/garment/garment-form";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const GarmentListScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
   const garmentsQuery = useSuspenseQuery(
@@ -20,9 +22,9 @@ const GarmentListScreen = () => {
       <PageHeader
         actions={
           <GarmentForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Add Garment</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Add Garment</Trans>}
             </Button>
           </GarmentForm>
         }
@@ -41,9 +43,9 @@ const GarmentListScreen = () => {
             </Trans>
           </p>
           <GarmentForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Add Your First Garment</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Add Your First Garment</Trans>}
             </Button>
           </GarmentForm>
         </div>

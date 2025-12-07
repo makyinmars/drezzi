@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -64,29 +64,9 @@ const TryOnForm = ({
     },
   });
 
-  const { formState } = form;
-
-  console.log("form state", formState);
-
-  const bodyProfileIdWatch = useWatch({
-    control: form.control,
-    name: "bodyProfileId",
-  });
-
-  console.log("bodyProfileIdWatch", bodyProfileIdWatch);
-
-  const garmentIdWatch = useWatch({
-    control: form.control,
-    name: "garmentId",
-  });
-
-  console.log("garmentIdWatch", garmentIdWatch);
-
   const { data: garments } = useSuspenseQuery(
     trpc.garment.list.queryOptions({ includePublic: true })
   );
-
-  console.log("garments", garments);
 
   const createMutation = useMutation(
     trpc.tryOn.create.mutationOptions({

@@ -16,6 +16,8 @@ export const Route = createFileRoute("/api/sse/tryon")({
         const userId = session.user.id;
         const encoder = new TextEncoder();
 
+        let unsubscribe: (() => Promise<void>) | undefined;
+
         const stream = new ReadableStream({
           async start(controller) {
             // Send initial connection event
@@ -26,17 +28,15 @@ export const Route = createFileRoute("/api/sse/tryon")({
             );
 
             // Subscribe to Redis channel for this user
-            const unsubscribe = await subscribe(userId, (event) => {
+            unsubscribe = await subscribe(userId, (event) => {
               controller.enqueue(
                 encoder.encode(`data: ${JSON.stringify(event)}\n\n`)
               );
             });
-
-            // Handle client disconnect
-            request.signal.addEventListener("abort", () => {
-              unsubscribe();
-              controller.close();
-            });
+          },
+          cancel() {
+            // Called automatically when stream is cancelled/aborted
+            unsubscribe?.();
           },
         });
 

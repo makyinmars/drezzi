@@ -6,9 +6,11 @@ import PageHeader from "@/components/common/page-header";
 import ProfileCard from "@/components/profile/profile-card";
 import ProfileForm from "@/components/profile/profile-form";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const ProfileListScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
   const profilesQuery = useSuspenseQuery(trpc.profile.list.queryOptions());
@@ -18,9 +20,9 @@ const ProfileListScreen = () => {
       <PageHeader
         actions={
           <ProfileForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Profile</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Create Profile</Trans>}
             </Button>
           </ProfileForm>
         }
@@ -40,9 +42,9 @@ const ProfileListScreen = () => {
             </Trans>
           </p>
           <ProfileForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Your First Profile</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Create Your First Profile</Trans>}
             </Button>
           </ProfileForm>
         </div>

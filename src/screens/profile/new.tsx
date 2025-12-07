@@ -6,7 +6,6 @@ import { ArrowLeft, Camera, Info } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import PageHeader from "@/components/common/page-header";
 import PhotoUpload from "@/components/profile/photo-upload";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -35,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 import {
   apiBodyProfileCreateAndUpdate,
@@ -42,6 +42,7 @@ import {
 } from "@/validators/profile";
 
 const ProfileNewScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const router = useRouter();
   const trpc = useTRPC();
@@ -126,10 +127,10 @@ const ProfileNewScreen = () => {
     <div className="space-y-6">
       <PageHeader
         actions={
-          <Button asChild size="sm" variant="ghost">
+          <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
             <a href="/profile">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              <Trans>Back</Trans>
+              <ArrowLeft className="size-4" />
+              {!isMobile && <Trans>Back</Trans>}
             </a>
           </Button>
         }

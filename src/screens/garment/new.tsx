@@ -6,7 +6,6 @@ import { ArrowLeft, Info, Shirt } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import PageHeader from "@/components/common/page-header";
 import GarmentImageUpload from "@/components/garment/garment-image-upload";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -36,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 import {
   apiGarmentCreateAndUpdate,
@@ -44,6 +44,7 @@ import {
 } from "@/validators/garment";
 
 const GarmentNewScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const router = useRouter();
   const trpc = useTRPC();
@@ -131,10 +132,10 @@ const GarmentNewScreen = () => {
     <div className="space-y-6">
       <PageHeader
         actions={
-          <Button asChild size="sm" variant="ghost">
+          <Button asChild size={isMobile ? "icon" : "sm"} variant="ghost">
             <a href="/garment">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              <Trans>Back</Trans>
+              <ArrowLeft className="size-4" />
+              {!isMobile && <Trans>Back</Trans>}
             </a>
           </Button>
         }

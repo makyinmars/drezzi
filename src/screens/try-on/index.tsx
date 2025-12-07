@@ -8,9 +8,11 @@ import TryOnCard from "@/components/try-on/try-on-card";
 import TryOnForm from "@/components/try-on/try-on-form";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const TryOnListScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
   const tryOnsQuery = useSuspenseQuery(trpc.tryOn.list.queryOptions({}));
@@ -28,9 +30,9 @@ const TryOnListScreen = () => {
             }
           >
             <TryOnForm>
-              <Button>
-                <Sparkles className="mr-2 h-4 w-4" />
-                <Trans>New Try-On</Trans>
+              <Button size={isMobile ? "icon" : "default"}>
+                <Sparkles className="size-4" />
+                {!isMobile && <Trans>New Try-On</Trans>}
               </Button>
             </TryOnForm>
           </Suspense>
@@ -51,15 +53,15 @@ const TryOnListScreen = () => {
           </p>
           <Suspense fallback={<Skeleton className="h-10 w-40" />}>
             <TryOnForm>
-              <Button>
-                <Sparkles className="mr-2 h-4 w-4" />
-                <Trans>Start Your First Try-On</Trans>
+              <Button size={isMobile ? "icon" : "default"}>
+                <Sparkles className="size-4" />
+                {!isMobile && <Trans>Start Your First Try-On</Trans>}
               </Button>
             </TryOnForm>
           </Suspense>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {tryOnsQuery.data.map((tryOn) => (
             <TryOnCard key={tryOn.id} tryOn={tryOn} />
           ))}

@@ -145,6 +145,13 @@ function RootDocument({
   return (
     <html lang={locale} suppressHydrationWarning={true}>
       <head>
+        {process.env.NODE_ENV === "development" && (
+          <script
+            crossOrigin="anonymous"
+            defer
+            src="//unpkg.com/react-grab/dist/index.global.js"
+          />
+        )}
         <HeadContent />
       </head>
       <body suppressHydrationWarning>

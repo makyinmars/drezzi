@@ -6,9 +6,11 @@ import PageHeader from "@/components/common/page-header";
 import LookbookCard from "@/components/lookbook/lookbook-card";
 import LookbookForm from "@/components/lookbook/lookbook-form";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
 
 const LookbookListScreen = () => {
+  const isMobile = useIsMobile();
   const { t } = useLingui();
   const trpc = useTRPC();
   const lookbooksQuery = useSuspenseQuery(trpc.lookbook.list.queryOptions());
@@ -18,9 +20,9 @@ const LookbookListScreen = () => {
       <PageHeader
         actions={
           <LookbookForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Lookbook</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Create Lookbook</Trans>}
             </Button>
           </LookbookForm>
         }
@@ -39,9 +41,9 @@ const LookbookListScreen = () => {
             </Trans>
           </p>
           <LookbookForm>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              <Trans>Create Your First Lookbook</Trans>
+            <Button size={isMobile ? "icon" : "default"}>
+              <Plus className="size-4" />
+              {!isMobile && <Trans>Create Your First Lookbook</Trans>}
             </Button>
           </LookbookForm>
         </div>
