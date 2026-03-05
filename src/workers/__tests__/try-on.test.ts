@@ -38,24 +38,41 @@ mock.module("@aws-sdk/client-s3", () => ({
 }));
 
 // Mock AI SDK
-const mockGenerateImage = mock(() =>
+const mockGenerateText = mock(() =>
   Promise.resolve({
-    image: {
-      base64:
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
-      mimeType: "image/png",
-    },
+    files: [
+      {
+        base64:
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        mediaType: "image/png",
+      },
+    ],
   })
 );
 
 mock.module("ai", () => ({
-  experimental_generateImage: mockGenerateImage,
+  generateText: mockGenerateText,
 }));
 
-mock.module("@ai-sdk/google", () => ({
-  google: {
-    image: () => ({ model: "gemini-3-pro-image-preview" }),
-  },
+mock.module("@ai-sdk/gateway", () => ({
+  createGateway: () => () => ({ id: "mock-model" }),
+}));
+
+const mockPublish = mock(() => Promise.resolve());
+const mockChargeCreditsForTryOn = mock(() =>
+  Promise.resolve({ newBalance: 0, alreadyCharged: false })
+);
+
+mock.module("@/lib/websocket-publisher", () => ({
+  publish: mockPublish,
+}));
+
+mock.module("@/services/credits/wallet", () => ({
+  chargeCreditsForTryOn: mockChargeCreditsForTryOn,
+}));
+
+mock.module("@/lib/db", () => ({
+  db: {},
 }));
 
 // Mock services
@@ -85,6 +102,7 @@ const { handler } = await import("../try-on");
 function createSqsEvent(
   payloads: Array<{
     tryOnId: string;
+    userId?: string;
     bodyImageUrl: string;
     garmentImageUrl: string;
   }>
@@ -115,10 +133,12 @@ function createSqsEvent(
 describe("try-on worker", () => {
   beforeEach(() => {
     mockS3Send.mockClear();
-    mockGenerateImage.mockClear();
+    mockGenerateText.mockClear();
     mockUpdateTryOnResult.mockClear();
     mockGetTryOnForTipGeneration.mockClear();
     mockGenerateStyleTips.mockClear();
+    mockPublish.mockClear();
+    mockChargeCreditsForTryOn.mockClear();
   });
 
   describe("handler", () => {
@@ -138,8 +158,8 @@ describe("try-on worker", () => {
 
       await handler(event);
 
-      // Each record should trigger image generation and update
-      expect(mockGenerateImage).toHaveBeenCalledTimes(2);
+      // Each record should trigger generation and update
+      expect(mockGenerateText).toHaveBeenCalledTimes(2);
       expect(mockUpdateTryOnResult).toHaveBeenCalledTimes(2);
     });
 
@@ -148,7 +168,7 @@ describe("try-on worker", () => {
 
       await handler(event);
 
-      expect(mockGenerateImage).not.toHaveBeenCalled();
+      expect(mockGenerateText).not.toHaveBeenCalled();
       expect(mockUpdateTryOnResult).not.toHaveBeenCalled();
     });
   });
@@ -193,17 +213,17 @@ describe("try-on worker", () => {
 
       await handler(event);
 
-      expect(mockGenerateImage).toHaveBeenCalledTimes(1);
-      expect(mockGenerateImage).toHaveBeenCalledWith(
+      expect(mockGenerateText).toHaveBeenCalledTimes(1);
+      expect(mockGenerateText).toHaveBeenCalledWith(
         expect.objectContaining({
-          prompt: expect.stringContaining("Virtual try-on"),
+          messages: expect.arrayContaining([
+            expect.objectContaining({
+              role: "user",
+            }),
+          ]),
           providerOptions: expect.objectContaining({
             google: expect.objectContaining({
               responseModalities: ["IMAGE"],
-              inlineData: expect.arrayContaining([
-                expect.objectContaining({ mimeType: "image/jpeg" }),
-                expect.objectContaining({ mimeType: "image/jpeg" }),
-              ]),
             }),
           }),
         })

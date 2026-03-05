@@ -844,13 +844,13 @@ Profile Photo → AI Analysis → Estimated Measurements → Size Recommendation
 
 3. **Database Schema:**
 
-   ```prisma
-   model Garment {
+   ```typescript
+   export const garment = pgTable("garment", {
      // ... existing fields ...
-     textEmbedding    Unsupported("vector(768)")?
-     imageEmbedding   Unsupported("vector(768)")?
-     embeddingStatus  String @default("pending")
-   }
+     textEmbedding: vector("text_embedding", { dimensions: 768 }),
+     imageEmbedding: vector("image_embedding", { dimensions: 768 }),
+     embeddingStatus: text("embedding_status").default("pending").notNull(),
+   });
    ```
 
 4. **Worker:** `src/workers/garment-embedding.ts`

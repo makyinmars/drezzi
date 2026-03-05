@@ -11,7 +11,6 @@ import {
   text,
   timestamp,
   uniqueIndex,
-  varchar,
 } from "drizzle-orm/pg-core";
 
 export const creditTransactionType = pgEnum("credit_transaction_type", [
@@ -38,22 +37,6 @@ export const status = pgEnum("status", [
   "COMPLETED",
 ]);
 export const userRole = pgEnum("user_role", ["GUEST", "ADMIN"]);
-
-export const prismaMigrations = pgTable("_prisma_migrations", {
-  id: varchar({ length: 36 }).primaryKey().notNull(),
-  checksum: varchar({ length: 64 }).notNull(),
-  finishedAt: timestamp("finished_at", { withTimezone: true, mode: "date" }),
-  migrationName: varchar("migration_name", { length: 255 }).notNull(),
-  logs: text(),
-  rolledBackAt: timestamp("rolled_back_at", {
-    withTimezone: true,
-    mode: "date",
-  }),
-  startedAt: timestamp("started_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .notNull(),
-  appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
-});
 
 export const verification = pgTable("verification", {
   id: text().primaryKey().notNull(),

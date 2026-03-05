@@ -8,12 +8,12 @@ export const TRYON_STATUSES = [
 ] as const;
 
 export const apiTryOnId = z.object({
-  id: z.string(),
+  id: z.cuid(),
 });
 
 export const apiTryOnCreate = z.object({
-  bodyProfileId: z.string(),
-  garmentId: z.string(),
+  bodyProfileId: z.cuid(),
+  garmentId: z.cuid(),
 });
 
 export const apiTryOnFilters = z.object({
@@ -25,7 +25,7 @@ export const apiTryOnFilters = z.object({
 });
 
 export const apiTryOnStatusUpdate = z.object({
-  id: z.string(),
+  id: z.cuid(),
   status: z.enum(TRYON_STATUSES),
   resultUrl: z.url().optional(),
   resultKey: z.string().optional(),

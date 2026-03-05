@@ -163,6 +163,9 @@ export default $config({
       runtime: "nodejs20.x",
       timeout: "5 minutes",
       memory: "1024 MB",
+      nodejs: {
+        install: ["raindrop-ai"],
+      },
       link: [bucket, connectionsTable],
       environment: {
         DATABASE_URL: process.env.DATABASE_URL as string,
@@ -170,6 +173,7 @@ export default $config({
         GOOGLE_GENERATIVE_AI_API_KEY:
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
         AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
+        RAINDROP_WRITE_KEY: process.env.RAINDROP_WRITE_KEY ?? "",
       },
       permissions: [
         {

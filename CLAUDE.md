@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a full-stack Todo application built with TanStack Start, a type-safe, client-first React framework. It uses tRPC for end-to-end type safety between frontend and backend.
 
+Database note: Legacy ORM has been fully decommissioned. Use Drizzle ORM for all database work.
+
 ## Tech Stack
 
 - **Runtime**: Bun

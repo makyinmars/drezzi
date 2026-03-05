@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, text, integer, boolean, uniqueIndex, foreignKey, index, jsonb, doublePrecision, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, timestamp, text, integer, boolean, uniqueIndex, foreignKey, index, jsonb, doublePrecision, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const creditTransactionType = pgEnum("credit_transaction_type", ['PURCHASE', 'USAGE', 'REFUND', 'BONUS', 'ADMIN'])
@@ -7,17 +7,6 @@ export const paymentStatus = pgEnum("payment_status", ['PENDING', 'SUCCEEDED', '
 export const status = pgEnum("status", ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'])
 export const userRole = pgEnum("user_role", ['GUEST', 'ADMIN'])
 
-
-export const prismaMigrations = pgTable("_prisma_migrations", {
-	id: varchar({ length: 36 }).primaryKey().notNull(),
-	checksum: varchar({ length: 64 }).notNull(),
-	finishedAt: timestamp("finished_at", { withTimezone: true, mode: 'date' }),
-	migrationName: varchar("migration_name", { length: 255 }).notNull(),
-	logs: text(),
-	rolledBackAt: timestamp("rolled_back_at", { withTimezone: true, mode: 'date' }),
-	startedAt: timestamp("started_at", { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
-	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
-});
 
 export const verification = pgTable("verification", {
 	id: text().primaryKey().notNull(),

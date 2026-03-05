@@ -2,7 +2,7 @@
 
 A mobile-first web application that lets users virtually try on clothing using AI-powered generative try-on technology. Users upload a reference photo, browse garments, and receive realistic composite images showing how clothes would look on their body.
 
-**Hackathon:** Prisma Hackathon 2025
+**Migration Status:** Database migration completed (March 2026)
 
 ## Tech Stack
 
@@ -11,7 +11,7 @@ A mobile-first web application that lets users virtually try on clothing using A
 - **Frontend**: React 19, TanStack Query, React Hook Form
 - **Styling**: Tailwind CSS v4 + Shadcn/ui components
 - **Backend**: tRPC for type-safe APIs
-- **Database**: PostgreSQL with Prisma ORM
+- **Database**: PostgreSQL with Drizzle ORM
 - **AI/ML**: Google Gemini 2.5 Flash Image via Vercel AI SDK
 - **Storage**: AWS S3 (via SST Bucket)
 - **Queue**: AWS SQS for async job processing
@@ -35,7 +35,7 @@ A mobile-first web application that lets users virtually try on clothing using A
 
    ```bash
    git clone <repository-url>
-   cd f7
+   cd drezzi
    bun install
    ```
 
@@ -49,7 +49,7 @@ A mobile-first web application that lets users virtually try on clothing using A
    Create a `.env` file with:
 
    ```env
-   DATABASE_URL="postgresql://postgres:example@localhost:5432/f7"
+   DATABASE_URL="postgresql://postgres:example@localhost:5432/drezzi"
    VITE_PUBLIC_URL="http://localhost:3000"
    ```
 
