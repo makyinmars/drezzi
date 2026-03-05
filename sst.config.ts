@@ -164,7 +164,9 @@ export default $config({
       timeout: "5 minutes",
       memory: "1024 MB",
       nodejs: {
-        install: ["raindrop-ai"],
+        esbuild: {
+          external: ["fsevents"],
+        },
       },
       link: [bucket, connectionsTable],
       environment: {
