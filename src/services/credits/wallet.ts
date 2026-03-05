@@ -1,62 +1,78 @@
-import type {
-  CreditTransactionType,
-  PrismaClient,
-} from "../../../generated/prisma/client";
-
+import { eq } from "drizzle-orm";
+import type { CreditTransactionType } from "@/db/enums";
+import { creditTransaction, creditWallet } from "@/db/schema";
+import type { Db, DbTx } from "@/lib/db";
+import { createId } from "@/lib/id";
 import { FREE_SIGNUP_CREDITS, TRY_ON_COST } from "./constants";
 
-type TransactionClient = Omit<
-  PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
->;
+type DbClient = Db | DbTx;
 
-export async function getOrCreateWallet(
-  prisma: PrismaClient | TransactionClient,
-  userId: string
-) {
-  const existing = await prisma.creditWallet.findUnique({
-    where: { userId },
+async function withTransaction<T>(
+  client: DbClient,
+  fn: (tx: DbTx) => Promise<T>
+): Promise<T> {
+  if ("rollback" in client) {
+    return await fn(client as DbTx);
+  }
+  return await (client as Db).transaction(fn);
+}
+
+export async function getOrCreateWallet(client: DbClient, userId: string) {
+  const existing = await client.query.creditWallet.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
   });
 
   if (existing) return existing;
 
-  return await (prisma as PrismaClient).$transaction(
-    async (tx: TransactionClient) => {
-      const wallet = await tx.creditWallet.create({
-        data: {
-          userId,
-          balance: FREE_SIGNUP_CREDITS,
-          totalBonus: FREE_SIGNUP_CREDITS,
-        },
-      });
+  const [createdWallet] = await client
+    .insert(creditWallet)
+    .values({
+      id: createId(),
+      userId,
+      balance: FREE_SIGNUP_CREDITS,
+      totalBonus: FREE_SIGNUP_CREDITS,
+      updatedAt: new Date(),
+    })
+    .onConflictDoNothing({
+      target: creditWallet.userId,
+    })
+    .returning();
 
-      await tx.creditTransaction.create({
-        data: {
-          userId,
-          walletId: wallet.id,
-          type: "BONUS",
-          amount: FREE_SIGNUP_CREDITS,
-          balanceAfter: FREE_SIGNUP_CREDITS,
-          description: "Welcome bonus credits",
-        },
-      });
+  if (createdWallet) {
+    await client.insert(creditTransaction).values({
+      id: createId(),
+      userId,
+      walletId: createdWallet.id,
+      type: "BONUS",
+      amount: FREE_SIGNUP_CREDITS,
+      balanceAfter: FREE_SIGNUP_CREDITS,
+      description: "Welcome bonus credits",
+    });
+    return createdWallet;
+  }
 
-      return wallet;
-    }
-  );
+  const wallet = await client.query.creditWallet.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+  });
+
+  if (!wallet) {
+    throw new Error("Failed to initialize credit wallet");
+  }
+
+  return wallet;
 }
 
-export async function getBalance(prisma: PrismaClient, userId: string) {
-  const wallet = await getOrCreateWallet(prisma, userId);
+export async function getBalance(client: Db, userId: string) {
+  const wallet = await getOrCreateWallet(client, userId);
   return wallet.balance;
 }
 
 export async function hasCredits(
-  prisma: PrismaClient,
+  client: Db,
   userId: string,
   amount = TRY_ON_COST
 ) {
-  const balance = await getBalance(prisma, userId);
+  const balance = await getBalance(client, userId);
   return balance >= amount;
 }
 
@@ -67,44 +83,48 @@ type AddCreditsParams = {
 };
 
 export async function addCredits(
-  prisma: PrismaClient | TransactionClient,
+  client: DbClient,
   userId: string,
   amount: number,
   params: AddCreditsParams
 ) {
-  return await (prisma as PrismaClient).$transaction(
-    async (tx: TransactionClient) => {
-      const wallet = await getOrCreateWallet(tx, userId);
+  return await withTransaction(client, async (tx) => {
+    const wallet = await getOrCreateWallet(tx, userId);
+    const newBalance = wallet.balance + amount;
 
-      const newBalance = wallet.balance + amount;
-      const updateData: Record<string, number> = { balance: newBalance };
+    const updateData: Record<string, number | Date> = {
+      balance: newBalance,
+      updatedAt: new Date(),
+    };
 
-      if (params.type === "PURCHASE") {
-        updateData.totalPurchased = wallet.totalPurchased + amount;
-      } else if (params.type === "BONUS") {
-        updateData.totalBonus = wallet.totalBonus + amount;
-      }
-
-      const updated = await tx.creditWallet.update({
-        where: { id: wallet.id },
-        data: updateData,
-      });
-
-      const transaction = await tx.creditTransaction.create({
-        data: {
-          userId,
-          walletId: wallet.id,
-          type: params.type,
-          amount,
-          balanceAfter: newBalance,
-          description: params.description,
-          paymentId: params.paymentId,
-        },
-      });
-
-      return { wallet: updated, transaction };
+    if (params.type === "PURCHASE") {
+      updateData.totalPurchased = wallet.totalPurchased + amount;
+    } else if (params.type === "BONUS") {
+      updateData.totalBonus = wallet.totalBonus + amount;
     }
-  );
+
+    const [updatedWallet] = await tx
+      .update(creditWallet)
+      .set(updateData)
+      .where(eq(creditWallet.id, wallet.id))
+      .returning();
+
+    const [transaction] = await tx
+      .insert(creditTransaction)
+      .values({
+        id: createId(),
+        userId,
+        walletId: wallet.id,
+        type: params.type,
+        amount,
+        balanceAfter: newBalance,
+        description: params.description,
+        paymentId: params.paymentId,
+      })
+      .returning();
+
+    return { wallet: updatedWallet, transaction };
+  });
 }
 
 type ChargeResult =
@@ -112,18 +132,23 @@ type ChargeResult =
   | { alreadyCharged: false; transaction: { id: string }; newBalance: number };
 
 export async function chargeCreditsForTryOn(
-  prisma: PrismaClient,
+  client: Db,
   userId: string,
   tryOnId: string,
   description = "Virtual try-on"
 ): Promise<ChargeResult> {
-  return await prisma.$transaction(async (tx: TransactionClient) => {
-    const existing = await tx.creditTransaction.findFirst({
-      where: { tryOnId, type: "USAGE" },
+  return await client.transaction(async (tx) => {
+    const existing = await tx.query.creditTransaction.findFirst({
+      where: (t, { and: andOp, eq: eqOp }) =>
+        andOp(eqOp(t.tryOnId, tryOnId), eqOp(t.type, "USAGE")),
+      columns: { id: true },
     });
 
     if (existing) {
-      const wallet = await tx.creditWallet.findUnique({ where: { userId } });
+      const wallet = await tx.query.creditWallet.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      });
+
       return {
         alreadyCharged: true,
         transaction: { id: existing.id },
@@ -139,16 +164,19 @@ export async function chargeCreditsForTryOn(
 
     const newBalance = wallet.balance - TRY_ON_COST;
 
-    await tx.creditWallet.update({
-      where: { id: wallet.id },
-      data: {
+    await tx
+      .update(creditWallet)
+      .set({
         balance: newBalance,
         totalUsed: wallet.totalUsed + TRY_ON_COST,
-      },
-    });
+        updatedAt: new Date(),
+      })
+      .where(eq(creditWallet.id, wallet.id));
 
-    const transaction = await tx.creditTransaction.create({
-      data: {
+    const [transaction] = await tx
+      .insert(creditTransaction)
+      .values({
+        id: createId(),
         userId,
         walletId: wallet.id,
         type: "USAGE",
@@ -156,8 +184,8 @@ export async function chargeCreditsForTryOn(
         balanceAfter: newBalance,
         description,
         tryOnId,
-      },
-    });
+      })
+      .returning();
 
     return {
       alreadyCharged: false,
@@ -168,14 +196,15 @@ export async function chargeCreditsForTryOn(
 }
 
 export async function refundCreditsForTryOn(
-  prisma: PrismaClient,
+  client: Db,
   userId: string,
   tryOnId: string,
   description = "Try-on refund"
 ) {
-  return await prisma.$transaction(async (tx: TransactionClient) => {
-    const existing = await tx.creditTransaction.findFirst({
-      where: { tryOnId, type: "REFUND" },
+  return await client.transaction(async (tx) => {
+    const existing = await tx.query.creditTransaction.findFirst({
+      where: (t, { and: andOp, eq: eqOp }) =>
+        andOp(eqOp(t.tryOnId, tryOnId), eqOp(t.type, "REFUND")),
     });
 
     if (existing) {
@@ -185,16 +214,19 @@ export async function refundCreditsForTryOn(
     const wallet = await getOrCreateWallet(tx, userId);
     const newBalance = wallet.balance + TRY_ON_COST;
 
-    await tx.creditWallet.update({
-      where: { id: wallet.id },
-      data: {
+    await tx
+      .update(creditWallet)
+      .set({
         balance: newBalance,
         totalUsed: Math.max(0, wallet.totalUsed - TRY_ON_COST),
-      },
-    });
+        updatedAt: new Date(),
+      })
+      .where(eq(creditWallet.id, wallet.id));
 
-    const transaction = await tx.creditTransaction.create({
-      data: {
+    const [transaction] = await tx
+      .insert(creditTransaction)
+      .values({
+        id: createId(),
         userId,
         walletId: wallet.id,
         type: "REFUND",
@@ -202,8 +234,8 @@ export async function refundCreditsForTryOn(
         balanceAfter: newBalance,
         description,
         tryOnId,
-      },
-    });
+      })
+      .returning();
 
     return { alreadyRefunded: false, transaction };
   });

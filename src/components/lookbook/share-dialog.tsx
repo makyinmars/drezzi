@@ -1,10 +1,8 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Lookbook } from "generated/prisma/client";
 import { Check, Copy, Eye, EyeOff, Link2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import type { Lookbook } from "@/db/types";
 import { clientEnv } from "@/env/client";
 import { useTRPC } from "@/trpc/react";
 

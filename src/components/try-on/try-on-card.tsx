@@ -321,16 +321,20 @@ const TryOnCard = ({ tryOn }: TryOnCardProps) => {
               </SheetDescription>
             </SheetHeader>
             <div className="mt-6 space-y-3">
-              {tryOn.styleTips.map((tip) => (
-                <Item key={tip.id} size="sm" variant="muted">
-                  <ItemContent>
-                    <ItemTitle className="capitalize">{tip.category}</ItemTitle>
-                    <ItemDescription className="line-clamp-none">
-                      {tip.content}
-                    </ItemDescription>
-                  </ItemContent>
-                </Item>
-              ))}
+              {tryOn.styleTips.map(
+                (tip: { id: string; category: string; content: string }) => (
+                  <Item key={tip.id} size="sm" variant="muted">
+                    <ItemContent>
+                      <ItemTitle className="capitalize">
+                        {tip.category}
+                      </ItemTitle>
+                      <ItemDescription className="line-clamp-none">
+                        {tip.content}
+                      </ItemDescription>
+                    </ItemContent>
+                  </Item>
+                )
+              )}
             </div>
           </SheetContent>
         </Sheet>

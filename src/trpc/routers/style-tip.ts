@@ -1,5 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-
+import { eq } from "drizzle-orm";
+import { styleTip } from "@/db/schema";
+import { createId } from "@/lib/id";
 import {
   getTryOnForTipGeneration,
   regenerateStyleTips,
@@ -10,7 +12,6 @@ import {
   apiStyleTipId,
   apiStyleTipUpdate,
 } from "@/validators/style-tip";
-
 import { createErrors } from "../errors";
 import { protectedProcedure } from "../init";
 import type { RouterOutput } from "../utils";
@@ -24,17 +25,19 @@ export const styleTipRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.tryOnId, userId },
+      const tryOnData = await ctx.db.query.tryOn.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.tryOnId), eqOp(t.userId, userId)),
+        columns: { id: true },
       });
 
-      if (!tryOn) {
+      if (!tryOnData) {
         throw errors.tryOnNotFound();
       }
 
-      const tips = await ctx.prisma.styleTip.findMany({
-        where: { tryOnId: input.tryOnId },
-        orderBy: { createdAt: "asc" },
+      const tips = await ctx.db.query.styleTip.findMany({
+        where: (t, { eq: eqOp }) => eqOp(t.tryOnId, input.tryOnId),
+        orderBy: (t, { asc: ascOp }) => [ascOp(t.createdAt)],
       });
 
       return tips;
@@ -46,21 +49,25 @@ export const styleTipRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.tryOnId, userId },
+      const tryOnData = await ctx.db.query.tryOn.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.tryOnId), eqOp(t.userId, userId)),
+        columns: { id: true },
       });
 
-      if (!tryOn) {
+      if (!tryOnData) {
         throw errors.tryOnNotFound();
       }
 
-      const tip = await ctx.prisma.styleTip.create({
-        data: {
+      const [tip] = await ctx.db
+        .insert(styleTip)
+        .values({
+          id: createId(),
           tryOnId: input.tryOnId,
           category: input.category,
           content: input.content,
-        },
-      });
+        })
+        .returning();
 
       if (!tip) {
         throw errors.styleTipCreateFailed();
@@ -76,9 +83,15 @@ export const styleTipRouter = {
       const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      const tip = await ctx.prisma.styleTip.findFirst({
-        where: { id },
-        include: { tryOn: true },
+      const tip = await ctx.db.query.styleTip.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.id, id),
+        with: {
+          tryOn: {
+            columns: {
+              userId: true,
+            },
+          },
+        },
       });
 
       if (!tip) {
@@ -89,10 +102,11 @@ export const styleTipRouter = {
         throw errors.styleTipForbidden();
       }
 
-      const updated = await ctx.prisma.styleTip.update({
-        where: { id },
-        data,
-      });
+      const [updated] = await ctx.db
+        .update(styleTip)
+        .set(data)
+        .where(eq(styleTip.id, id))
+        .returning();
 
       if (!updated) {
         throw errors.styleTipUpdateFailed();
@@ -107,9 +121,15 @@ export const styleTipRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tip = await ctx.prisma.styleTip.findFirst({
-        where: { id: input.id },
-        include: { tryOn: true },
+      const tip = await ctx.db.query.styleTip.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.id, input.id),
+        with: {
+          tryOn: {
+            columns: {
+              userId: true,
+            },
+          },
+        },
       });
 
       if (!tip) {
@@ -120,9 +140,10 @@ export const styleTipRouter = {
         throw errors.styleTipForbidden();
       }
 
-      const deleted = await ctx.prisma.styleTip.delete({
-        where: { id: input.id },
-      });
+      const [deleted] = await ctx.db
+        .delete(styleTip)
+        .where(eq(styleTip.id, input.id))
+        .returning();
 
       return deleted;
     }),
@@ -152,13 +173,13 @@ export const styleTipRouter = {
         garmentName: tryOnData.garment.name,
         garmentCategory: tryOnData.garment.category,
         garmentDescription: tryOnData.garment.description,
-        garmentColors: tryOnData.garment.colors,
+        garmentColors: tryOnData.garment.colors ?? [],
         bodyProfileFitPreference: tryOnData.bodyProfile.fitPreference,
       });
 
-      const tips = await ctx.prisma.styleTip.findMany({
-        where: { tryOnId: input.tryOnId },
-        orderBy: { createdAt: "asc" },
+      const tips = await ctx.db.query.styleTip.findMany({
+        where: (t, { eq: eqOp }) => eqOp(t.tryOnId, input.tryOnId),
+        orderBy: (t, { asc: ascOp }) => [ascOp(t.createdAt)],
       });
 
       return tips;

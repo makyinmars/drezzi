@@ -1,7 +1,9 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
+import { and, eq, ne } from "drizzle-orm";
 import z from "zod/v4";
-
+import { bodyProfile } from "@/db/schema";
+import { createId } from "@/lib/id";
 import { enqueueUpscaleJob } from "@/lib/upscale-sqs";
 import {
   deleteProfileAssets,
@@ -15,7 +17,6 @@ import {
   apiBodyProfileUpdate,
   apiProfileUploadRequest,
 } from "@/validators/profile";
-
 import { createErrors } from "../errors";
 import { protectedProcedure } from "../init";
 import type { RouterOutput } from "../utils";
@@ -45,13 +46,13 @@ const toBoolean = (value: FormDataEntryValue | null, fallback = false) => {
 
 export const profileRouter = {
   list: protectedProcedure.query(async ({ ctx }) => {
-    const profiles = await ctx.prisma.bodyProfile.findMany({
-      where: { userId: ctx.session.user.id },
-      include: { photo: true, enhancedPhoto: true },
-      orderBy: { createdAt: "desc" },
+    const profiles = await ctx.db.query.bodyProfile.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, ctx.session.user.id),
+      with: { photo: true, enhancedPhoto: true },
+      orderBy: (t, { desc }) => [desc(t.createdAt)],
     });
 
-    return Promise.all(
+    return await Promise.all(
       profiles.map(async (p) => ({
         ...p,
         photoUrl: await getProfilePhotoUrl(p.photo.key),
@@ -67,9 +68,10 @@ export const profileRouter = {
     .query(async ({ input, ctx }) => {
       const errors = createErrors(ctx.i18n);
 
-      const profile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.id, userId: ctx.session.user.id },
-        include: { photo: true, enhancedPhoto: true },
+      const profile = await ctx.db.query.bodyProfile.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, ctx.session.user.id)),
+        with: { photo: true, enhancedPhoto: true },
       });
 
       if (!profile) {
@@ -91,16 +93,16 @@ export const profileRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const file = input.get("file");
-      if (!(file instanceof File)) {
+      const uploadedFile = input.get("file");
+      if (!(uploadedFile instanceof File)) {
         throw errors.invalidProfileImage();
       }
 
-      return await ctx.prisma.$transaction(async (tx) => {
+      return await ctx.db.transaction(async (tx) => {
         const uploaded = await uploadFileToS3({
-          file,
+          file: uploadedFile,
           userId,
-          prisma: tx,
+          db: tx,
           prefix: "profiles",
           allowedMimeTypes: IMAGE_TYPE_REGEX,
         });
@@ -118,21 +120,28 @@ export const profileRouter = {
         });
 
         if (parsed.isDefault) {
-          await tx.bodyProfile.updateMany({
-            where: { userId, isDefault: true },
-            data: { isDefault: false },
-          });
+          await tx
+            .update(bodyProfile)
+            .set({ isDefault: false, updatedAt: new Date() })
+            .where(
+              and(
+                eq(bodyProfile.userId, userId),
+                eq(bodyProfile.isDefault, true)
+              )
+            );
         }
 
-        const profile = await tx.bodyProfile.create({
-          data: {
+        const [profile] = await tx
+          .insert(bodyProfile)
+          .values({
+            id: createId(),
             ...parsed,
             userId,
             enhancementStatus: "PENDING",
-          },
-        });
+            updatedAt: new Date(),
+          })
+          .returning();
 
-        // Auto-trigger upscale (fire-and-forget, outside transaction)
         enqueueUpscaleJob({
           type: "profile",
           entityId: profile.id,
@@ -160,11 +169,12 @@ export const profileRouter = {
         throw errors.invalidInput();
       }
 
-      const file = input.get("file");
+      const uploadedFile = input.get("file");
 
-      return await ctx.prisma.$transaction(async (tx) => {
-        const existing = await tx.bodyProfile.findFirst({
-          where: { id, userId },
+      return await ctx.db.transaction(async (tx) => {
+        const existing = await tx.query.bodyProfile.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, id), eqOp(t.userId, userId)),
         });
 
         if (!existing) {
@@ -174,11 +184,11 @@ export const profileRouter = {
         let photoId = existing.photoId;
         let newPhotoKey: string | null = null;
 
-        if (file instanceof File) {
+        if (uploadedFile instanceof File) {
           const uploaded = await uploadFileToS3({
-            file,
+            file: uploadedFile,
             userId,
-            prisma: tx,
+            db: tx,
             prefix: "profiles",
             allowedMimeTypes: IMAGE_TYPE_REGEX,
           });
@@ -199,7 +209,9 @@ export const profileRouter = {
           isDefault: toBoolean(input.get("isDefault"), existing.isDefault),
         });
 
-        const updateData: Record<string, unknown> = {};
+        const updateData: Record<string, unknown> = {
+          updatedAt: new Date(),
+        };
         if (parsed.name !== undefined) updateData.name = parsed.name;
         if (parsed.photoId !== undefined) updateData.photoId = parsed.photoId;
         if (parsed.height !== undefined) updateData.height = parsed.height;
@@ -212,27 +224,34 @@ export const profileRouter = {
         if (parsed.isDefault !== undefined)
           updateData.isDefault = parsed.isDefault;
 
-        // Update other profiles BEFORE updating the target profile
         if (parsed.isDefault) {
-          await tx.bodyProfile.updateMany({
-            where: { userId, isDefault: true, id: { not: id } },
-            data: { isDefault: false },
-          });
+          await tx
+            .update(bodyProfile)
+            .set({
+              isDefault: false,
+              updatedAt: new Date(),
+            })
+            .where(
+              and(
+                eq(bodyProfile.userId, userId),
+                eq(bodyProfile.isDefault, true),
+                ne(bodyProfile.id, id)
+              )
+            );
         }
 
-        // If new photo uploaded, reset enhancement and trigger upscale
         if (newPhotoKey) {
           updateData.enhancementStatus = "PENDING";
           updateData.enhancedPhotoId = null;
           updateData.enhancementError = null;
         }
 
-        const updated = await tx.bodyProfile.update({
-          where: { id },
-          data: updateData,
-        });
+        const [updated] = await tx
+          .update(bodyProfile)
+          .set(updateData)
+          .where(eq(bodyProfile.id, id))
+          .returning();
 
-        // Auto-trigger upscale for new photo (fire-and-forget)
         if (newPhotoKey) {
           enqueueUpscaleJob({
             type: "profile",
@@ -254,13 +273,13 @@ export const profileRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      // Store key for S3 cleanup after transaction
       let photoKey: string | null = null;
 
-      const deleted = await ctx.prisma.$transaction(async (tx) => {
-        const profile = await tx.bodyProfile.findFirst({
-          where: { id: input.id, userId },
-          include: { photo: true },
+      const deleted = await ctx.db.transaction(async (tx) => {
+        const profile = await tx.query.bodyProfile.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+          with: { photo: true },
         });
 
         if (!profile) {
@@ -269,12 +288,14 @@ export const profileRouter = {
 
         photoKey = profile.photo.key;
 
-        return await tx.bodyProfile.delete({
-          where: { id: input.id },
-        });
+        const [deletedProfile] = await tx
+          .delete(bodyProfile)
+          .where(eq(bodyProfile.id, input.id))
+          .returning();
+
+        return deletedProfile;
       });
 
-      // S3 cleanup after transaction commits (fire-and-forget)
       if (photoKey) {
         deleteProfileAssets(photoKey).catch(() => {});
       }
@@ -288,8 +309,10 @@ export const profileRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const profile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.id, userId },
+      const profile = await ctx.db.query.bodyProfile.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+        columns: { id: true },
       });
 
       if (!profile) {
@@ -321,17 +344,17 @@ export const profileRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const file = input.get("file");
+      const uploadedFile = input.get("file");
 
-      if (!(file instanceof File)) {
+      if (!(uploadedFile instanceof File)) {
         throw errors.invalidProfileImage();
       }
 
       try {
         const uploaded = await uploadFileToS3({
-          file,
+          file: uploadedFile,
           userId,
-          prisma: ctx.prisma,
+          db: ctx.db,
           prefix: "profiles",
           allowedMimeTypes: IMAGE_TYPE_REGEX,
         });

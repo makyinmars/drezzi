@@ -1,8 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import z from "zod/v4";
-
+import { bodyProfile } from "@/db/schema";
 import { enqueueUpscaleJob } from "@/lib/upscale-sqs";
-
 import { createErrors } from "../errors";
 import { protectedProcedure } from "../init";
 
@@ -13,9 +13,10 @@ export const upscaleRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const profile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.profileId, userId },
-        include: { photo: true },
+      const profile = await ctx.db.query.bodyProfile.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.profileId), eqOp(t.userId, userId)),
+        with: { photo: true },
       });
 
       if (!profile) {
@@ -26,13 +27,14 @@ export const upscaleRouter = {
         throw errors.upscaleAlreadyProcessing();
       }
 
-      await ctx.prisma.bodyProfile.update({
-        where: { id: input.profileId },
-        data: {
+      await ctx.db
+        .update(bodyProfile)
+        .set({
           enhancementStatus: "PROCESSING",
           enhancementError: null,
-        },
-      });
+          updatedAt: new Date(),
+        })
+        .where(eq(bodyProfile.id, input.profileId));
 
       await enqueueUpscaleJob({
         type: "profile",
@@ -50,9 +52,10 @@ export const upscaleRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const garment = await ctx.prisma.garment.findFirst({
-        where: { id: input.garmentId, userId },
-        include: { image: true },
+      const garment = await ctx.db.query.garment.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.garmentId), eqOp(t.userId, userId)),
+        with: { image: true },
       });
 
       if (!garment) {
@@ -75,12 +78,17 @@ export const upscaleRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.tryOnId, userId, status: "completed" },
-        include: { result: true },
+      const tryOnData = await ctx.db.query.tryOn.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(
+            eqOp(t.id, input.tryOnId),
+            eqOp(t.userId, userId),
+            eqOp(t.status, "completed")
+          ),
+        with: { result: true },
       });
 
-      if (!tryOn?.result) {
+      if (!tryOnData?.result) {
         throw errors.tryOnNotFound();
       }
 
@@ -88,7 +96,7 @@ export const upscaleRouter = {
         type: "tryon",
         entityId: input.tryOnId,
         userId,
-        sourceImageKey: tryOn.result.key,
+        sourceImageKey: tryOnData.result.key,
       });
 
       return { success: true };
@@ -100,12 +108,13 @@ export const upscaleRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const profile = await ctx.prisma.bodyProfile.findFirst({
-        where: { id: input.profileId, userId },
-        select: {
+      const profile = await ctx.db.query.bodyProfile.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.profileId), eqOp(t.userId, userId)),
+        columns: {
           enhancementStatus: true,
           enhancementError: true,
-          enhancedPhoto: true,
+          enhancedPhotoId: true,
         },
       });
 
@@ -116,7 +125,7 @@ export const upscaleRouter = {
       return {
         status: profile.enhancementStatus,
         error: profile.enhancementError,
-        hasEnhancedPhoto: !!profile.enhancedPhoto,
+        hasEnhancedPhoto: !!profile.enhancedPhotoId,
       };
     }),
 } satisfies TRPCRouterRecord;

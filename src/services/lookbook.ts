@@ -1,8 +1,10 @@
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { and, eq } from "drizzle-orm";
 import { Resource } from "sst";
-
-import { prisma } from "@/lib/prisma";
+import { file, lookbookItem } from "@/db/schema";
+import { db } from "@/lib/db";
+import { createId } from "@/lib/id";
 import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function generateShareSlug(name: string): Promise<string> {
@@ -16,8 +18,9 @@ export async function generateShareSlug(name: string): Promise<string> {
   const random = Math.random().toString(36).slice(2, 6);
   const slug = `${base}-${timestamp}-${random}`;
 
-  const existing = await prisma.lookbook.findUnique({
-    where: { shareSlug: slug },
+  const existing = await db.query.lookbook.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.shareSlug, slug),
+    columns: { id: true },
   });
 
   if (existing) {
@@ -42,16 +45,18 @@ export async function getLookbookCoverUploadUrl(
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-  const file = await prisma.file.create({
-    data: {
+  const [created] = await db
+    .insert(file)
+    .values({
+      id: createId(),
       key,
       bucket: "media",
       mimeType: contentType,
       uploadedBy: userId,
-    },
-  });
+    })
+    .returning();
 
-  return { url, key, fileId: file.id };
+  return { url, key, fileId: created.id };
 }
 
 export async function getLookbookCoverUrl(
@@ -76,21 +81,26 @@ export async function reorderLookbookItems(
   lookbookId: string,
   items: Array<{ id: string; order: number }>
 ) {
-  return await prisma.$transaction(
-    items.map((item) =>
-      prisma.lookbookItem.update({
-        where: { id: item.id, lookbookId },
-        data: { order: item.order },
-      })
-    )
-  );
+  return await db.transaction(async (tx) => {
+    for (const item of items) {
+      await tx
+        .update(lookbookItem)
+        .set({ order: item.order })
+        .where(
+          and(
+            eq(lookbookItem.id, item.id),
+            eq(lookbookItem.lookbookId, lookbookId)
+          )
+        );
+    }
+  });
 }
 
 export async function getNextItemOrder(lookbookId: string): Promise<number> {
-  const maxItem = await prisma.lookbookItem.findFirst({
-    where: { lookbookId },
-    orderBy: { order: "desc" },
-    select: { order: true },
+  const maxItem = await db.query.lookbookItem.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.lookbookId, lookbookId),
+    orderBy: (t, { desc: descOp }) => [descOp(t.order)],
+    columns: { order: true },
   });
 
   return (maxItem?.order ?? -1) + 1;

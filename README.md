@@ -53,20 +53,13 @@ A mobile-first web application that lets users virtually try on clothing using A
    VITE_PUBLIC_URL="http://localhost:3000"
    ```
 
-4. **Generate Prisma client and run migrations**
+4. **Apply Drizzle schema**
 
    ```bash
-   bunx prisma generate
-   bunx prisma migrate dev
+   bun db:push
    ```
 
-5. **Seed the database (optional)**
-
-   ```bash
-   bunx prisma db seed
-   ```
-
-6. **Start development server**
+5. **Start development server**
 
    ```bash
    bun dev
@@ -83,12 +76,13 @@ bun build            # Build for production
 bun start            # Start production server
 bun typecheck        # Type check the codebase
 
-# Database (Prisma)
-bunx prisma generate    # Generate Prisma client
-bunx prisma migrate dev # Run database migrations
-bunx prisma db push     # Push schema changes (dev only)
-bunx prisma studio      # Open Prisma Studio GUI
-bunx prisma db seed     # Seed the database
+# Database (Drizzle)
+bun db:generate      # Generate migration files
+bun db:migrate       # Run migrations
+bun db:push          # Push schema changes (dev only)
+bun db:pull          # Pull schema from database
+bun db:studio        # Open Drizzle Studio GUI
+bun db:check         # Validate migration state
 
 # Code Quality
 bun lint             # Lint/check code with Ultracite
@@ -131,13 +125,13 @@ src/
 │   └── nano-banana.ts  # AI integration
 ├── workers/            # Lambda workers
 │   └── try-on.ts       # AI try-on processor
+├── db/                 # Drizzle schema + relations
 ├── lib/                # Utility functions
-│   └── prisma.ts       # Prisma client
+│   └── db.ts           # Drizzle database client
 ├── locales/            # Translation catalogs
 └── modules/            # Feature modules
-prisma/
-├── schema.prisma       # Database schema
-└── migrations/         # Migration files
+drizzle/
+└── migrations/         # SQL migrations + snapshots
 ```
 
 ## Key Features
@@ -149,7 +143,7 @@ prisma/
 - **Streaming UX**: Real-time progress updates via Vercel AI SDK
 - **Type Safety**: End-to-end type safety with tRPC and Zod validation
 - **Modern UI**: Responsive design with Tailwind CSS v4 and Shadcn/ui
-- **Database**: PostgreSQL with Prisma ORM for type-safe database operations
+- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
 - **Dark Mode**: Built-in theme switching
 - **Internationalization**: Multi-language support with Lingui.js
 
@@ -435,7 +429,7 @@ throw errors.todoNotFound(); // "Todo not found" or "Tâche introuvable"
 
 1. **File-based Routing**: Pages are automatically routed based on file structure in `src/routes/`
 2. **Type-safe APIs**: All API communication uses tRPC for end-to-end type safety
-3. **Database First**: Schema-driven development with Prisma ORM
+3. **Database First**: Schema-driven development with Drizzle ORM
 4. **Component Library**: Consistent UI with Shadcn/ui components
 5. **Path Aliases**: Use `@/*` imports for clean relative imports
 6. **Async Processing**: SQS queues for AI try-on jobs with Lambda workers
@@ -445,7 +439,7 @@ throw errors.todoNotFound(); // "Todo not found" or "Tâche introuvable"
 
 - Always run `bun typecheck` after making changes
 - Database migrations must be run manually after schema changes
-- Use Prisma Studio (`bunx prisma studio`) for database exploration
+- Use Drizzle Studio (`bun db:studio`) for database exploration
 - Follow the existing code conventions and patterns
 - Prefer composition over inheritance for component design
 - Code formatting and linting handled by Ultracite

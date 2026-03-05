@@ -1,19 +1,26 @@
 import { render } from "@react-email/components";
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP } from "better-auth/plugins";
 import { APP_NAME } from "@/constants/app";
+import { account, session, user, verification } from "@/db/schema";
 import { PasswordResetOTPEmail } from "@/emails/password-reset-otp";
 import { sendEmail, sendWelcomeEmail } from "@/emails/send-email";
 import { serverEnv } from "@/env/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db";
 import { getOrCreateWallet } from "@/services/credits/wallet";
 
 export const auth = betterAuth({
   baseURL: serverEnv.PUBLIC_URL,
   trustedOrigins: [serverEnv.PUBLIC_URL],
-  database: prismaAdapter(prisma, {
-    provider: "postgresql",
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user,
+      session,
+      account,
+      verification,
+    },
   }),
   emailAndPassword: {
     enabled: true,
@@ -73,7 +80,7 @@ export const auth = betterAuth({
       create: {
         after: async (user) => {
           // Grant 3 free credits to new users (non-blocking)
-          getOrCreateWallet(prisma, user.id).catch(console.error);
+          getOrCreateWallet(db, user.id).catch(console.error);
           // Send welcome email (non-blocking)
           sendWelcomeEmail(user.email, user.name ?? "there").catch(
             console.error

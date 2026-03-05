@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TodoStatus } from "generated/prisma/browser";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,12 +31,13 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { TodoStatus } from "@/db/enums";
+import type { Todo } from "@/db/types";
 import { useTRPC } from "@/trpc/react";
 import {
   apiTodoCreateAndUpdate,
   type TodoCreateAndUpdate,
 } from "@/validators/todo";
-import type { Todo } from "../../../generated/prisma/client";
 
 type TodoFormProps = {
   todo?: Todo;

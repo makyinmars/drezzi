@@ -3,15 +3,16 @@ import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import z from "zod/v4";
 
 import LoadingState from "@/components/common/loading-state";
+import type { RouterOutput } from "@/trpc/utils";
 
 export const Route = createFileRoute("/shared/lookbook/$slug")({
   parseParams: (params) => ({
     slug: z.string().min(1, "Invalid share slug").parse(params.slug),
   }),
   loader: async ({ context, params }) => {
-    const lookbook = await context.queryClient.ensureQueryData(
+    const lookbook = (await context.queryClient.ensureQueryData(
       context.trpc.lookbook.bySlug.queryOptions({ slug: params.slug })
-    );
+    )) as RouterOutput["lookbook"]["bySlug"];
     return { lookbook };
   },
   head: ({ loaderData }) => ({

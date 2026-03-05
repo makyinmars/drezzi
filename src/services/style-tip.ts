@@ -1,8 +1,10 @@
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
-
-import { prisma } from "@/lib/prisma";
+import { styleTip } from "@/db/schema";
+import { db } from "@/lib/db";
+import { createId } from "@/lib/id";
 import {
   STYLE_TIP_CATEGORIES,
   type StyleTipCategory,
@@ -30,36 +32,36 @@ export async function generateStyleTips(input: GenerateStyleTipsInput) {
   const prompt = buildStyleTipPrompt(input);
 
   const result = await generateObject({
-    model: google("gemini-2.5-flash-preview-09-2025"),
+    model: google("gemini-2.5-flash"),
     schema: styleTipSchema,
     prompt,
   });
 
-  const tips = await prisma.styleTip.createMany({
-    data: result.object.tips.map((tip) => ({
-      tryOnId: input.tryOnId,
-      category: tip.category,
-      content: tip.content,
-    })),
-  });
+  const rows = result.object.tips.map((tip) => ({
+    id: createId(),
+    tryOnId: input.tryOnId,
+    category: tip.category,
+    content: tip.content,
+  }));
 
-  return tips;
+  if (rows.length > 0) {
+    await db.insert(styleTip).values(rows);
+  }
+
+  return { count: rows.length };
 }
 
 export async function regenerateStyleTips(input: GenerateStyleTipsInput) {
-  await prisma.styleTip.deleteMany({
-    where: { tryOnId: input.tryOnId },
-  });
-
+  await db.delete(styleTip).where(eq(styleTip.tryOnId, input.tryOnId));
   return generateStyleTips(input);
 }
 
 export async function getTryOnForTipGeneration(tryOnId: string) {
-  return prisma.tryOn.findUnique({
-    where: { id: tryOnId },
-    include: {
+  return await db.query.tryOn.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.id, tryOnId),
+    with: {
       garment: {
-        select: {
+        columns: {
           name: true,
           category: true,
           description: true,
@@ -67,7 +69,7 @@ export async function getTryOnForTipGeneration(tryOnId: string) {
         },
       },
       bodyProfile: {
-        select: {
+        columns: {
           fitPreference: true,
         },
       },

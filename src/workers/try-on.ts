@@ -7,8 +7,7 @@ import {
 import { generateText } from "ai";
 import type { SQSEvent, SQSRecord } from "aws-lambda";
 import { Resource } from "sst";
-
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db";
 import { publish } from "@/lib/websocket-publisher";
 import { TRY_ON_COST } from "@/services/credits/constants";
 import { chargeCreditsForTryOn } from "@/services/credits/wallet";
@@ -160,7 +159,7 @@ The result should look like a professional fashion photo.`,
   // 5.5 Charge credits (idempotent)
   let newBalance = 0;
   const chargeResult = await chargeCreditsForTryOn(
-    prisma,
+    db,
     userId,
     tryOnId,
     "Virtual try-on"
@@ -195,7 +194,7 @@ The result should look like a professional fashion photo.`,
       garmentName: tryOnData.garment.name,
       garmentCategory: tryOnData.garment.category,
       garmentDescription: tryOnData.garment.description,
-      garmentColors: tryOnData.garment.colors,
+      garmentColors: tryOnData.garment.colors ?? [],
       bodyProfileFitPreference: tryOnData.bodyProfile.fitPreference,
     }).catch((err) =>
       console.error(`Failed to generate style tips for ${tryOnId}:`, err)

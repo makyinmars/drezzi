@@ -3,7 +3,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod/v4";
 import { auth } from "@/auth/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db";
 
 export const createTRPCContext = async (opts: {
   i18n?: I18n;
@@ -19,7 +19,7 @@ export const createTRPCContext = async (opts: {
     : null;
 
   return {
-    prisma,
+    db,
     i18n: opts?.i18n,
     session,
   };

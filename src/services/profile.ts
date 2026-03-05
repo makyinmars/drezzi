@@ -1,8 +1,10 @@
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { and, eq } from "drizzle-orm";
 import { Resource } from "sst";
-
-import { prisma } from "@/lib/prisma";
+import { bodyProfile, file } from "@/db/schema";
+import { db } from "@/lib/db";
+import { createId } from "@/lib/id";
 import { getCachedPresignedUrl, s3 } from "@/lib/s3";
 
 export async function getProfileUploadUrl(userId: string, contentType: string) {
@@ -17,29 +19,43 @@ export async function getProfileUploadUrl(userId: string, contentType: string) {
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-  const file = await prisma.file.create({
-    data: {
+  const [created] = await db
+    .insert(file)
+    .values({
+      id: createId(),
       key,
       bucket: "media",
       mimeType: contentType,
       uploadedBy: userId,
-    },
-  });
+    })
+    .returning();
 
-  return { url, key, fileId: file.id };
+  return { url, key, fileId: created.id };
 }
 
 export async function setDefaultProfile(userId: string, profileId: string) {
-  return await prisma.$transaction([
-    prisma.bodyProfile.updateMany({
-      where: { userId, isDefault: true },
-      data: { isDefault: false },
-    }),
-    prisma.bodyProfile.update({
-      where: { id: profileId, userId },
-      data: { isDefault: true },
-    }),
-  ]);
+  return await db.transaction(async (tx) => {
+    await tx
+      .update(bodyProfile)
+      .set({
+        isDefault: false,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(bodyProfile.userId, userId), eq(bodyProfile.isDefault, true))
+      );
+
+    const [updated] = await tx
+      .update(bodyProfile)
+      .set({
+        isDefault: true,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(bodyProfile.id, profileId), eq(bodyProfile.userId, userId)))
+      .returning();
+
+    return updated;
+  });
 }
 
 export async function deleteProfileAssets(photoKey: string) {

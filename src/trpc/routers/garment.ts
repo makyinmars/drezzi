@@ -1,6 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { and, eq, gte, lte, or, type SQL, sql } from "drizzle-orm";
 import z from "zod/v4";
-
+import { garment } from "@/db/schema";
+import { createId } from "@/lib/id";
 import {
   deleteGarmentAssets,
   getGarmentImageUrl,
@@ -15,7 +17,6 @@ import {
   apiGarmentUpdate,
   apiGarmentUploadRequest,
 } from "@/validators/garment";
-
 import { createErrors } from "../errors";
 import { protectedProcedure, publicProcedure } from "../init";
 import type { RouterOutput } from "../utils";
@@ -73,30 +74,57 @@ export const garmentRouter = {
     .query(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
 
-      const garments = await ctx.prisma.garment.findMany({
-        where: {
-          ...(input.includePublic
-            ? { OR: [{ userId }, { isPublic: true }] }
-            : { userId }),
-          isActive: true,
-          ...(input.category && { category: input.category }),
-          ...(input.brand && { brand: input.brand }),
-          ...(input.tags?.length && { tags: { hasSome: input.tags } }),
-          ...(input.colors?.length && { colors: { hasSome: input.colors } }),
-          ...(input.minPrice !== undefined && {
-            price: { gte: input.minPrice },
-          }),
-          ...(input.maxPrice !== undefined && {
-            price: { lte: input.maxPrice },
-          }),
-        },
-        include: { image: true },
-        orderBy: { createdAt: "desc" },
+      const conditions: SQL[] = [eq(garment.isActive, true)];
+
+      if (input.includePublic) {
+        const visibility = or(
+          eq(garment.userId, userId),
+          eq(garment.isPublic, true)
+        );
+        if (visibility) {
+          conditions.push(visibility);
+        }
+      } else {
+        conditions.push(eq(garment.userId, userId));
+      }
+
+      if (input.category) {
+        conditions.push(eq(garment.category, input.category));
+      }
+      if (input.brand) {
+        conditions.push(eq(garment.brand, input.brand));
+      }
+      if (input.tags?.length) {
+        conditions.push(sql`${garment.tags} && ${input.tags}`);
+      }
+      if (input.colors?.length) {
+        conditions.push(sql`${garment.colors} && ${input.colors}`);
+      }
+      if (input.minPrice !== undefined) {
+        conditions.push(gte(garment.price, input.minPrice));
+      }
+      if (input.maxPrice !== undefined) {
+        conditions.push(lte(garment.price, input.maxPrice));
+      }
+
+      const whereClause = and(...conditions);
+      if (!whereClause) {
+        return [];
+      }
+
+      const garments = await ctx.db.query.garment.findMany({
+        where: whereClause,
+        with: { image: true },
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
       });
 
-      return Promise.all(
+      return await Promise.all(
         garments.map(async (g) => ({
           ...g,
+          colors: g.colors ?? [],
+          sizes: g.sizes ?? [],
+          tags: g.tags ?? [],
+          metadata: g.metadata ?? {},
           imageUrl: await getGarmentImageUrl(g.image.key),
           isOwner: g.userId === userId,
         }))
@@ -106,22 +134,42 @@ export const garmentRouter = {
   publicList: publicProcedure
     .input(apiGarmentListFilters.omit({ includePublic: true }))
     .query(async ({ input, ctx }) => {
-      const garments = await ctx.prisma.garment.findMany({
-        where: {
-          isPublic: true,
-          isActive: true,
-          ...(input.category && { category: input.category }),
-          ...(input.brand && { brand: input.brand }),
-          ...(input.tags?.length && { tags: { hasSome: input.tags } }),
-          ...(input.colors?.length && { colors: { hasSome: input.colors } }),
-        },
-        include: { image: true },
-        orderBy: { createdAt: "desc" },
+      const conditions: SQL[] = [
+        eq(garment.isPublic, true),
+        eq(garment.isActive, true),
+      ];
+
+      if (input.category) {
+        conditions.push(eq(garment.category, input.category));
+      }
+      if (input.brand) {
+        conditions.push(eq(garment.brand, input.brand));
+      }
+      if (input.tags?.length) {
+        conditions.push(sql`${garment.tags} && ${input.tags}`);
+      }
+      if (input.colors?.length) {
+        conditions.push(sql`${garment.colors} && ${input.colors}`);
+      }
+
+      const whereClause = and(...conditions);
+      if (!whereClause) {
+        return [];
+      }
+
+      const garments = await ctx.db.query.garment.findMany({
+        where: whereClause,
+        with: { image: true },
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
       });
 
-      return Promise.all(
+      return await Promise.all(
         garments.map(async (g) => ({
           ...g,
+          colors: g.colors ?? [],
+          sizes: g.sizes ?? [],
+          tags: g.tags ?? [],
+          metadata: g.metadata ?? {},
           imageUrl: await getGarmentImageUrl(g.image.key),
         }))
       );
@@ -131,22 +179,27 @@ export const garmentRouter = {
     const errors = createErrors(ctx.i18n);
     const userId = ctx.session.user.id;
 
-    const garment = await ctx.prisma.garment.findFirst({
-      where: {
-        id: input.id,
-        OR: [{ userId }, { isPublic: true }],
-      },
-      include: { image: true, mask: true },
+    const garmentData = await ctx.db.query.garment.findFirst({
+      where: (t, { and: andOp, eq: eqOp, or: orOp }) =>
+        andOp(
+          eqOp(t.id, input.id),
+          orOp(eqOp(t.userId, userId), eqOp(t.isPublic, true))
+        ),
+      with: { image: true, mask: true },
     });
 
-    if (!garment) {
+    if (!garmentData) {
       throw errors.garmentNotFound();
     }
 
     return {
-      ...garment,
-      imageUrl: await getGarmentImageUrl(garment.image.key),
-      isOwner: garment.userId === userId,
+      ...garmentData,
+      colors: garmentData.colors ?? [],
+      sizes: garmentData.sizes ?? [],
+      tags: garmentData.tags ?? [],
+      metadata: garmentData.metadata ?? {},
+      imageUrl: await getGarmentImageUrl(garmentData.image.key),
+      isOwner: garmentData.userId === userId,
     };
   }),
 
@@ -156,21 +209,21 @@ export const garmentRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const file = input.get("file");
+      const uploadedFile = input.get("file");
       const preUploadedImageId = toOptionalString(input.get("imageId"));
 
-      if (!(preUploadedImageId || file instanceof File)) {
+      if (!(preUploadedImageId || uploadedFile instanceof File)) {
         throw errors.invalidGarmentImage();
       }
 
-      return await ctx.prisma.$transaction(async (tx) => {
+      return await ctx.db.transaction(async (tx) => {
         let imageId = preUploadedImageId;
 
-        if (!imageId && file instanceof File) {
+        if (!imageId && uploadedFile instanceof File) {
           const uploaded = await uploadFileToS3({
-            file,
+            file: uploadedFile,
             userId,
-            prisma: tx,
+            db: tx,
             prefix: "garments",
             allowedMimeTypes: IMAGE_TYPE_REGEX,
           });
@@ -195,14 +248,17 @@ export const garmentRouter = {
           isPublic: toBoolean(input.get("isPublic"), false),
         });
 
-        const garment = await tx.garment.create({
-          data: {
+        const [garmentData] = await tx
+          .insert(garment)
+          .values({
+            id: createId(),
             ...parsed,
             userId,
-          },
-        });
+            updatedAt: new Date(),
+          })
+          .returning();
 
-        return garment;
+        return garmentData;
       });
     }),
 
@@ -217,11 +273,12 @@ export const garmentRouter = {
         throw errors.invalidInput();
       }
 
-      const file = input.get("file");
+      const uploadedFile = input.get("file");
 
-      return await ctx.prisma.$transaction(async (tx) => {
-        const existing = await tx.garment.findFirst({
-          where: { id, userId },
+      return await ctx.db.transaction(async (tx) => {
+        const existing = await tx.query.garment.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, id), eqOp(t.userId, userId)),
         });
 
         if (!existing) {
@@ -230,11 +287,11 @@ export const garmentRouter = {
 
         let imageId = existing.imageId;
 
-        if (file instanceof File) {
+        if (uploadedFile instanceof File) {
           const uploaded = await uploadFileToS3({
-            file,
+            file: uploadedFile,
             userId,
-            prisma: tx,
+            db: tx,
             prefix: "garments",
             allowedMimeTypes: IMAGE_TYPE_REGEX,
           });
@@ -260,7 +317,9 @@ export const garmentRouter = {
           isPublic: toBoolean(input.get("isPublic"), existing.isPublic),
         });
 
-        const updateData: Record<string, unknown> = {};
+        const updateData: Record<string, unknown> = {
+          updatedAt: new Date(),
+        };
         if (parsed.name !== undefined) updateData.name = parsed.name;
         if (parsed.description !== undefined)
           updateData.description = parsed.description;
@@ -284,10 +343,11 @@ export const garmentRouter = {
         if (parsed.isPublic !== undefined)
           updateData.isPublic = parsed.isPublic;
 
-        const updated = await tx.garment.update({
-          where: { id },
-          data: updateData,
-        });
+        const [updated] = await tx
+          .update(garment)
+          .set(updateData)
+          .where(eq(garment.id, id))
+          .returning();
 
         return updated;
       });
@@ -299,27 +359,29 @@ export const garmentRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      // Store key for S3 cleanup after transaction
       let imageKey: string | null = null;
 
-      const deleted = await ctx.prisma.$transaction(async (tx) => {
-        const garment = await tx.garment.findFirst({
-          where: { id: input.id, userId },
-          include: { image: true },
+      const deleted = await ctx.db.transaction(async (tx) => {
+        const garmentData = await tx.query.garment.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+          with: { image: true },
         });
 
-        if (!garment) {
+        if (!garmentData) {
           throw errors.garmentNotFound();
         }
 
-        imageKey = garment.image.key;
+        imageKey = garmentData.image.key;
 
-        return await tx.garment.delete({
-          where: { id: input.id },
-        });
+        const [deletedGarment] = await tx
+          .delete(garment)
+          .where(eq(garment.id, input.id))
+          .returning();
+
+        return deletedGarment;
       });
 
-      // S3 cleanup after transaction commits (fire-and-forget)
       if (imageKey) {
         deleteGarmentAssets(imageKey).catch(() => {});
       }
@@ -333,18 +395,25 @@ export const garmentRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const garment = await ctx.prisma.garment.findFirst({
-        where: { id: input.id, userId },
+      const garmentData = await ctx.db.query.garment.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
       });
 
-      if (!garment) {
+      if (!garmentData) {
         throw errors.garmentNotFound();
       }
 
-      const updated = await ctx.prisma.garment.update({
-        where: { id: input.id },
-        data: { isPublic: !garment.isPublic },
-      });
+      const [updated] = await ctx.db
+        .update(garment)
+        .set({
+          isPublic: !garmentData.isPublic,
+          updatedAt: new Date(),
+        })
+        .where(eq(garment.id, input.id))
+        .returning({
+          isPublic: garment.isPublic,
+        });
 
       return { success: true, isPublic: updated.isPublic };
     }),
@@ -383,7 +452,7 @@ export const garmentRouter = {
           const uploaded = await uploadFileToS3({
             file,
             userId,
-            prisma: ctx.prisma,
+            db: ctx.db,
             prefix: "garments",
             allowedMimeTypes: IMAGE_TYPE_REGEX,
           });
@@ -404,18 +473,23 @@ export const garmentRouter = {
   categories: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const counts = await ctx.prisma.garment.groupBy({
-      by: ["category"],
-      where: {
-        OR: [{ userId }, { isPublic: true }],
-        isActive: true,
-      },
-      _count: { category: true },
-    });
+    const counts = await ctx.db
+      .select({
+        category: garment.category,
+        count: sql<number>`count(*)`,
+      })
+      .from(garment)
+      .where(
+        and(
+          or(eq(garment.userId, userId), eq(garment.isPublic, true)),
+          eq(garment.isActive, true)
+        )
+      )
+      .groupBy(garment.category);
 
     return counts.map((c) => ({
       category: c.category,
-      count: c._count.category,
+      count: Number(c.count),
     }));
   }),
 } satisfies TRPCRouterRecord;

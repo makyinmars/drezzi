@@ -36,6 +36,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTRPC } from "@/trpc/react";
+import type { RouterOutput } from "@/trpc/utils";
 
 const Route = getRouteApi("/(authed)/try-on/$tryOnId");
 
@@ -49,7 +50,7 @@ const TryOnDetailScreen = () => {
   const tryOnQuery = useSuspenseQuery(
     trpc.tryOn.byId.queryOptions({ id: tryOnId })
   );
-  const tryOn = tryOnQuery.data;
+  const tryOn = tryOnQuery.data as RouterOutput["tryOn"]["byId"];
 
   const toggleFavoriteMutation = useMutation(
     trpc.tryOn.toggleFavorite.mutationOptions({

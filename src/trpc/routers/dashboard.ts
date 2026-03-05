@@ -1,10 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-
+import { and, eq, sql } from "drizzle-orm";
+import { bodyProfile, garment, lookbook, tryOn } from "@/db/schema";
 import { getGarmentImageUrl } from "@/services/garment";
 import { getProfilePhotoUrl } from "@/services/profile";
 import { getTryOnResultUrl } from "@/services/try-on";
-
 import { protectedProcedure } from "../init";
+
+async function countValue(query: Promise<Array<{ count: number }>>) {
+  const rows = await query;
+  return Number(rows[0]?.count ?? 0);
+}
 
 export const dashboardRouter = {
   stats: protectedProcedure.query(async ({ ctx }) => {
@@ -21,15 +26,60 @@ export const dashboardRouter = {
       totalGarments,
       totalProfiles,
     ] = await Promise.all([
-      ctx.prisma.tryOn.count({ where: { userId } }),
-      ctx.prisma.tryOn.count({ where: { userId, status: "completed" } }),
-      ctx.prisma.tryOn.count({ where: { userId, status: "pending" } }),
-      ctx.prisma.tryOn.count({ where: { userId, status: "processing" } }),
-      ctx.prisma.tryOn.count({ where: { userId, status: "failed" } }),
-      ctx.prisma.lookbook.count({ where: { userId } }),
-      ctx.prisma.lookbook.count({ where: { userId, isPublic: true } }),
-      ctx.prisma.garment.count({ where: { userId } }),
-      ctx.prisma.bodyProfile.count({ where: { userId } }),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tryOn)
+          .where(eq(tryOn.userId, userId))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tryOn)
+          .where(and(eq(tryOn.userId, userId), eq(tryOn.status, "completed")))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tryOn)
+          .where(and(eq(tryOn.userId, userId), eq(tryOn.status, "pending")))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tryOn)
+          .where(and(eq(tryOn.userId, userId), eq(tryOn.status, "processing")))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(tryOn)
+          .where(and(eq(tryOn.userId, userId), eq(tryOn.status, "failed")))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(lookbook)
+          .where(eq(lookbook.userId, userId))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(lookbook)
+          .where(and(eq(lookbook.userId, userId), eq(lookbook.isPublic, true)))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(garment)
+          .where(eq(garment.userId, userId))
+      ),
+      countValue(
+        ctx.db
+          .select({ count: sql<number>`count(*)` })
+          .from(bodyProfile)
+          .where(eq(bodyProfile.userId, userId))
+      ),
     ]);
 
     const successRate =
@@ -52,18 +102,26 @@ export const dashboardRouter = {
   recentActivity: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const tryOns = await ctx.prisma.tryOn.findMany({
-      where: { userId },
-      include: {
+    const tryOns = await ctx.db.query.tryOn.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: {
         result: true,
-        bodyProfile: { include: { photo: true } },
-        garment: { include: { image: true } },
+        bodyProfile: {
+          with: {
+            photo: true,
+          },
+        },
+        garment: {
+          with: {
+            image: true,
+          },
+        },
       },
-      orderBy: { createdAt: "desc" },
-      take: 5,
+      orderBy: (t, { desc }) => [desc(t.createdAt)],
+      limit: 5,
     });
 
-    return Promise.all(
+    return await Promise.all(
       tryOns.map(async (t) => ({
         id: t.id,
         status: t.status,

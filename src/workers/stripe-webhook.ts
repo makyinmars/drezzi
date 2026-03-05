@@ -2,10 +2,12 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
 } from "aws-lambda";
+import { and, eq } from "drizzle-orm";
 import { Resource } from "sst";
 import Stripe from "stripe";
+import { payment } from "@/db/schema";
+import { db } from "@/lib/db";
 import { syncStripeSessionToDB } from "@/lib/payments/checkout";
-import { prisma } from "@/lib/prisma";
 
 export async function handler(
   event: APIGatewayProxyEventV2
@@ -39,7 +41,7 @@ export async function handler(
     switch (webhookEvent.type) {
       case "checkout.session.completed": {
         const session = webhookEvent.data.object as Stripe.Checkout.Session;
-        const result = await syncStripeSessionToDB(prisma, session.id);
+        const result = await syncStripeSessionToDB(db, session.id);
         console.log(
           `Checkout session ${session.id} synced:`,
           result.alreadyProcessed ? "already processed" : "newly processed"
@@ -49,26 +51,37 @@ export async function handler(
 
       case "checkout.session.expired": {
         const session = webhookEvent.data.object as Stripe.Checkout.Session;
-        const deleted = await prisma.payment.deleteMany({
-          where: {
-            stripeCheckoutSessionId: session.id,
-            status: "PENDING",
-          },
-        });
+        const deleted = await db
+          .delete(payment)
+          .where(
+            and(
+              eq(payment.stripeCheckoutSessionId, session.id),
+              eq(payment.status, "PENDING")
+            )
+          )
+          .returning({
+            id: payment.id,
+          });
         console.log(
-          `Expired checkout session ${session.id}: deleted ${deleted.count} pending payments`
+          `Expired checkout session ${session.id}: deleted ${deleted.length} pending payments`
         );
         break;
       }
 
       case "payment_intent.payment_failed": {
         const intent = webhookEvent.data.object as Stripe.PaymentIntent;
-        const updated = await prisma.payment.updateMany({
-          where: { stripePaymentIntentId: intent.id },
-          data: { status: "FAILED" },
-        });
+        const updated = await db
+          .update(payment)
+          .set({
+            status: "FAILED",
+            updatedAt: new Date(),
+          })
+          .where(eq(payment.stripePaymentIntentId, intent.id))
+          .returning({
+            id: payment.id,
+          });
         console.log(
-          `Payment intent ${intent.id} failed: updated ${updated.count} payments`
+          `Payment intent ${intent.id} failed: updated ${updated.length} payments`
         );
         break;
       }

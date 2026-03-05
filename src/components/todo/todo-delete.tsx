@@ -13,8 +13,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import type { Todo } from "@/db/types";
 import { useTRPC } from "@/trpc/react";
-import type { Todo } from "../../../generated/prisma/client";
 
 type TodoDeleteProps = {
   todo: Todo;

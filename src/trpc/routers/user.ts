@@ -1,6 +1,8 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import type { TRPCRouterRecord } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import { Resource } from "sst";
+import { user } from "@/db/schema";
 import { s3 } from "@/lib/s3";
 import { protectedProcedure } from "../init";
 
@@ -8,13 +10,11 @@ export const userRouter = {
   deleteAccount: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    // Collect all S3 keys for user's files
     const keys: string[] = [];
 
-    // Get profile photo keys
-    const profiles = await ctx.prisma.bodyProfile.findMany({
-      where: { userId },
-      include: { photo: true, enhancedPhoto: true },
+    const profiles = await ctx.db.query.bodyProfile.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: { photo: true, enhancedPhoto: true },
     });
 
     for (const profile of profiles) {
@@ -24,49 +24,41 @@ export const userRouter = {
       }
     }
 
-    // Get garment image keys
-    const garments = await ctx.prisma.garment.findMany({
-      where: { userId },
-      include: { image: true, mask: true },
+    const garments = await ctx.db.query.garment.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: { image: true, mask: true },
     });
 
-    for (const garment of garments) {
-      keys.push(garment.image.key);
-      if (garment.mask) {
-        keys.push(garment.mask.key);
+    for (const garmentData of garments) {
+      keys.push(garmentData.image.key);
+      if (garmentData.mask) {
+        keys.push(garmentData.mask.key);
       }
     }
 
-    // Get try-on result keys
-    const tryOns = await ctx.prisma.tryOn.findMany({
-      where: { userId },
-      include: { frontPhoto: true, backPhoto: true, result: true },
+    const tryOns = await ctx.db.query.tryOn.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: { frontPhoto: true, backPhoto: true, result: true },
     });
 
-    for (const tryOn of tryOns) {
-      if (tryOn.frontPhoto) keys.push(tryOn.frontPhoto.key);
-      if (tryOn.backPhoto) keys.push(tryOn.backPhoto.key);
-      if (tryOn.result) keys.push(tryOn.result.key);
+    for (const tryOnData of tryOns) {
+      if (tryOnData.frontPhoto) keys.push(tryOnData.frontPhoto.key);
+      if (tryOnData.backPhoto) keys.push(tryOnData.backPhoto.key);
+      if (tryOnData.result) keys.push(tryOnData.result.key);
     }
 
-    // Get lookbook cover keys
-    const lookbooks = await ctx.prisma.lookbook.findMany({
-      where: { userId },
-      include: { cover: true },
+    const lookbooks = await ctx.db.query.lookbook.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: { cover: true },
     });
 
-    for (const lookbook of lookbooks) {
-      if (lookbook.cover) keys.push(lookbook.cover.key);
+    for (const lookbookData of lookbooks) {
+      if (lookbookData.cover) keys.push(lookbookData.cover.key);
     }
 
-    // Delete user from database (cascades to all related records)
-    await ctx.prisma.user.delete({
-      where: { id: userId },
-    });
+    await ctx.db.delete(user).where(eq(user.id, userId));
 
-    // Batch delete S3 objects (fire-and-forget, after DB deletion)
     if (keys.length > 0) {
-      // S3 DeleteObjects accepts max 1000 keys per request
       const chunks: string[][] = [];
       for (let i = 0; i < keys.length; i += 1000) {
         chunks.push(keys.slice(i, i + 1000));
@@ -82,7 +74,7 @@ export const userRouter = {
         });
 
         s3.send(command).catch(() => {
-          // Log but don't fail - user is already deleted
+          // User is already deleted; object cleanup can fail silently.
         });
       }
     }

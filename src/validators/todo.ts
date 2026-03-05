@@ -1,5 +1,5 @@
-import { TodoStatus } from "generated/prisma/browser";
 import z from "zod/v4";
+import { TodoStatus } from "@/db/enums";
 
 export const apiTodoCreate = z.object({
   text: z.string().min(1),

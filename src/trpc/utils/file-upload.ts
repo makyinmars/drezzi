@@ -1,19 +1,15 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { TRPCError } from "@trpc/server";
 import { Resource } from "sst";
+import { file } from "@/db/schema";
+import type { Db, DbTx } from "@/lib/db";
+import { createId } from "@/lib/id";
 import { s3 } from "@/lib/s3";
-import type { PrismaClient } from "../../../generated/prisma/client";
-
-// Type that works for both PrismaClient and transaction client
-type PrismaTransactionClient = Omit<
-  PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
->;
 
 type UploadParams = {
   file: File | Blob;
   userId: string;
-  prisma: PrismaClient | PrismaTransactionClient;
+  db: Db | DbTx;
   prefix: string;
   maxSizeBytes?: number;
   allowedMimeTypes?: RegExp;
@@ -28,52 +24,54 @@ async function toUint8Array(file: File | Blob) {
 }
 
 export async function uploadFileToS3({
-  file,
+  file: rawFile,
   userId,
-  prisma,
+  db,
   prefix,
   maxSizeBytes = DEFAULT_MAX_SIZE,
   allowedMimeTypes = DEFAULT_IMAGE_REGEX,
 }: UploadParams) {
-  if (!(file.type && allowedMimeTypes.test(file.type))) {
+  if (!(rawFile.type && allowedMimeTypes.test(rawFile.type))) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "Invalid file type",
     });
   }
 
-  if (file.size > maxSizeBytes) {
+  if (rawFile.size > maxSizeBytes) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "File is too large",
     });
   }
 
-  const extension = file.type.split("/").at(1) ?? "bin";
+  const extension = rawFile.type.split("/").at(1) ?? "bin";
   const key = `${prefix}/${userId}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
 
-  const body = await toUint8Array(file);
+  const body = await toUint8Array(rawFile);
 
   await s3.send(
     new PutObjectCommand({
       Bucket: Resource.MediaBucket.name,
       Key: key,
       Body: body,
-      ContentType: file.type,
+      ContentType: rawFile.type,
       ContentLength: body.byteLength,
     })
   );
 
-  const createdFile = await prisma.file.create({
-    data: {
+  const [createdFile] = await db
+    .insert(file)
+    .values({
+      id: createId(),
       key,
       bucket: "media",
-      filename: file instanceof File ? file.name : undefined,
-      mimeType: file.type,
-      size: file.size,
+      filename: rawFile instanceof File ? rawFile.name : undefined,
+      mimeType: rawFile.type,
+      size: rawFile.size,
       uploadedBy: userId,
-    },
-  });
+    })
+    .returning();
 
   return createdFile;
 }

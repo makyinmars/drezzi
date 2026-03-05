@@ -3,15 +3,16 @@ import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import z from "zod/v4";
 
 import LoadingState from "@/components/common/loading-state";
+import type { RouterOutput } from "@/trpc/utils";
 
 export const Route = createFileRoute("/(authed)/garment/$garmentId")({
   parseParams: (params) => ({
     garmentId: z.cuid("Invalid garment ID format").parse(params.garmentId),
   }),
   loader: async ({ context, params }) => {
-    const garment = await context.queryClient.ensureQueryData(
+    const garment = (await context.queryClient.ensureQueryData(
       context.trpc.garment.byId.queryOptions({ id: params.garmentId })
-    );
+    )) as RouterOutput["garment"]["byId"];
     return { garment };
   },
   head: ({ loaderData }) => ({

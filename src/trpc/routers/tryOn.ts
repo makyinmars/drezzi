@@ -1,6 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { and, eq, gte, lte } from "drizzle-orm";
 import z from "zod/v4";
-
+import { tryOn } from "@/db/schema";
+import { createId } from "@/lib/id";
 import { enqueueTryOnJob } from "@/lib/sqs";
 import { getGarmentImageUrl } from "@/services/garment";
 import { getProfilePhotoUrl } from "@/services/profile";
@@ -10,12 +12,50 @@ import {
   apiTryOnFilters,
   apiTryOnId,
 } from "@/validators/try-on";
-
 import { createErrors } from "../errors";
 import { protectedProcedure } from "../init";
 import type { RouterOutput } from "../utils";
 
 export type TryOnListProcedure = RouterOutput["tryOn"]["list"];
+
+type TryOnResponseItemBase = {
+  result: { key: string } | null;
+  bodyProfile: {
+    photo: {
+      key: string;
+    };
+  };
+  garment: {
+    image: {
+      key: string;
+    };
+    colors: string[] | null;
+    sizes: string[] | null;
+    tags: string[] | null;
+    metadata: Record<string, object> | null;
+  };
+};
+
+async function toTryOnResponse<T extends TryOnResponseItemBase>(items: T[]) {
+  return await Promise.all(
+    items.map(async (t) => ({
+      ...t,
+      resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
+      bodyProfile: {
+        ...t.bodyProfile,
+        photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
+      },
+      garment: {
+        ...t.garment,
+        colors: t.garment.colors ?? [],
+        sizes: t.garment.sizes ?? [],
+        tags: t.garment.tags ?? [],
+        metadata: t.garment.metadata ?? {},
+        imageUrl: await getGarmentImageUrl(t.garment.image.key),
+      },
+    }))
+  );
+}
 
 export const tryOnRouter = {
   list: protectedProcedure
@@ -23,76 +63,62 @@ export const tryOnRouter = {
     .query(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
 
-      const tryOns = await ctx.prisma.tryOn.findMany({
-        where: {
-          userId,
-          ...(input.status && { status: input.status }),
-          ...(input.isFavorite !== undefined && {
-            isFavorite: input.isFavorite,
-          }),
-          ...(input.garmentCategory && {
-            garment: { category: input.garmentCategory },
-          }),
-          ...(input.dateFrom && { createdAt: { gte: input.dateFrom } }),
-          ...(input.dateTo && { createdAt: { lte: input.dateTo } }),
-        },
-        include: {
+      const conditions = [eq(tryOn.userId, userId)];
+
+      if (input.status) {
+        conditions.push(eq(tryOn.status, input.status));
+      }
+      if (input.isFavorite !== undefined) {
+        conditions.push(eq(tryOn.isFavorite, input.isFavorite));
+      }
+      if (input.dateFrom) {
+        conditions.push(gte(tryOn.createdAt, input.dateFrom));
+      }
+      if (input.dateTo) {
+        conditions.push(lte(tryOn.createdAt, input.dateTo));
+      }
+
+      const tryOns = await ctx.db.query.tryOn.findMany({
+        where: and(...conditions),
+        with: {
           result: true,
-          bodyProfile: { include: { photo: true } },
-          garment: { include: { image: true } },
+          bodyProfile: { with: { photo: true } },
+          garment: { with: { image: true } },
           styleTips: true,
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: (t, { desc: descOp }) => [descOp(t.createdAt)],
       });
 
-      return Promise.all(
-        tryOns.map(async (t) => ({
-          ...t,
-          resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
-          bodyProfile: {
-            ...t.bodyProfile,
-            photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
-          },
-          garment: {
-            ...t.garment,
-            imageUrl: await getGarmentImageUrl(t.garment.image.key),
-          },
-        }))
-      );
+      const filtered =
+        input.garmentCategory !== undefined
+          ? tryOns.filter(
+              (item) => item.garment.category === input.garmentCategory
+            )
+          : tryOns;
+
+      return await toTryOnResponse(filtered);
     }),
 
   byId: protectedProcedure.input(apiTryOnId).query(async ({ input, ctx }) => {
     const errors = createErrors(ctx.i18n);
     const userId = ctx.session.user.id;
 
-    const tryOn = await ctx.prisma.tryOn.findFirst({
-      where: { id: input.id, userId },
-      include: {
+    const tryOnData = await ctx.db.query.tryOn.findFirst({
+      where: (t, { and: andOp, eq: eqOp }) =>
+        andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+      with: {
         result: true,
-        bodyProfile: { include: { photo: true } },
-        garment: { include: { image: true } },
+        bodyProfile: { with: { photo: true } },
+        garment: { with: { image: true } },
         styleTips: true,
       },
     });
 
-    if (!tryOn) {
+    if (!tryOnData) {
       throw errors.tryOnNotFound();
     }
 
-    return {
-      ...tryOn,
-      resultUrl: tryOn.result
-        ? await getTryOnResultUrl(tryOn.result.key)
-        : null,
-      bodyProfile: {
-        ...tryOn.bodyProfile,
-        photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
-      },
-      garment: {
-        ...tryOn.garment,
-        imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
-      },
-    };
+    return (await toTryOnResponse([tryOnData]))[0];
   }),
 
   create: protectedProcedure
@@ -109,74 +135,77 @@ export const tryOnRouter = {
             })
           : input;
 
-      return await ctx.prisma.$transaction(
-        async (tx) => {
-          const bodyProfile = await tx.bodyProfile.findFirst({
-            where: { id: parsed.bodyProfileId, userId },
-            include: { photo: true },
-          });
+      return await ctx.db.transaction(async (tx) => {
+        const bodyProfile = await tx.query.bodyProfile.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, parsed.bodyProfileId), eqOp(t.userId, userId)),
+          with: { photo: true },
+        });
 
-          if (!bodyProfile) {
-            throw errors.profileNotFound();
-          }
+        if (!bodyProfile) {
+          throw errors.profileNotFound();
+        }
 
-          const garment = await tx.garment.findFirst({
-            where: {
-              id: parsed.garmentId,
-              OR: [{ userId }, { isPublic: true }],
-            },
-            include: { image: true },
-          });
+        const garmentData = await tx.query.garment.findFirst({
+          where: (t, { and: andOp, eq: eqOp, or: orOp }) =>
+            andOp(
+              eqOp(t.id, parsed.garmentId),
+              orOp(eqOp(t.userId, userId), eqOp(t.isPublic, true))
+            ),
+          with: { image: true },
+        });
 
-          if (!garment) {
-            throw errors.garmentNotFound();
-          }
+        if (!garmentData) {
+          throw errors.garmentNotFound();
+        }
 
-          // Create with processing status directly
-          const tryOn = await tx.tryOn.create({
-            data: {
-              userId,
-              bodyProfileId: parsed.bodyProfileId,
-              garmentId: parsed.garmentId,
-              status: "processing",
-            },
-            include: {
-              bodyProfile: { include: { photo: true } },
-              garment: { include: { image: true } },
-            },
-          });
-
-          // Enqueue - if this fails, transaction rolls back
-          const jobId = await enqueueTryOnJob({
-            tryOnId: tryOn.id,
+        const [created] = await tx
+          .insert(tryOn)
+          .values({
+            id: createId(),
             userId,
-            bodyImageUrl: bodyProfile.photo.key,
-            garmentImageUrl: garment.image.key,
-          });
+            bodyProfileId: parsed.bodyProfileId,
+            garmentId: parsed.garmentId,
+            status: "processing",
+            updatedAt: new Date(),
+          })
+          .returning();
 
-          // Update with jobId
-          await tx.tryOn.update({
-            where: { id: tryOn.id },
-            data: { jobId },
-          });
+        const jobId = await enqueueTryOnJob({
+          tryOnId: created.id,
+          userId,
+          bodyImageUrl: bodyProfile.photo.key,
+          garmentImageUrl: garmentData.image.key,
+        });
 
-          return {
-            ...tryOn,
+        const [updated] = await tx
+          .update(tryOn)
+          .set({
             jobId,
-            status: "processing" as const,
-            resultUrl: null,
-            bodyProfile: {
-              ...tryOn.bodyProfile,
-              photoUrl: await getProfilePhotoUrl(tryOn.bodyProfile.photo.key),
-            },
-            garment: {
-              ...tryOn.garment,
-              imageUrl: await getGarmentImageUrl(tryOn.garment.image.key),
-            },
-          };
-        },
-        { timeout: 15000 }
-      );
+            updatedAt: new Date(),
+          })
+          .where(eq(tryOn.id, created.id))
+          .returning();
+
+        const fullTryOn = await tx.query.tryOn.findFirst({
+          where: (t, { eq: eqOp }) => eqOp(t.id, updated.id),
+          with: {
+            bodyProfile: { with: { photo: true } },
+            garment: { with: { image: true } },
+            result: true,
+          },
+        });
+
+        if (!fullTryOn) {
+          throw errors.tryOnCreateFailed();
+        }
+
+        return {
+          ...(await toTryOnResponse([fullTryOn]))[0],
+          jobId,
+          status: "processing" as const,
+        };
+      });
     }),
 
   toggleFavorite: protectedProcedure
@@ -185,18 +214,25 @@ export const tryOnRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const tryOn = await ctx.prisma.tryOn.findFirst({
-        where: { id: input.id, userId },
+      const tryOnData = await ctx.db.query.tryOn.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
       });
 
-      if (!tryOn) {
+      if (!tryOnData) {
         throw errors.tryOnNotFound();
       }
 
-      const updated = await ctx.prisma.tryOn.update({
-        where: { id: input.id },
-        data: { isFavorite: !tryOn.isFavorite },
-      });
+      const [updated] = await ctx.db
+        .update(tryOn)
+        .set({
+          isFavorite: !tryOnData.isFavorite,
+          updatedAt: new Date(),
+        })
+        .where(eq(tryOn.id, input.id))
+        .returning({
+          isFavorite: tryOn.isFavorite,
+        });
 
       return { success: true, isFavorite: updated.isFavorite };
     }),
@@ -207,27 +243,29 @@ export const tryOnRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      // Store key for S3 cleanup after transaction
       let resultKey: string | null = null;
 
-      const deleted = await ctx.prisma.$transaction(async (tx) => {
-        const tryOn = await tx.tryOn.findFirst({
-          where: { id: input.id, userId },
-          include: { result: true },
+      const deleted = await ctx.db.transaction(async (tx) => {
+        const tryOnData = await tx.query.tryOn.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+          with: { result: true },
         });
 
-        if (!tryOn) {
+        if (!tryOnData) {
           throw errors.tryOnNotFound();
         }
 
-        resultKey = tryOn.result?.key ?? null;
+        resultKey = tryOnData.result?.key ?? null;
 
-        return await tx.tryOn.delete({
-          where: { id: input.id },
-        });
+        const [deletedTryOn] = await tx
+          .delete(tryOn)
+          .where(eq(tryOn.id, input.id))
+          .returning();
+
+        return deletedTryOn;
       });
 
-      // S3 cleanup after transaction commits (fire-and-forget)
       if (resultKey) {
         deleteTryOnAssets(resultKey).catch(() => {});
       }
@@ -241,106 +279,82 @@ export const tryOnRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      return await ctx.prisma.$transaction(
-        async (tx) => {
-          const tryOn = await tx.tryOn.findFirst({
-            where: { id: input.id, userId, status: "failed" },
-            include: {
-              bodyProfile: { include: { photo: true } },
-              garment: { include: { image: true } },
-            },
-          });
+      return await ctx.db.transaction(async (tx) => {
+        const tryOnData = await tx.query.tryOn.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(
+              eqOp(t.id, input.id),
+              eqOp(t.userId, userId),
+              eqOp(t.status, "failed")
+            ),
+          with: {
+            bodyProfile: { with: { photo: true } },
+            garment: { with: { image: true } },
+          },
+        });
 
-          if (!tryOn) {
-            throw errors.tryOnNotFound();
-          }
+        if (!tryOnData) {
+          throw errors.tryOnNotFound();
+        }
 
-          // Enqueue - if this fails, transaction rolls back
-          const jobId = await enqueueTryOnJob({
-            tryOnId: tryOn.id,
-            userId,
-            bodyImageUrl: tryOn.bodyProfile.photo.key,
-            garmentImageUrl: tryOn.garment.image.key,
-          });
+        const jobId = await enqueueTryOnJob({
+          tryOnId: tryOnData.id,
+          userId,
+          bodyImageUrl: tryOnData.bodyProfile.photo.key,
+          garmentImageUrl: tryOnData.garment.image.key,
+        });
 
-          const updated = await tx.tryOn.update({
-            where: { id: tryOn.id },
-            data: {
-              jobId,
-              status: "processing",
-              errorMessage: null,
-            },
-          });
+        const [updated] = await tx
+          .update(tryOn)
+          .set({
+            jobId,
+            status: "processing",
+            errorMessage: null,
+            updatedAt: new Date(),
+          })
+          .where(eq(tryOn.id, tryOnData.id))
+          .returning();
 
-          return updated;
-        },
-        { timeout: 15000 }
-      );
+        return updated;
+      });
     }),
 
   favorites: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const tryOns = await ctx.prisma.tryOn.findMany({
-      where: {
-        userId,
-        isFavorite: true,
-        status: "completed",
-      },
-      include: {
+    const tryOns = await ctx.db.query.tryOn.findMany({
+      where: (t, { and: andOp, eq: eqOp }) =>
+        andOp(
+          eqOp(t.userId, userId),
+          eqOp(t.isFavorite, true),
+          eqOp(t.status, "completed")
+        ),
+      with: {
         result: true,
-        bodyProfile: { include: { photo: true } },
-        garment: { include: { image: true } },
+        bodyProfile: { with: { photo: true } },
+        garment: { with: { image: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: (t, { desc: descOp }) => [descOp(t.createdAt)],
     });
 
-    return Promise.all(
-      tryOns.map(async (t) => ({
-        ...t,
-        resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
-        bodyProfile: {
-          ...t.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
-        },
-        garment: {
-          ...t.garment,
-          imageUrl: await getGarmentImageUrl(t.garment.image.key),
-        },
-      }))
-    );
+    return await toTryOnResponse(tryOns);
   }),
 
   recent: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const tryOns = await ctx.prisma.tryOn.findMany({
-      where: {
-        userId,
-        status: "completed",
-      },
-      include: {
+    const tryOns = await ctx.db.query.tryOn.findMany({
+      where: (t, { and: andOp, eq: eqOp }) =>
+        andOp(eqOp(t.userId, userId), eqOp(t.status, "completed")),
+      with: {
         result: true,
-        bodyProfile: { include: { photo: true } },
-        garment: { include: { image: true } },
+        bodyProfile: { with: { photo: true } },
+        garment: { with: { image: true } },
       },
-      orderBy: { completedAt: "desc" },
-      take: 10,
+      orderBy: (t, { desc: descOp }) => [descOp(t.completedAt)],
+      limit: 10,
     });
 
-    return Promise.all(
-      tryOns.map(async (t) => ({
-        ...t,
-        resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
-        bodyProfile: {
-          ...t.bodyProfile,
-          photoUrl: await getProfilePhotoUrl(t.bodyProfile.photo.key),
-        },
-        garment: {
-          ...t.garment,
-          imageUrl: await getGarmentImageUrl(t.garment.image.key),
-        },
-      }))
-    );
+    return await toTryOnResponse(tryOns);
   }),
 } satisfies TRPCRouterRecord;

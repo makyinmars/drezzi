@@ -17,6 +17,7 @@ export function createMockContext(
   const userEmail = options.userEmail ?? "test@example.com";
 
   return {
+    db: null,
     prisma,
     i18n: undefined,
     session: authenticated

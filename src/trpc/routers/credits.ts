@@ -1,5 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
+import { and, eq } from "drizzle-orm";
+import { payment } from "@/db/schema";
 import {
   createCheckoutSession,
   syncStripeSessionToDB,
@@ -19,7 +21,7 @@ export const creditsRouter = {
   }),
 
   getBalance: protectedProcedure.query(async ({ ctx }) => {
-    const wallet = await getOrCreateWallet(ctx.prisma, ctx.session.user.id);
+    const wallet = await getOrCreateWallet(ctx.db, ctx.session.user.id);
     return {
       balance: wallet.balance,
       totalPurchased: wallet.totalPurchased,
@@ -31,27 +33,78 @@ export const creditsRouter = {
   getHistory: protectedProcedure
     .input(apiHistoryFilters)
     .query(async ({ ctx, input }) => {
-      const wallet = await getOrCreateWallet(ctx.prisma, ctx.session.user.id);
+      const wallet = await getOrCreateWallet(ctx.db, ctx.session.user.id);
+      const cursor = input.cursor ?? undefined;
 
-      const transactions = await ctx.prisma.creditTransaction.findMany({
-        where: { walletId: wallet.id },
-        orderBy: { createdAt: "desc" },
-        take: input.limit + 1,
-        ...(input.cursor && {
-          cursor: { id: input.cursor },
-          skip: 1,
-        }),
-        include: {
-          payment: {
-            select: { packageName: true },
-          },
-          tryOn: {
-            select: {
-              garment: { select: { name: true } },
+      const cursorRow = cursor
+        ? await ctx.db.query.creditTransaction.findFirst({
+            where: (t, { eq: eqOp }) => eqOp(t.id, cursor),
+            columns: {
+              id: true,
+              createdAt: true,
             },
-          },
-        },
-      });
+          })
+        : undefined;
+
+      const transactions = cursorRow
+        ? await ctx.db.query.creditTransaction.findMany({
+            where: (t, { and: andOp, eq: eqOp, lt: ltOp, or: orOp }) =>
+              andOp(
+                eqOp(t.walletId, wallet.id),
+                orOp(
+                  ltOp(t.createdAt, cursorRow.createdAt),
+                  andOp(
+                    eqOp(t.createdAt, cursorRow.createdAt),
+                    ltOp(t.id, cursorRow.id)
+                  )
+                )
+              ),
+            orderBy: (t, { desc: descOp }) => [
+              descOp(t.createdAt),
+              descOp(t.id),
+            ],
+            limit: input.limit + 1,
+            with: {
+              payment: {
+                columns: {
+                  packageName: true,
+                },
+              },
+              tryOn: {
+                with: {
+                  garment: {
+                    columns: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          })
+        : await ctx.db.query.creditTransaction.findMany({
+            where: (t, { eq: eqOp }) => eqOp(t.walletId, wallet.id),
+            orderBy: (t, { desc: descOp }) => [
+              descOp(t.createdAt),
+              descOp(t.id),
+            ],
+            limit: input.limit + 1,
+            with: {
+              payment: {
+                columns: {
+                  packageName: true,
+                },
+              },
+              tryOn: {
+                with: {
+                  garment: {
+                    columns: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
 
       const hasMore = transactions.length > input.limit;
       const items = hasMore ? transactions.slice(0, -1) : transactions;
@@ -75,15 +128,45 @@ export const creditsRouter = {
   getPurchaseHistory: protectedProcedure
     .input(apiHistoryFilters)
     .query(async ({ ctx, input }) => {
-      const payments = await ctx.prisma.payment.findMany({
-        where: { userId: ctx.session.user.id },
-        orderBy: { createdAt: "desc" },
-        take: input.limit + 1,
-        ...(input.cursor && {
-          cursor: { id: input.cursor },
-          skip: 1,
-        }),
-      });
+      const cursor = input.cursor ?? undefined;
+
+      const cursorRow = cursor
+        ? await ctx.db.query.payment.findFirst({
+            where: (t, { eq: eqOp }) => eqOp(t.id, cursor),
+            columns: {
+              id: true,
+              createdAt: true,
+            },
+          })
+        : undefined;
+
+      const payments = cursorRow
+        ? await ctx.db.query.payment.findMany({
+            where: (t, { and: andOp, eq: eqOp, lt: ltOp, or: orOp }) =>
+              andOp(
+                eqOp(t.userId, ctx.session.user.id),
+                orOp(
+                  ltOp(t.createdAt, cursorRow.createdAt),
+                  andOp(
+                    eqOp(t.createdAt, cursorRow.createdAt),
+                    ltOp(t.id, cursorRow.id)
+                  )
+                )
+              ),
+            orderBy: (t, { desc: descOp }) => [
+              descOp(t.createdAt),
+              descOp(t.id),
+            ],
+            limit: input.limit + 1,
+          })
+        : await ctx.db.query.payment.findMany({
+            where: (t, { eq: eqOp }) => eqOp(t.userId, ctx.session.user.id),
+            orderBy: (t, { desc: descOp }) => [
+              descOp(t.createdAt),
+              descOp(t.id),
+            ],
+            limit: input.limit + 1,
+          });
 
       const hasMore = payments.length > input.limit;
       const items = hasMore ? payments.slice(0, -1) : payments;
@@ -117,7 +200,7 @@ export const creditsRouter = {
       const publicUrl = process.env.PUBLIC_URL ?? "http://localhost:3000";
 
       const result = await createCheckoutSession({
-        prisma: ctx.prisma,
+        db: ctx.db,
         userId: ctx.session.user.id,
         userEmail: ctx.session.user.email,
         packageId: input.packageId,
@@ -134,7 +217,7 @@ export const creditsRouter = {
   syncCheckoutSession: protectedProcedure
     .input(apiSessionId)
     .mutation(async ({ ctx, input }) => {
-      const result = await syncStripeSessionToDB(ctx.prisma, input.sessionId);
+      const result = await syncStripeSessionToDB(ctx.db, input.sessionId);
       return {
         success: !result.alreadyProcessed,
         alreadyProcessed: result.alreadyProcessed,
@@ -145,13 +228,19 @@ export const creditsRouter = {
   cancelCheckout: protectedProcedure
     .input(apiSessionId)
     .mutation(async ({ ctx, input }) => {
-      const deleted = await ctx.prisma.payment.deleteMany({
-        where: {
-          userId: ctx.session.user.id,
-          stripeCheckoutSessionId: input.sessionId,
-          status: "PENDING",
-        },
-      });
-      return { deleted: deleted.count > 0 };
+      const deleted = await ctx.db
+        .delete(payment)
+        .where(
+          and(
+            eq(payment.userId, ctx.session.user.id),
+            eq(payment.stripeCheckoutSessionId, input.sessionId),
+            eq(payment.status, "PENDING")
+          )
+        )
+        .returning({
+          id: payment.id,
+        });
+
+      return { deleted: deleted.length > 0 };
     }),
 } satisfies TRPCRouterRecord;

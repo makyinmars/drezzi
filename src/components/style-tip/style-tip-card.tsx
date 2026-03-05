@@ -1,6 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { StyleTip } from "generated/prisma/client";
 import type { LucideIcon } from "lucide-react";
 import {
   Calendar,
@@ -15,7 +14,6 @@ import {
   Watch,
 } from "lucide-react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyMedia } from "@/components/ui/empty";
@@ -27,6 +25,7 @@ import {
   ItemMedia,
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { StyleTip } from "@/db/types";
 import { useTRPC } from "@/trpc/react";
 import type { StyleTipCategory } from "@/validators/style-tip";
 

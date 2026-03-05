@@ -36,7 +36,7 @@ mock.module("ai", () => ({
 }));
 
 mock.module("@ai-sdk/google", () => ({
-  google: () => ({ model: "gemini-2.5-flash-preview-05-20" }),
+  google: () => ({ model: "gemini-2.5-flash" }),
 }));
 
 // Import after mocks

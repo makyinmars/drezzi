@@ -5,8 +5,7 @@ import type {
   APIGatewayProxyWebsocketEventV2,
 } from "aws-lambda";
 import { Resource } from "sst";
-
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db";
 
 // Extend WebSocket event type to include query string parameters (present at runtime for $connect)
 type WebSocketConnectEvent = APIGatewayProxyWebsocketEventV2 & {
@@ -27,17 +26,20 @@ export async function handler(
   }
 
   // Verify session token against database
-  const session = await prisma.session.findUnique({
-    where: { token },
-    select: { userId: true, expiresAt: true },
+  const foundSession = await db.query.session.findFirst({
+    where: (t, { eq }) => eq(t.token, token),
+    columns: {
+      userId: true,
+      expiresAt: true,
+    },
   });
 
-  if (!session || session.expiresAt < new Date()) {
+  if (!foundSession || foundSession.expiresAt < new Date()) {
     console.log("WebSocket connect rejected: invalid or expired session");
     return { statusCode: 401, body: "Invalid session" };
   }
 
-  const userId = session.userId;
+  const userId = foundSession.userId;
   const ttl = Math.floor(Date.now() / 1000) + 86400; // 24 hour TTL
 
   // Store bidirectional mapping: userId <-> connectionId

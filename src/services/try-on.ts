@@ -1,9 +1,10 @@
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { eq } from "drizzle-orm";
 import { Resource } from "sst";
-
-import { prisma } from "@/lib/prisma";
+import { file, tryOn } from "@/db/schema";
+import { db } from "@/lib/db";
+import { createId } from "@/lib/id";
 import { getCachedPresignedUrl, s3 } from "@/lib/s3";
-
 import type { TryOnStatus } from "@/validators/try-on";
 
 type UpdateTryOnResultParams = {
@@ -21,27 +22,41 @@ export async function updateTryOnResult(
   let resultId: string | undefined;
 
   if (params.resultKey) {
-    const file = await prisma.file.create({
-      data: {
+    const [created] = await db
+      .insert(file)
+      .values({
+        id: createId(),
         key: params.resultKey,
         bucket: "media",
         mimeType: "image/png",
-      },
-    });
-    resultId = file.id;
+      })
+      .returning();
+    resultId = created.id;
   }
 
-  return await prisma.tryOn.update({
-    where: { id: tryOnId },
-    data: {
-      status: params.status,
-      resultId,
-      processingMs: params.processingMs,
-      confidenceScore: params.confidenceScore,
-      errorMessage: params.errorMessage,
-      completedAt: params.status === "completed" ? new Date() : undefined,
-    },
-  });
+  const updateData: Partial<typeof tryOn.$inferInsert> = {
+    status: params.status,
+    processingMs: params.processingMs,
+    confidenceScore: params.confidenceScore,
+    errorMessage: params.errorMessage,
+    updatedAt: new Date(),
+  };
+
+  if (resultId) {
+    updateData.resultId = resultId;
+  }
+
+  if (params.status === "completed") {
+    updateData.completedAt = new Date();
+  }
+
+  const [updated] = await db
+    .update(tryOn)
+    .set(updateData)
+    .where(eq(tryOn.id, tryOnId))
+    .returning();
+
+  return updated;
 }
 
 export async function getTryOnResultUrl(resultKey: string) {

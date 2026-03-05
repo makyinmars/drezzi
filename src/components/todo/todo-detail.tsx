@@ -1,10 +1,10 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { TodoStatus } from "generated/prisma/browser";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { TodoStatus } from "@/db/enums";
 import { Route } from "@/routes/todo/$todoId";
 import { useTRPC } from "@/trpc/react";
 import ContentLayout from "../common/content-layout";

@@ -1,14 +1,13 @@
-import {
-  CREDIT_PACKAGES,
-  FREE_SIGNUP_CREDITS,
-  type PackageId,
-} from "@/services/credits/constants";
-import type { PrismaClient } from "../../../generated/prisma/client";
-
+import { and, eq } from "drizzle-orm";
+import { payment } from "@/db/schema";
+import type { Db } from "@/lib/db";
+import { createId } from "@/lib/id";
+import { CREDIT_PACKAGES, type PackageId } from "@/services/credits/constants";
+import { addCredits } from "@/services/credits/wallet";
 import { getStripe } from "./stripe";
 
 type CreateCheckoutParams = {
-  prisma: PrismaClient;
+  db: Db;
   userId: string;
   userEmail: string;
   packageId: PackageId;
@@ -17,20 +16,29 @@ type CreateCheckoutParams = {
 };
 
 export async function createCheckoutSession(params: CreateCheckoutParams) {
-  const { prisma, userId, userEmail, packageId, successUrl, cancelUrl } =
-    params;
+  const {
+    db: dbClient,
+    userId,
+    userEmail,
+    packageId,
+    successUrl,
+    cancelUrl,
+  } = params;
 
   const pkg = CREDIT_PACKAGES[packageId];
   if (!pkg) throw new Error(`Invalid package: ${packageId}`);
 
   const stripe = getStripe();
 
-  const existingPayment = await prisma.payment.findFirst({
-    where: { userId, stripeCustomerId: { not: null } },
-    select: { stripeCustomerId: true },
+  const existingPayment = await dbClient.query.payment.findFirst({
+    where: (t, { and: andOp, eq: eqOp, isNotNull: isNotNullOp }) =>
+      andOp(eqOp(t.userId, userId), isNotNullOp(t.stripeCustomerId)),
+    columns: {
+      stripeCustomerId: true,
+    },
   });
 
-  let customerId = existingPayment?.stripeCustomerId;
+  let customerId = existingPayment?.stripeCustomerId ?? undefined;
 
   if (!customerId) {
     const customers = await stripe.customers.list({
@@ -74,18 +82,18 @@ export async function createCheckoutSession(params: CreateCheckoutParams) {
     },
   });
 
-  await prisma.payment.create({
-    data: {
-      userId,
-      stripeCheckoutSessionId: session.id,
-      stripeCustomerId: customerId,
-      amount: pkg.priceInCents,
-      currency: "usd",
-      creditsGranted: pkg.credits,
-      packageId: pkg.id,
-      packageName: pkg.name,
-      status: "PENDING",
-    },
+  await dbClient.insert(payment).values({
+    id: createId(),
+    userId,
+    stripeCheckoutSessionId: session.id,
+    stripeCustomerId: customerId,
+    amount: pkg.priceInCents,
+    currency: "usd",
+    creditsGranted: pkg.credits,
+    packageId: pkg.id,
+    packageName: pkg.name,
+    status: "PENDING",
+    updatedAt: new Date(),
   });
 
   return {
@@ -102,7 +110,7 @@ type SyncResult =
     };
 
 export async function syncStripeSessionToDB(
-  prisma: PrismaClient,
+  dbClient: Db,
   sessionId: string
 ): Promise<SyncResult> {
   const stripe = getStripe();
@@ -120,78 +128,46 @@ export async function syncStripeSessionToDB(
       ? session.payment_intent
       : session.payment_intent?.id;
 
-  const result = await prisma.payment.updateMany({
-    where: {
-      stripeCheckoutSessionId: sessionId,
-      status: "PENDING",
-    },
-    data: {
+  const updatedRows = await dbClient
+    .update(payment)
+    .set({
       status: "SUCCEEDED",
       stripePaymentIntentId: paymentIntent,
-    },
-  });
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(payment.stripeCheckoutSessionId, sessionId),
+        eq(payment.status, "PENDING")
+      )
+    )
+    .returning({
+      id: payment.id,
+    });
 
-  if (result.count === 0) {
+  if (updatedRows.length === 0) {
     return { alreadyProcessed: true, payment: null };
   }
 
-  const payment = await prisma.payment.findUnique({
-    where: { stripeCheckoutSessionId: sessionId },
+  const foundPayment = await dbClient.query.payment.findFirst({
+    where: (t, { eq: eqOp }) => eqOp(t.stripeCheckoutSessionId, sessionId),
   });
 
-  if (!payment) {
+  if (!foundPayment) {
     return { alreadyProcessed: true, payment: null };
   }
 
-  let wallet = await prisma.creditWallet.findUnique({
-    where: { userId: payment.userId },
-  });
-
-  if (!wallet) {
-    wallet = await prisma.creditWallet.create({
-      data: {
-        userId: payment.userId,
-        balance: FREE_SIGNUP_CREDITS,
-        totalBonus: FREE_SIGNUP_CREDITS,
-      },
-    });
-
-    await prisma.creditTransaction.create({
-      data: {
-        userId: payment.userId,
-        walletId: wallet.id,
-        type: "BONUS",
-        amount: FREE_SIGNUP_CREDITS,
-        balanceAfter: FREE_SIGNUP_CREDITS,
-        description: "Welcome bonus credits",
-      },
-    });
-  }
-
-  const newBalance = wallet.balance + payment.creditsGranted;
-
-  await prisma.creditWallet.update({
-    where: { id: wallet.id },
-    data: {
-      balance: newBalance,
-      totalPurchased: wallet.totalPurchased + payment.creditsGranted,
-    },
-  });
-
-  await prisma.creditTransaction.create({
-    data: {
-      userId: payment.userId,
-      walletId: wallet.id,
-      type: "PURCHASE",
-      amount: payment.creditsGranted,
-      balanceAfter: newBalance,
-      description: `${payment.packageName} credit pack`,
-      paymentId: payment.id,
-    },
+  await addCredits(dbClient, foundPayment.userId, foundPayment.creditsGranted, {
+    type: "PURCHASE",
+    description: `${foundPayment.packageName} credit pack`,
+    paymentId: foundPayment.id,
   });
 
   return {
     alreadyProcessed: false,
-    payment: { id: payment.id, creditsGranted: payment.creditsGranted },
+    payment: {
+      id: foundPayment.id,
+      creditsGranted: foundPayment.creditsGranted,
+    },
   };
 }

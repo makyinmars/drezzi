@@ -1,4 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import { todo } from "@/db/schema";
 import { apiTodoCreate, apiTodoId, apiTodoUpdate } from "@/validators/todo";
 import { createErrors } from "../errors";
 import { publicProcedure } from "../init";
@@ -9,8 +11,8 @@ export type TodoListProcedure = RouterOutput["todo"]["list"];
 export const todoRouter = {
   list: publicProcedure.query(
     async ({ ctx }) =>
-      await ctx.prisma.todo.findMany({
-        orderBy: { createdAt: "desc" },
+      await ctx.db.query.todo.findMany({
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
       })
   ),
   byId: publicProcedure.input(apiTodoId).query(async ({ input, ctx }) => {
@@ -20,12 +22,13 @@ export const todoRouter = {
       throw errors.invalidInput();
     }
 
-    if (!parsed.data.id) {
+    const id = parsed.data.id;
+    if (!id) {
       throw errors.todoNotFound();
     }
 
-    const foundTodo = await ctx.prisma.todo.findFirst({
-      where: { id: parsed.data.id },
+    const foundTodo = await ctx.db.query.todo.findFirst({
+      where: (t, { eq: eqOp }) => eqOp(t.id, id),
     });
 
     if (!foundTodo) {
@@ -44,9 +47,13 @@ export const todoRouter = {
         throw errors.invalidInput();
       }
 
-      const created = await ctx.prisma.todo.create({
-        data: parsed.data,
-      });
+      const [created] = await ctx.db
+        .insert(todo)
+        .values({
+          id: crypto.randomUUID(),
+          ...parsed.data,
+        })
+        .returning();
 
       return created;
     }),
@@ -58,13 +65,19 @@ export const todoRouter = {
       throw errors.invalidInput();
     }
 
-    if (!parsed.data.id) {
+    const id = parsed.data.id;
+    if (!id) {
       throw errors.todoNotFound();
     }
 
-    const deleted = await ctx.prisma.todo.delete({
-      where: { id: parsed.data.id },
-    });
+    const [deleted] = await ctx.db
+      .delete(todo)
+      .where(eq(todo.id, id))
+      .returning();
+
+    if (!deleted) {
+      throw errors.todoNotFound();
+    }
 
     return deleted;
   }),
@@ -80,10 +93,18 @@ export const todoRouter = {
 
       const { id, ...data } = parsed.data;
 
-      const updated = await ctx.prisma.todo.update({
-        where: { id },
-        data,
-      });
+      const [updated] = await ctx.db
+        .update(todo)
+        .set({
+          ...data,
+          updatedAt: new Date(),
+        })
+        .where(eq(todo.id, id))
+        .returning();
+
+      if (!updated) {
+        throw errors.todoNotFound();
+      }
 
       return updated;
     }),

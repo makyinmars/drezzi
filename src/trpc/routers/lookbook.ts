@@ -1,5 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-
+import { eq, inArray, sql } from "drizzle-orm";
+import { lookbook, lookbookItem } from "@/db/schema";
+import { createId } from "@/lib/id";
 import { getGarmentImageUrl } from "@/services/garment";
 import {
   deleteLookbookCover,
@@ -21,7 +23,6 @@ import {
   apiLookbookUpdate,
   apiLookbookUpdateItemNote,
 } from "@/validators/lookbook";
-
 import { createErrors } from "../errors";
 import { protectedProcedure, publicProcedure } from "../init";
 import type { RouterOutput } from "../utils";
@@ -35,25 +36,40 @@ export const lookbookRouter = {
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const lookbooks = await ctx.prisma.lookbook.findMany({
-      where: { userId },
-      include: {
-        _count: { select: { items: true } },
+    const lookbooks = await ctx.db.query.lookbook.findMany({
+      where: (t, { eq: eqOp }) => eqOp(t.userId, userId),
+      with: {
         cover: true,
         items: {
-          take: 4,
-          orderBy: { order: "asc" },
-          include: {
+          limit: 4,
+          orderBy: (t, { asc }) => [asc(t.order)],
+          with: {
             tryOn: {
-              include: { result: true },
+              with: { result: true },
             },
           },
         },
       },
-      orderBy: { updatedAt: "desc" },
+      orderBy: (t, { desc }) => [desc(t.updatedAt)],
     });
 
-    return Promise.all(
+    const lookbookIds = lookbooks.map((lb) => lb.id);
+    const counts =
+      lookbookIds.length === 0
+        ? []
+        : await ctx.db
+            .select({
+              lookbookId: lookbookItem.lookbookId,
+              count: sql<number>`count(*)`,
+            })
+            .from(lookbookItem)
+            .where(inArray(lookbookItem.lookbookId, lookbookIds))
+            .groupBy(lookbookItem.lookbookId);
+    const countMap = new Map(
+      counts.map((row) => [row.lookbookId, Number(row.count)])
+    );
+
+    return await Promise.all(
       lookbooks.map(async (lb) => {
         const previews = await Promise.all(
           lb.items
@@ -64,7 +80,8 @@ export const lookbookRouter = {
         return {
           ...lb,
           coverUrl: await getLookbookCoverUrl(lb.cover?.key ?? null),
-          itemCount: lb._count.items,
+          itemCount: countMap.get(lb.id) ?? 0,
+          _count: { items: countMap.get(lb.id) ?? 0 },
           previewUrls: previews,
         };
       })
@@ -77,18 +94,19 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.id, userId },
-        include: {
+      const lookbookData = await ctx.db.query.lookbook.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+        with: {
           cover: true,
           items: {
-            orderBy: { order: "asc" },
-            include: {
+            orderBy: (t, { asc }) => [asc(t.order)],
+            with: {
               tryOn: {
-                include: {
+                with: {
                   result: true,
-                  garment: { include: { image: true } },
-                  bodyProfile: { include: { photo: true } },
+                  garment: { with: { image: true } },
+                  bodyProfile: { with: { photo: true } },
                 },
               },
             },
@@ -96,12 +114,12 @@ export const lookbookRouter = {
         },
       });
 
-      if (!lookbook) {
+      if (!lookbookData) {
         throw errors.lookbookNotFound();
       }
 
       const items = await Promise.all(
-        lookbook.items.map(async (item) => ({
+        lookbookData.items.map(async (item) => ({
           ...item,
           tryOn: {
             ...item.tryOn,
@@ -110,6 +128,10 @@ export const lookbookRouter = {
               : null,
             garment: {
               ...item.tryOn.garment,
+              colors: item.tryOn.garment.colors ?? [],
+              sizes: item.tryOn.garment.sizes ?? [],
+              tags: item.tryOn.garment.tags ?? [],
+              metadata: item.tryOn.garment.metadata ?? {},
               imageUrl: await getGarmentImageUrl(item.tryOn.garment.image.key),
             },
             bodyProfile: {
@@ -123,8 +145,8 @@ export const lookbookRouter = {
       );
 
       return {
-        ...lookbook,
-        coverUrl: await getLookbookCoverUrl(lookbook.cover?.key ?? null),
+        ...lookbookData,
+        coverUrl: await getLookbookCoverUrl(lookbookData.cover?.key ?? null),
         items,
       };
     }),
@@ -134,19 +156,24 @@ export const lookbookRouter = {
     .query(async ({ input, ctx }) => {
       const errors = createErrors(ctx.i18n);
 
-      const lookbook = await ctx.prisma.lookbook.findUnique({
-        where: { shareSlug: input.slug },
-        include: {
-          user: { select: { name: true, image: true } },
+      const lookbookData = await ctx.db.query.lookbook.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.shareSlug, input.slug),
+        with: {
+          user: {
+            columns: {
+              name: true,
+              image: true,
+            },
+          },
           cover: true,
           items: {
-            orderBy: { order: "asc" },
-            include: {
+            orderBy: (t, { asc }) => [asc(t.order)],
+            with: {
               tryOn: {
-                include: {
+                with: {
                   result: true,
-                  garment: { include: { image: true } },
-                  bodyProfile: { include: { photo: true } },
+                  garment: { with: { image: true } },
+                  bodyProfile: { with: { photo: true } },
                 },
               },
             },
@@ -154,16 +181,16 @@ export const lookbookRouter = {
         },
       });
 
-      if (!lookbook) {
+      if (!lookbookData) {
         throw errors.lookbookNotFound();
       }
 
-      if (!lookbook.isPublic) {
+      if (!lookbookData.isPublic) {
         throw errors.lookbookNotPublic();
       }
 
       const items = await Promise.all(
-        lookbook.items.map(async (item) => ({
+        lookbookData.items.map(async (item) => ({
           ...item,
           tryOn: {
             ...item.tryOn,
@@ -172,6 +199,10 @@ export const lookbookRouter = {
               : null,
             garment: {
               ...item.tryOn.garment,
+              colors: item.tryOn.garment.colors ?? [],
+              sizes: item.tryOn.garment.sizes ?? [],
+              tags: item.tryOn.garment.tags ?? [],
+              metadata: item.tryOn.garment.metadata ?? {},
               imageUrl: await getGarmentImageUrl(item.tryOn.garment.image.key),
             },
             bodyProfile: {
@@ -185,8 +216,8 @@ export const lookbookRouter = {
       );
 
       return {
-        ...lookbook,
-        coverUrl: await getLookbookCoverUrl(lookbook.cover?.key ?? null),
+        ...lookbookData,
+        coverUrl: await getLookbookCoverUrl(lookbookData.cover?.key ?? null),
         items,
       };
     }),
@@ -197,21 +228,24 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.create({
-        data: {
+      const [created] = await ctx.db
+        .insert(lookbook)
+        .values({
+          id: createId(),
           name: input.name,
           description: input.description,
           isPublic: input.isPublic,
           userId,
           coverId: input.coverId ?? null,
-        },
-      });
+          updatedAt: new Date(),
+        })
+        .returning();
 
-      if (!lookbook) {
+      if (!created) {
         throw errors.lookbookCreateFailed();
       }
 
-      return lookbook;
+      return created;
     }),
 
   update: protectedProcedure
@@ -221,20 +255,19 @@ export const lookbookRouter = {
       const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
-      // Store old cover key for S3 cleanup after transaction
       let oldCoverKey: string | null = null;
 
-      const updated = await ctx.prisma.$transaction(async (tx) => {
-        const existing = await tx.lookbook.findFirst({
-          where: { id, userId },
-          include: { cover: true },
+      const updated = await ctx.db.transaction(async (tx) => {
+        const existing = await tx.query.lookbook.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, id), eqOp(t.userId, userId)),
+          with: { cover: true },
         });
 
         if (!existing) {
           throw errors.lookbookNotFound();
         }
 
-        // Check if cover is being replaced
         if (
           data.coverId &&
           existing.cover &&
@@ -243,18 +276,21 @@ export const lookbookRouter = {
           oldCoverKey = existing.cover.key;
         }
 
-        return await tx.lookbook.update({
-          where: { id },
-          data: {
+        const [next] = await tx
+          .update(lookbook)
+          .set({
             name: data.name,
             description: data.description,
             isPublic: data.isPublic,
             coverId: data.coverId,
-          },
-        });
+            updatedAt: new Date(),
+          })
+          .where(eq(lookbook.id, id))
+          .returning();
+
+        return next;
       });
 
-      // S3 cleanup after transaction commits (fire-and-forget)
       if (oldCoverKey) {
         deleteLookbookCover(oldCoverKey).catch(() => {});
       }
@@ -268,27 +304,29 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      // Store key for S3 cleanup after transaction
       let coverKey: string | null = null;
 
-      const deleted = await ctx.prisma.$transaction(async (tx) => {
-        const lookbook = await tx.lookbook.findFirst({
-          where: { id: input.id, userId },
-          include: { cover: true },
+      const deleted = await ctx.db.transaction(async (tx) => {
+        const lookbookData = await tx.query.lookbook.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
+          with: { cover: true },
         });
 
-        if (!lookbook) {
+        if (!lookbookData) {
           throw errors.lookbookNotFound();
         }
 
-        coverKey = lookbook.cover?.key ?? null;
+        coverKey = lookbookData.cover?.key ?? null;
 
-        return await tx.lookbook.delete({
-          where: { id: input.id },
-        });
+        const [deletedLookbook] = await tx
+          .delete(lookbook)
+          .where(eq(lookbook.id, input.id))
+          .returning();
+
+        return deletedLookbook;
       });
 
-      // S3 cleanup after transaction commits (fire-and-forget)
       if (coverKey) {
         deleteLookbookCover(coverKey).catch(() => {});
       }
@@ -302,53 +340,67 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      return await ctx.prisma.$transaction(async (tx) => {
-        const lookbook = await tx.lookbook.findFirst({
-          where: { id: input.lookbookId, userId },
+      return await ctx.db.transaction(async (tx) => {
+        const lookbookData = await tx.query.lookbook.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.lookbookId), eqOp(t.userId, userId)),
+          columns: { id: true },
         });
 
-        if (!lookbook) {
+        if (!lookbookData) {
           throw errors.lookbookNotFound();
         }
 
-        const tryOn = await tx.tryOn.findFirst({
-          where: { id: input.tryOnId, userId, status: "completed" },
+        const tryOnData = await tx.query.tryOn.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(
+              eqOp(t.id, input.tryOnId),
+              eqOp(t.userId, userId),
+              eqOp(t.status, "completed")
+            ),
+          columns: { id: true },
         });
 
-        if (!tryOn) {
+        if (!tryOnData) {
           throw errors.tryOnNotFound();
         }
 
-        const existing = await tx.lookbookItem.findUnique({
-          where: {
-            lookbookId_tryOnId: {
-              lookbookId: input.lookbookId,
-              tryOnId: input.tryOnId,
-            },
-          },
+        const existing = await tx.query.lookbookItem.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(
+              eqOp(t.lookbookId, input.lookbookId),
+              eqOp(t.tryOnId, input.tryOnId)
+            ),
+          columns: { id: true },
         });
 
         if (existing) {
           throw errors.lookbookItemDuplicate();
         }
 
-        // Calculate order within transaction to prevent race conditions
-        const maxItem = await tx.lookbookItem.findFirst({
-          where: { lookbookId: input.lookbookId },
-          orderBy: { order: "desc" },
+        const maxItem = await tx.query.lookbookItem.findFirst({
+          where: (t, { eq: eqOp }) => eqOp(t.lookbookId, input.lookbookId),
+          orderBy: (t, { desc }) => [desc(t.order)],
+          columns: { order: true },
         });
         const order = input.order ?? (maxItem ? maxItem.order + 1 : 0);
 
-        const item = await tx.lookbookItem.create({
-          data: {
+        const [created] = await tx
+          .insert(lookbookItem)
+          .values({
+            id: createId(),
             lookbookId: input.lookbookId,
             tryOnId: input.tryOnId,
             note: input.note,
             order,
-          },
-          include: {
+          })
+          .returning();
+
+        const item = await tx.query.lookbookItem.findFirst({
+          where: (t, { eq: eqOp }) => eqOp(t.id, created.id),
+          with: {
             tryOn: {
-              include: {
+              with: {
                 garment: true,
                 bodyProfile: true,
               },
@@ -366,18 +418,25 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const item = await ctx.prisma.lookbookItem.findFirst({
-        where: { id: input.id },
-        include: { lookbook: true },
+      const item = await ctx.db.query.lookbookItem.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.id, input.id),
+        with: {
+          lookbook: {
+            columns: {
+              userId: true,
+            },
+          },
+        },
       });
 
       if (!item || item.lookbook.userId !== userId) {
         throw errors.lookbookItemNotFound();
       }
 
-      const deleted = await ctx.prisma.lookbookItem.delete({
-        where: { id: input.id },
-      });
+      const [deleted] = await ctx.db
+        .delete(lookbookItem)
+        .where(eq(lookbookItem.id, input.id))
+        .returning();
 
       return deleted;
     }),
@@ -388,19 +447,26 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const item = await ctx.prisma.lookbookItem.findFirst({
-        where: { id: input.id },
-        include: { lookbook: true },
+      const item = await ctx.db.query.lookbookItem.findFirst({
+        where: (t, { eq: eqOp }) => eqOp(t.id, input.id),
+        with: {
+          lookbook: {
+            columns: {
+              userId: true,
+            },
+          },
+        },
       });
 
       if (!item || item.lookbook.userId !== userId) {
         throw errors.lookbookItemNotFound();
       }
 
-      const updated = await ctx.prisma.lookbookItem.update({
-        where: { id: input.id },
-        data: { note: input.note },
-      });
+      const [updated] = await ctx.db
+        .update(lookbookItem)
+        .set({ note: input.note })
+        .where(eq(lookbookItem.id, input.id))
+        .returning();
 
       return updated;
     }),
@@ -411,11 +477,13 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.lookbookId, userId },
+      const lookbookData = await ctx.db.query.lookbook.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.lookbookId), eqOp(t.userId, userId)),
+        columns: { id: true },
       });
 
-      if (!lookbook) {
+      if (!lookbookData) {
         throw errors.lookbookNotFound();
       }
 
@@ -430,27 +498,36 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      return await ctx.prisma.$transaction(async (tx) => {
-        const lookbook = await tx.lookbook.findFirst({
-          where: { id: input.id, userId },
+      return await ctx.db.transaction(async (tx) => {
+        const lookbookData = await tx.query.lookbook.findFirst({
+          where: (t, { and: andOp, eq: eqOp }) =>
+            andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
         });
 
-        if (!lookbook) {
+        if (!lookbookData) {
           throw errors.lookbookNotFound();
         }
 
-        // Early return if already public with slug
-        if (lookbook.shareSlug && lookbook.isPublic) {
-          return { slug: lookbook.shareSlug, isPublic: true };
+        if (lookbookData.shareSlug && lookbookData.isPublic) {
+          return { slug: lookbookData.shareSlug, isPublic: true };
         }
 
         const slug =
-          lookbook.shareSlug ?? (await generateShareSlug(lookbook.name));
+          lookbookData.shareSlug ??
+          (await generateShareSlug(lookbookData.name));
 
-        const updated = await tx.lookbook.update({
-          where: { id: input.id },
-          data: { shareSlug: slug, isPublic: true },
-        });
+        const [updated] = await tx
+          .update(lookbook)
+          .set({
+            shareSlug: slug,
+            isPublic: true,
+            updatedAt: new Date(),
+          })
+          .where(eq(lookbook.id, input.id))
+          .returning({
+            shareSlug: lookbook.shareSlug,
+            isPublic: lookbook.isPublic,
+          });
 
         return { slug: updated.shareSlug, isPublic: updated.isPublic };
       });
@@ -462,18 +539,25 @@ export const lookbookRouter = {
       const errors = createErrors(ctx.i18n);
       const userId = ctx.session.user.id;
 
-      const lookbook = await ctx.prisma.lookbook.findFirst({
-        where: { id: input.id, userId },
+      const lookbookData = await ctx.db.query.lookbook.findFirst({
+        where: (t, { and: andOp, eq: eqOp }) =>
+          andOp(eqOp(t.id, input.id), eqOp(t.userId, userId)),
       });
 
-      if (!lookbook) {
+      if (!lookbookData) {
         throw errors.lookbookNotFound();
       }
 
-      const updated = await ctx.prisma.lookbook.update({
-        where: { id: input.id },
-        data: { isPublic: !lookbook.isPublic },
-      });
+      const [updated] = await ctx.db
+        .update(lookbook)
+        .set({
+          isPublic: !lookbookData.isPublic,
+          updatedAt: new Date(),
+        })
+        .where(eq(lookbook.id, input.id))
+        .returning({
+          isPublic: lookbook.isPublic,
+        });
 
       return { success: true, isPublic: updated.isPublic };
     }),
@@ -497,33 +581,50 @@ export const lookbookRouter = {
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      const existingItems = await ctx.prisma.lookbookItem.findMany({
-        where: { lookbookId: input.id },
-        select: { tryOnId: true },
+      const existingItems = await ctx.db.query.lookbookItem.findMany({
+        where: (t, { eq: eqOp }) => eqOp(t.lookbookId, input.id),
+        columns: { tryOnId: true },
       });
 
       const existingIds = existingItems.map((i) => i.tryOnId);
 
-      const tryOns = await ctx.prisma.tryOn.findMany({
-        where: {
-          userId,
-          status: "completed",
-          id: { notIn: existingIds },
-        },
-        include: {
-          result: true,
-          garment: { include: { image: true } },
-          bodyProfile: { include: { photo: true } },
-        },
-        orderBy: { createdAt: "desc" },
-      });
+      const tryOns =
+        existingIds.length > 0
+          ? await ctx.db.query.tryOn.findMany({
+              where: (t, { and: andOp, eq: eqOp, notInArray: notInArrayOp }) =>
+                andOp(
+                  eqOp(t.userId, userId),
+                  eqOp(t.status, "completed"),
+                  notInArrayOp(t.id, existingIds)
+                ),
+              with: {
+                result: true,
+                garment: { with: { image: true } },
+                bodyProfile: { with: { photo: true } },
+              },
+              orderBy: (t, { desc }) => [desc(t.createdAt)],
+            })
+          : await ctx.db.query.tryOn.findMany({
+              where: (t, { and: andOp, eq: eqOp }) =>
+                andOp(eqOp(t.userId, userId), eqOp(t.status, "completed")),
+              with: {
+                result: true,
+                garment: { with: { image: true } },
+                bodyProfile: { with: { photo: true } },
+              },
+              orderBy: (t, { desc }) => [desc(t.createdAt)],
+            });
 
-      return Promise.all(
+      return await Promise.all(
         tryOns.map(async (t) => ({
           ...t,
           resultUrl: t.result ? await getTryOnResultUrl(t.result.key) : null,
           garment: {
             ...t.garment,
+            colors: t.garment.colors ?? [],
+            sizes: t.garment.sizes ?? [],
+            tags: t.garment.tags ?? [],
+            metadata: t.garment.metadata ?? {},
             imageUrl: await getGarmentImageUrl(t.garment.image.key),
           },
           bodyProfile: {
