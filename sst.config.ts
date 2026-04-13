@@ -175,7 +175,6 @@ export default $config({
         GOOGLE_GENERATIVE_AI_API_KEY:
           process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
         AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY as string,
-        RAINDROP_WRITE_KEY: process.env.RAINDROP_WRITE_KEY ?? "",
       },
       permissions: [
         {
